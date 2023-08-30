@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import { IsString } from '@nestjs/class-validator';
 
 export type MaquinaDocument = HydratedDocument<Maquina>;
 
@@ -7,23 +8,66 @@ export type MaquinaDocument = HydratedDocument<Maquina>;
 
 
 export class Tipo {
-    // @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'TipoPreco'})
-    // _id: TipoPreco
 
-    // @
+  //====================================
+  //A IMPLEMENTAR
+  //====================================
+  // @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'TipoPreco'})
+  // _id: TipoPreco
+  @Prop()
+  Nome: string
 
 }
 
 export class Preco {
     @Prop()
-    _id: mongoose.Schema.Types.ObjectId
-
+    ValorPorTipo: string
     @Prop({type: Tipo})
     Tipo: Tipo;
 }
 
-export class Maquina {
+export class Endereco {
   @Prop()
+  Cep: string
+  @Prop()
+  Cidade: string
+  @Prop()
+  Bairro: string
+  @Prop()
+  Logradouro: string
+  @Prop()
+  Complemento: string
+  @Prop()
+  Numero: number
+}
+
+export class Categoria {
+  //====================================
+  //A IMPLEMENTAR
+  //====================================
+  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' })
+  // _id: Categoria
+  @Prop()
+  Nome: string
+}
+
+export class DonoDaMaquina {
+  //====================================
+  //A IMPLEMENTAR
+  //====================================
+  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' })
+  // _id: Usuario
+
+  @Prop()
+  Nome: string
+  @Prop()
+  Foto: string
+}
+
+export class Maquina {
+
+  @Prop()
+  @IsString()
   Nome: string;
 
   @Prop()
@@ -50,28 +94,24 @@ export class Maquina {
   @Prop()
   DataDeCriacao: Date;
 
-  // a fazer avaliacoes
-//   @Prop()
-//   Avaliacoes: Avaliacoes[]
+  //====================================
+  //A IMPLEMENTAR
+  //====================================
+  // @Prop()
+  // Avaliacoes: Avaliacoes[]
 
-  @Prop()
+  @Prop({type: Categoria})
   DonoDaMaquina: object;
 
-  @Prop()
-  Categoria: object;
+  @Prop({type: Categoria})
+  Categoria: Categoria;
 
-  @Prop()
-  Endereco: object;
+  @Prop({type: Endereco})
+  Endereco: Endereco;
 
   @Prop({type: Preco})
   Preco: Preco;
 
 }
-
-
-
-
-
-
 
 export const MaquinaSchema = SchemaFactory.createForClass(Maquina);

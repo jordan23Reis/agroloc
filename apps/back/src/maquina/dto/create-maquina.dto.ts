@@ -10,8 +10,8 @@ export class CreateMaquinaDto {
     Imagens: Array<string>;
     EstaAtiva: boolean;
     DataDeCriacao: Date;
-    Avaliacoes: mongoose.Schema.Types.ObjectId;
-    // Avaliacoes: string;
+    // Avaliacoes: mongoose.Schema.Types.ObjectId;
+    Avaliacoes: Array<string>;
     DonoDaMaquina: object;
     Categoria: object;
     Endereco: object;
