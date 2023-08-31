@@ -1,13 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { IsString } from '@nestjs/class-validator';
+import { IsString, MinLength } from '@nestjs/class-validator';
 
 export type MaquinaDocument = HydratedDocument<Maquina>;
 
 @Schema()
-
-
-export class Tipo {
+class Tipo {
 
   //====================================
   //A IMPLEMENTAR
@@ -19,14 +17,16 @@ export class Tipo {
 
 }
 
-export class Preco {
+@Schema()
+class Preco {
     @Prop()
     ValorPorTipo: string
     @Prop({type: Tipo})
     Tipo: Tipo;
 }
 
-export class Endereco {
+@Schema()
+class Endereco {
   @Prop()
   Cep: string
   @Prop()
@@ -41,7 +41,8 @@ export class Endereco {
   Numero: number
 }
 
-export class Categoria {
+@Schema()
+class Categoria {
   //====================================
   //A IMPLEMENTAR
   //====================================
@@ -51,7 +52,8 @@ export class Categoria {
   Nome: string
 }
 
-export class DonoDaMaquina {
+@Schema()
+class DonoDaMaquina {
   //====================================
   //A IMPLEMENTAR
   //====================================
@@ -64,13 +66,13 @@ export class DonoDaMaquina {
   Foto: string
 }
 
+@Schema()
 export class Maquina {
 
-  @Prop()
-  @IsString()
+  @Prop({required: true, minlength: 3, maxlength: 50})
   Nome: string;
 
-  @Prop()
+  @Prop({required: true})
   Descricao: string;
 
   @Prop()
@@ -86,7 +88,7 @@ export class Maquina {
   Altura: number;
 
   @Prop()
-  Imagens: Array<string>;
+  Imagens: string[];
 
   @Prop()
   EstaAtiva: boolean;
@@ -100,8 +102,8 @@ export class Maquina {
   // @Prop()
   // Avaliacoes: Avaliacoes[]
 
-  @Prop({type: Categoria})
-  DonoDaMaquina: object;
+  @Prop({type: DonoDaMaquina})
+  DonoDaMaquina: DonoDaMaquina;
 
   @Prop({type: Categoria})
   Categoria: Categoria;
