@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMaquinaDto } from './dto/create-maquina.dto';
 import { UpdateMaquinaDto } from './dto/update-maquina.dto';
+import { Maquina } from './entities/maquina.entity';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class MaquinaService {
+  constructor(@InjectModel(Maquina.name) private maquinaModel: Model<Maquina>){}
+
   create(createMaquinaDto: CreateMaquinaDto) {
-    return 'This action adds a new maquina';
+    const createdMaquina = this.maquinaModel.create(createMaquinaDto);
+    return createdMaquina;
   }
 
   findAll() {
