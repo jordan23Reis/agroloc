@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { MaquinaModule } from '../maquina/maquina.module';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://127.0.0.1/agroloc'), MaquinaModule],
+  imports: [MongooseModule.forRoot('mongodb://127.0.0.1:27017/agroloc'), MaquinaModule],
   controllers: [AppController],
   providers: [AppService],
 })

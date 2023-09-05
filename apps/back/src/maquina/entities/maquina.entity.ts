@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import {MaquinaSchemaDtoRestraints } from "../../../../../libs/home/util/src/lib/schema-dto-restraints/maquina"
+import {MaquinaSchemaDtoRestraints } from "@agroloc/home/util"
 
 export type MaquinaDocument = HydratedDocument<Maquina>;
 
@@ -16,7 +16,7 @@ class Tipo {
     required: true,
     type: String,  
     minlength: MaquinaSchemaDtoRestraints.tamMinTipo, 
-    maxlength: MaquinaSchemaDtoRestraints.tamMaxTipo
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxTipo  
   })
   Nome: string
 
