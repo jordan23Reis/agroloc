@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { IsString, MinLength } from '@nestjs/class-validator';
+import {MaquinaSchemaDtoRestraints } from "../../../../../libs/home/util/src/lib/schema-dto-restraints/maquina"
 
 export type MaquinaDocument = HydratedDocument<Maquina>;
 
@@ -10,34 +10,76 @@ class Tipo {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'TipoPreco'})
+  // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'TipoPreco' }] })
   // _id: TipoPreco
-  @Prop()
+  @Prop({
+    required: true,
+    type: String,  
+    minlength: MaquinaSchemaDtoRestraints.tamMinTipo, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxTipo
+  })
   Nome: string
 
 }
 
 @Schema()
 class Preco {
-    @Prop()
-    ValorPorTipo: string
-    @Prop({type: Tipo})
-    Tipo: Tipo;
+  @Prop({
+    required: true,
+    type: String,  
+    minlength: MaquinaSchemaDtoRestraints.tamMinValorPorTipo, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxValorPorTipo,
+  })
+  ValorPorTipo: string
+  @Prop({type: Tipo})
+  Tipo: Tipo;
 }
 
 @Schema()
 class Endereco {
-  @Prop()
+  @Prop({
+    required: true, 
+    type: String,
+    minlength: MaquinaSchemaDtoRestraints.tamMinCep, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxCep
+  })
   Cep: string
-  @Prop()
+
+  @Prop({
+    required: true, 
+    type: String,
+    minlength: MaquinaSchemaDtoRestraints.tamMinCidade, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxCidade
+  })
   Cidade: string
-  @Prop()
+
+  @Prop({
+    type: String,
+    minlength: MaquinaSchemaDtoRestraints.tamMinBairro, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxBairro
+  })
   Bairro: string
-  @Prop()
+
+  @Prop({
+    required: true, 
+    type: String,
+    minlength: MaquinaSchemaDtoRestraints.tamMinLogradouro, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxLogradouro
+  })
   Logradouro: string
-  @Prop()
+
+  @Prop({
+    type: String,
+    minlength: MaquinaSchemaDtoRestraints.tamMinComplemento, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxComplemento
+  })
   Complemento: string
-  @Prop()
+
+  @Prop({
+    type: Number,
+    minlength: MaquinaSchemaDtoRestraints.numeroMin, 
+    maxlength: MaquinaSchemaDtoRestraints.numeroMax
+  })
   Numero: number
 }
 
@@ -46,9 +88,14 @@ class Categoria {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' })
+  // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' }] })
   // _id: Categoria
-  @Prop()
+  @Prop({
+    required: true,
+    type: String,  
+    minlength: MaquinaSchemaDtoRestraints.tamMinCategoria, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxCategoria
+  })
   Nome: string
 }
 
@@ -57,44 +104,83 @@ class DonoDaMaquina {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' })
+  // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }] })
   // _id: Usuario
 
-  @Prop()
+  @Prop({
+    required: true,
+    type: String,  
+    minlength: MaquinaSchemaDtoRestraints.tamMinNomeDonoMaquina, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxNomeDonoMaquina
+  })
   Nome: string
-  @Prop()
+
+  @Prop({
+    type: String,  
+    minlength: MaquinaSchemaDtoRestraints.tamMinFoto, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxFoto
+  })
   Foto: string
 }
 
-@Schema()
+@Schema({ timestamps: true })
 export class Maquina {
 
-  @Prop({required: true, minlength: 3, maxlength: 50})
+  @Prop({
+    required: true, 
+    type: String,
+    minlength: MaquinaSchemaDtoRestraints.tamMinNomeMaquina, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxNomeMaquina
+  })
   Nome: string;
 
-  @Prop({required: true})
+  @Prop({
+    required: true,
+    type: String,
+    minlength: MaquinaSchemaDtoRestraints.tamMinDescricaoMaquina, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxDescricaoMaquina
+  })
   Descricao: string;
 
-  @Prop()
+  @Prop({
+    type: Number,
+    min: MaquinaSchemaDtoRestraints.pesoMinMaquina, 
+    max: MaquinaSchemaDtoRestraints.pesoMaxMaquina
+  })
   Peso: number;
 
-  @Prop()
+  @Prop({
+    type: Number,
+    min: MaquinaSchemaDtoRestraints.comprimentoMinMaquina, 
+    max: MaquinaSchemaDtoRestraints.comprimentoMaxMaquina
+  })
   Comprimento: number;
 
-  @Prop()
+  @Prop({
+    type: Number,
+    min: MaquinaSchemaDtoRestraints.larguraMinMaquina, 
+    max: MaquinaSchemaDtoRestraints.larguraMaxMaquina
+  })
   Largura: number;
 
-  @Prop()
+  @Prop({
+    type: Number,
+    min: MaquinaSchemaDtoRestraints.alturaMinMaquina, 
+    max: MaquinaSchemaDtoRestraints.alturaMaxMaquina
+  })
   Altura: number;
 
-  @Prop()
+  @Prop({
+    type: [String]
+  })
   Imagens: string[];
 
-  @Prop()
+  @Prop({ 
+    required: true,
+    type: Boolean,
+    default: true,
+  })
   EstaAtiva: boolean;
-
-  @Prop()
-  DataDeCriacao: Date;
 
   //====================================
   //A IMPLEMENTAR
@@ -102,16 +188,27 @@ export class Maquina {
   // @Prop()
   // Avaliacoes: Avaliacoes[]
 
-  @Prop({type: DonoDaMaquina})
+  @Prop({
+    type: DonoDaMaquina, 
+    required: true
+  })
   DonoDaMaquina: DonoDaMaquina;
 
-  @Prop({type: Categoria})
+  @Prop({
+    type: Categoria
+  })
   Categoria: Categoria;
 
-  @Prop({type: Endereco})
+  @Prop({
+    type: Endereco, 
+    required: true
+  })
   Endereco: Endereco;
 
-  @Prop({type: Preco})
+  @Prop({
+    type: Preco, 
+    required: true
+  })
   Preco: Preco;
 
 }
