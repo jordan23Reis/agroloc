@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IsString, validate } from '@nestjs/class-validator';
+import { IsArray, IsBoolean, IsDate, IsNotEmpty, IsNumber, IsString, validate } from '@nestjs/class-validator';
 
 
 
@@ -34,23 +34,37 @@ class DonoDaMaquina {
 }
 
 export class CreateMaquinaDto {
+    @IsNotEmpty()
     @IsString()
     Nome: string;
 
+    @IsNotEmpty()
+    @IsString()
     Descricao: string;
 
+    @IsNumber()
     Peso: number;
 
+    @IsNumber()
     Comprimento: number;
 
+    @IsNumber()
     Largura: number;
 
+    @IsNumber()
     Altura: number;
-    
+
+    @IsArray()
+    @IsString({each: true})
     Imagens: string[];
+
+    @IsNotEmpty()
+    @IsBoolean()
     EstaAtiva: boolean;
-    DataDeCriacao: Date;
+
+    @IsString()
     Avaliacoes: mongoose.Schema.Types.ObjectId[];
+
     DonoDaMaquina: DonoDaMaquina;
     Categoria: Categoria;
     Endereco: Endereco;

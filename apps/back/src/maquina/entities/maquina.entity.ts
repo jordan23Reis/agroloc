@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import {MaquinaSchemaDtoRestraints } from "@agroloc/home/util"
+import {MaquinaSchemaDtoRestraints } from "@agroloc/shared/util"
 
 export type MaquinaDocument = HydratedDocument<Maquina>;
 
@@ -11,7 +11,7 @@ class Tipo {
   //A IMPLEMENTAR
   //====================================
   // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'TipoPreco' }] })
-  // _id: TipoPreco
+  // idTipo: TipoPreco
   @Prop({
     required: true,
     type: String,  
@@ -89,7 +89,7 @@ class Categoria {
   //A IMPLEMENTAR
   //====================================
   // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' }] })
-  // _id: Categoria
+  // idCategoria: Categoria
   @Prop({
     required: true,
     type: String,  
@@ -105,7 +105,7 @@ class DonoDaMaquina {
   //A IMPLEMENTAR
   //====================================
   // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }] })
-  // _id: Usuario
+  // idDono: Usuario
 
   @Prop({
     required: true,

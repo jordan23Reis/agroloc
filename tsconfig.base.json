@@ -19,7 +19,7 @@
       "@agroloc/home/feature": ["libs/home/feature/src/index.ts"],
       "@agroloc/home/shell": ["libs/home/shell/src/index.ts"],
       "@agroloc/home/ui": ["libs/home/ui/src/index.ts"],
-      "@agroloc/home/util": ["libs/home/util/src/index.ts"]
+      "@agroloc/shared/util": ["libs/shared/util/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
