@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { IsString, validate } from '@nestjs/class-validator';
+
 
 
 class Tipo {
@@ -32,12 +34,19 @@ class DonoDaMaquina {
 }
 
 export class CreateMaquinaDto {
+    @IsString()
     Nome: string;
+
     Descricao: string;
+
     Peso: number;
+
     Comprimento: number;
+
     Largura: number;
+
     Altura: number;
+    
     Imagens: string[];
     EstaAtiva: boolean;
     DataDeCriacao: Date;
