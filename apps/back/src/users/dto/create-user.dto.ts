@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
-import { CadastroFreteiro } from '../entities/user.entity';
+import { IsNotEmpty, IsString, MaxLength, MinLength } from '@nestjs/class-validator';
+import mongoose from 'mongoose';
 
   class CadastroCompletoUsuario {
     _id: mongoose.Schema.Types.ObjectId;
