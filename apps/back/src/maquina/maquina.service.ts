@@ -15,18 +15,22 @@ export class MaquinaService {
   }
 
   findAll() {
-    return `This action returns all maquina`;
+    const listedMaquinas = this.maquinaModel.find({});
+    return listedMaquinas;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} maquina`;
+  findOne(id: string) {
+    const foundMaquina = this.maquinaModel.findById(id);
+    return foundMaquina;
   }
 
-  update(id: number, updateMaquinaDto: UpdateMaquinaDto) {
-    return `This action updates a #${id} maquina`;
+  update(id: string, updateMaquinaDto: UpdateMaquinaDto) {
+    const updatedMaquina = this.maquinaModel.findByIdAndUpdate(id, updateMaquinaDto);
+    return updatedMaquina;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} maquina`;
+  remove(id: string) {
+    const foundMaquina = this.maquinaModel.findByIdAndRemove(id);
+    return foundMaquina;
   }
 }

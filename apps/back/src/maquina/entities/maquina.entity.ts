@@ -10,7 +10,9 @@ class Tipo {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'TipoPreco' }] })
+  // @Prop({
+  // required: true, type: mongoose.Schema.Types.ObjectId, ref: 'TipoPreco' 
+  // })
   // idTipo: TipoPreco
   @Prop({
     required: true,
@@ -77,8 +79,8 @@ class Endereco {
 
   @Prop({
     type: Number,
-    minlength: MaquinaSchemaDtoRestraints.numeroMin, 
-    maxlength: MaquinaSchemaDtoRestraints.numeroMax
+    min: MaquinaSchemaDtoRestraints.numeroMin, 
+    max: MaquinaSchemaDtoRestraints.numeroMax
   })
   Numero: number
 }
@@ -88,7 +90,9 @@ class Categoria {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' }] })
+  // @Prop({ 
+  // required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' 
+  // })
   // idCategoria: Categoria
   @Prop({
     required: true,
@@ -104,7 +108,9 @@ class DonoDaMaquina {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }] })
+  // @Prop({ 
+  // required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' 
+  // })
   // idDono: Usuario
 
   @Prop({
@@ -185,7 +191,9 @@ export class Maquina {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop()
+  // @Prop({
+  //  type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Avaliacao' }]
+  // })
   // Avaliacoes: Avaliacoes[]
 
   @Prop({
