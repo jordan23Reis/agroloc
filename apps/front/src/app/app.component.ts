@@ -1,32 +1,45 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Platform } from '@angular/cdk/platform';
-import { MediaMatcher } from '@angular/cdk/layout';
-import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'agroloc-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'front';
   platform = inject(Platform);
-  media = inject(MediaMatcher);
   router = inject(Router);
-  mobileUser: boolean = this.platform.ANDROID || this.platform.IOS;
-  #detect = new BehaviorSubject(false);
-  detect$ = this.#detect.asObservable();
-  mobileQuery: any;
-  constructor() {
-    const mobileQuery = this.media.matchMedia('(max-width: 600px)');
-    mobileQuery.addEventListener('change', ({ matches }) => {
-      this.#detect.next(matches);
-    });
-    if (this.mobileUser) {
-      this.router.navigate(['', 'mob']);
+  location = inject(Location);
+  isMobile = this.platform.ANDROID || this.platform.IOS;
+  currentUrl = this.location.path() ?? '';
+  filterUrl = this.prefixRemove(this.currentUrl);
+
+  ngOnInit() {
+    if (this.filterUrl !== '') {
+      if (this.isMobile) {
+        this.router.navigate(['mob', this.filterUrl]);
+      } else {
+        this.router.navigate(['web', this.filterUrl]);
+      }
     } else {
-      this.router.navigate(['', 'web']);
+      if (this.isMobile) {
+        this.router.navigate(['mob']);
+      } else {
+        this.router.navigate(['web']);
+      }
     }
+  }
+
+  prefixRemove(url: string): string {
+    if (url.startsWith('/web')) {
+      return url.substring(5);
+    } else if (url.startsWith('/mob')) {
+      return url.substring(5);
+    } else if (url.startsWith('/')) {
+      return url.substring(1);
+    }
+    return url;
   }
 }
