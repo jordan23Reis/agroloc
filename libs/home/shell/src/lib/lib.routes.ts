@@ -3,6 +3,7 @@ import { WebComponent } from './web/web.component';
 import { MobComponent } from './mob/mob.component';
 import { WebLoginComponent } from './web-login/web-login.component';
 import { MobLoginComponent } from './mob-login/mob-login.component';
+import { Error404Component } from './error404/error404.component';
 
 export const homeShellRoutes: Route[] = [
   {
@@ -18,6 +19,7 @@ export const homeShellRoutes: Route[] = [
       },
     ],
   },
+
   {
     path: 'mob',
     pathMatch: 'prefix',
@@ -31,6 +33,17 @@ export const homeShellRoutes: Route[] = [
       },
     ],
   },
+
+  {
+    path: '404',
+    component: Error404Component,
+  },
+
+  {
+    path: '**',
+    redirectTo: '404',
+  },
+
   // {
   //   path: 'home-feature',
   //   loadChildren: () =>

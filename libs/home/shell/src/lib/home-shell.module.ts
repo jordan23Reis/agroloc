@@ -8,6 +8,7 @@ import { WebRegisterComponent } from './web-register/web-register.component';
 import { MobRegisterComponent } from './mob-register/mob-register.component';
 import { WebLoginComponent } from './web-login/web-login.component';
 import { MobLoginComponent } from './mob-login/mob-login.component';
+import { Error404Component } from './error404/error404.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(homeShellRoutes)],
@@ -18,6 +19,7 @@ import { MobLoginComponent } from './mob-login/mob-login.component';
     MobRegisterComponent,
     WebLoginComponent,
     MobLoginComponent,
+    Error404Component,
   ],
 })
 export class HomeShellModule {}
