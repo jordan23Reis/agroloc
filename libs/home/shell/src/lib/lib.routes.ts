@@ -4,17 +4,25 @@ import { MobComponent } from './mob/mob.component';
 import { WebLoginComponent } from './web-login/web-login.component';
 import { MobLoginComponent } from './mob-login/mob-login.component';
 import { Error404Component } from './error404/error404.component';
+import { MobRegisterComponent } from './mob-register/mob-register.component';
+import { WebRegisterComponent } from './web-register/web-register.component';
 
 export const homeShellRoutes: Route[] = [
   {
     path: 'web',
-    pathMatch: 'prefix',
+    pathMatch: 'full',
     component: WebComponent,
     children: [
       {
         path: 'login',
         pathMatch: 'prefix',
         component: WebLoginComponent,
+        children: [],
+      },
+      {
+        path: 'register',
+        pathMatch: 'prefix',
+        component: WebRegisterComponent,
         children: [],
       },
     ],
@@ -29,6 +37,12 @@ export const homeShellRoutes: Route[] = [
         path: 'login',
         pathMatch: 'prefix',
         component: MobLoginComponent,
+        children: [],
+      },
+      {
+        path: 'register',
+        pathMatch: 'prefix',
+        component: MobRegisterComponent,
         children: [],
       },
     ],
