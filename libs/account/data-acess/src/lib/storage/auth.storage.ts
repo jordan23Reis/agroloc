@@ -4,5 +4,13 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthStorage {
-  constructor() {}
+  getAcessToken() {
+    return localStorage.getItem('acess-token');
+  }
+  setAcessToken(token: string) {
+    localStorage.setItem('acess-token', token);
+  }
+  removeAcessToken() {
+    localStorage.removeItem('acess-token');
+  }
 }

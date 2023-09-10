@@ -12,8 +12,4 @@ export class AccountService {
   register(account: Account) {
     this.http.post('/users', account).subscribe(console.log);
   }
-
-  login(login: Login) {
-    this.http.post('/login', login).subscribe(console.log);
-  }
 }

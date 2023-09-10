@@ -10,7 +10,7 @@ import { WebRegisterComponent } from './web-register/web-register.component';
 export const homeShellRoutes: Route[] = [
   {
     path: 'web',
-    pathMatch: 'full',
+    pathMatch: 'prefix',
     component: WebComponent,
     children: [
       {
