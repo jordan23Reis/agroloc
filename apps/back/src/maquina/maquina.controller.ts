@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { MaquinaService } from './maquina.service';
 import { CreateMaquinaDto } from './dto/create-maquina.dto';
@@ -20,9 +21,10 @@ export class MaquinaController {
     return this.maquinaService.create(createMaquinaDto);
   }
 
+  
   @Get()
-  findAll() {
-    return this.maquinaService.findAll();
+  find(@Query() query) {
+    return this.maquinaService.find(query);
   }
 
   @Get(':id')

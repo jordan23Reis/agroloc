@@ -28,11 +28,11 @@ class Tipo {
 class Preco {
   @Prop({
     required: true,
-    type: String,  
-    minlength: MaquinaSchemaDtoRestraints.tamMinValorPorTipo, 
-    maxlength: MaquinaSchemaDtoRestraints.tamMaxValorPorTipo,
+    type: Number,  
+    min: MaquinaSchemaDtoRestraints.ValorPorTipoMin, 
+    max: MaquinaSchemaDtoRestraints.ValorPorTipoMax,
   })
-  ValorPorTipo: string
+  ValorPorTipo: number
   @Prop({type: Tipo})
   Tipo: Tipo;
 }

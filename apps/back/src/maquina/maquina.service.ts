@@ -14,9 +14,47 @@ export class MaquinaService {
     return createdMaquina;
   }
 
-  findAll() {
-    const listedMaquinas = this.maquinaModel.find({});
-    return listedMaquinas;
+
+  find(query){
+    const resPerPage = Number(query.quantidadePorPagina) || 0;
+    const currentPage = Number(query.page) || 1;
+    const skip = resPerPage * (currentPage -1);
+
+    const busca = query.busca ? {
+      Nome: {
+        $regex: query.busca,
+        $options: "i"
+      }
+    } : {}
+
+    const categoria = query.categoria ? {
+      "Categoria.Nome": query.categoria
+    } : {}
+
+    const tipoPreco = query.tipoPreco ? {
+      "Preco.Tipo.Nome": query.tipoPreco
+    } : {}
+
+    const precoMin = query.precoMin ? {
+      "Preco.ValorPorTipo": { 
+        $gte: Number(query.precoMin)
+      }
+    } : {}
+
+    const precoMax = query.precoMax ? {
+      "Preco.ValorPorTipo": { 
+        $lte: Number(query.precoMax)
+      }
+    } : {}
+
+    const ordenar = query.ordernarPor == "OrdemAlfabetica" ? {
+      Nome: "asc"
+    } : {}
+
+    //"Nome": "asc"
+
+    const maquinas = this.maquinaModel.find({...busca, ...categoria, ...tipoPreco, ...precoMin,  ...precoMax}).limit(resPerPage).skip(skip).sort({});
+    return maquinas;
   }
 
   findOne(id: string) {

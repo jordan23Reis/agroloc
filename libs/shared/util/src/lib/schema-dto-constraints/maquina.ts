@@ -22,8 +22,8 @@ enum MaquinaSchemaDtoRestraints {
     tamMinTipo = 0,
     tamMaxTipo = 100,
 
-    tamMinValorPorTipo = 0,
-    tamMaxValorPorTipo = 100,
+    ValorPorTipoMin = 0,
+    ValorPorTipoMax = 10000000,
 
     tamMinCep = 9,
     tamMaxCep = 9,

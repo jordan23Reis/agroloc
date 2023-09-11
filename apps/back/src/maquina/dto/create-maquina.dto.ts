@@ -19,10 +19,10 @@ class Tipo {
 
 class Preco {
     @IsNotEmpty()
-    @IsString()
-    @MinLength(MaquinaSchemaDtoRestraints.tamMinValorPorTipo)
-    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxValorPorTipo)
-    ValorPorTipo: string
+    @IsNumber()
+    @Min(MaquinaSchemaDtoRestraints.ValorPorTipoMin)
+    @Max(MaquinaSchemaDtoRestraints.ValorPorTipoMax)
+    ValorPorTipo: number
 
     @IsOptional()
     @ValidateNested()
