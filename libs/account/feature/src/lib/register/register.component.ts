@@ -11,13 +11,16 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 })
 export class RegisterComponent {
   firstFormGroup = this._formBuilder.group({
-    firstCtrl: ['', Validators.required],
+    Nome: ['', Validators.required],
+    Sobrenome: ['', Validators.required],
   });
   secondFormGroup = this._formBuilder.group({
-    secondCtrl: ['', Validators.required],
+    Email: ['', Validators.required],
+    Senha: ['', Validators.required],
+    ConfSenha: ['', Validators.required],
   });
   thirdFormGroup = this._formBuilder.group({
-    thirdCtrl: ['', Validators.required],
+    Freteiro: ['', Validators.required],
   });
   stepperOrientation: Observable<StepperOrientation>;
 
