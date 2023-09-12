@@ -1,1 +1,1 @@
-export * from './lib/schema-dto-constraints';
+export * from './lib';
