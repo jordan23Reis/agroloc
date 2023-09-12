@@ -1,1 +1,27 @@
-<p>web-register works!</p>
+<mat-grid-list class="GridContainerRegister" cols="4" rowHeight="35px">
+
+    <mat-grid-tile
+        *ngFor="let tile of section"
+        [colspan]="tile.cols"
+        [rowspan]="tile.rows"
+        [style.background]="tile.color">
+
+      <section>
+        <agroloc-register></agroloc-register>
+      </section>
+      
+    </mat-grid-tile>
+
+    <mat-grid-tile
+        *ngFor="let tile of footer"
+        [colspan]="tile.cols"
+        [rowspan]="tile.rows"
+        [style.background]="tile.color">
+
+      <footer>
+
+      </footer>
+      
+    </mat-grid-tile>
+
+  </mat-grid-list>

@@ -1,12 +1,35 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  AsyncPipe,
+  CommonModule,
+  NgSwitch,
+  NgSwitchCase,
+} from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { accountFeatureRoutes } from './lib.routes';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatStepperModule } from '@angular/material/stepper';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(accountFeatureRoutes)],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(accountFeatureRoutes),
+    NgSwitch,
+    NgSwitchCase,
+    MatStepperModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    AsyncPipe,
+  ],
   declarations: [RegisterComponent, LoginComponent],
+  exports: [RegisterComponent]
 })
 export class AccountFeatureModule {}
