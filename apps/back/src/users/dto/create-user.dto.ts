@@ -9,12 +9,14 @@ import {
   isNotEmpty,
 } from '@nestjs/class-validator';
 import mongoose from 'mongoose';
-import { Type } from 'class-transformer'
+import { Type } from 'class-transformer';
 
 class CadastroComum {
   _id: mongoose.Schema.Types.ObjectId;
   @IsNotEmpty()
-  NomeCompleto: string;
+  Nome: string;
+  @IsNotEmpty()
+  Sobrenome: string;
   @IsNotEmpty()
   DataDeNascimento: Date;
   @IsNotEmpty()
@@ -40,13 +42,13 @@ class Enderecos {
   Cep: string;
   @IsNotEmpty()
   Cidade: string;
-  @IsNotEmpty()
+  @IsOptional()
   Bairro: string;
   @IsNotEmpty()
   Logradouro: string;
   @IsOptional()
   Complemento: string;
-  @IsNotEmpty()
+  @IsOptional()
   Numero: number;
 }
 
@@ -64,8 +66,8 @@ class Login {
 }
 
 class CadastroFreteiro {
- CNH: string;
- @IsNotEmpty()
+  CNH: string;
+  @IsNotEmpty()
   @ValidateNested()
   @Type(() => Automovel)
   Automovel: Automovel[];
@@ -96,9 +98,118 @@ class Categoria {
   @IsNotEmpty()
   Nome: string;
 }
+
+class Favoritos {
+  //idFavoritos: mongoose.Schema.Types.ObjectId;
+  _id: mongoose.Schema.Types.ObjectId;
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Maquina)
+  Maquina: Maquina[];
+}
+
+class Maquina {
+  idMaquina: mongoose.Schema.Types.ObjectId;
+  @IsNotEmpty()
+  Nome: string;
+  @IsNotEmpty()
+  Imagens: string[];
+}
+
+class MaquinasAlugadas {
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => ProcessoDeAluguel)
+  ProcessoDeAluguel: ProcessoDeAluguel[];
+}
+
+class ProcessoDeAluguel {
+  _id: mongoose.Schema.Types.ObjectId;
+  @IsNotEmpty()
+  DataInicio: Date;
+  @IsNotEmpty()
+  DataTermino: Date;
+  @IsNotEmpty()
+  Status: string;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Pagamento)
+  Pagamento: Pagamento[];
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Maquina)
+  Maquina: Maquina[];
+
+  Envolvidos: Envolvidos[];
+}
+
+class Pagamento {
+  @IsNotEmpty()
+  TipoPagamento: string;
+  @IsNotEmpty()
+  Valor: number;
+  @IsNotEmpty()
+  QuantificadorPreco: number;
+  @IsNotEmpty()
+  Status: string;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Preco)
+  Preco: Preco[];
+}
+
+class Preco {
+  @IsNotEmpty()
+  ValorPorTipo: number;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Tipo)
+  Tipo: Tipo[];
+}
+
+class Tipo {
+  idTipo: mongoose.Schema.Types.ObjectId;
+  @IsNotEmpty()
+  Nome: string;
+}
+
+class Envolvidos {
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Locador)
+  Locador: Locador[];
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Locatario)
+  Locatario: Locatario[];
+}
+
+class Locador {
+  idLocador: mongoose.Schema.Types.ObjectId;
+  @IsNotEmpty()
+  Nome: string;
+  @IsOptional()
+  Foto: string;
+}
+
+class Locatario {
+  idLocatario: mongoose.Schema.Types.ObjectId;
+  @IsNotEmpty()
+  Nome: string;
+  @IsOptional()
+  Foto: string;
+}
+
 export class CreateUserDto {
 
   CadastroComum: CadastroComum;
   Login: Login;
   CadastroFreteiro: CadastroFreteiro;
+  Favoritos: Favoritos;
+  MaquinasAlugadas: MaquinasAlugadas;
 }

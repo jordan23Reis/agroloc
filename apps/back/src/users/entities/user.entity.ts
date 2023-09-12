@@ -1,5 +1,7 @@
+import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Date, HydratedDocument } from 'mongoose';
+import mongoose from 'mongoose'
+import { Date, HydratedDocument } from 'mongoose';
 
 export type UsuarioDocument = HydratedDocument<Usuario>;
 
@@ -9,28 +11,64 @@ class Categoria {
   //A IMPLEMENTAR
   //====================================
   // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' })
-  // _id: Categoria
+  // idCategoria: Categoria
   @Prop()
   Nome: string;
 }
 
 @Schema()
 class Automovel {
-  //estou exportando a class automovel para ser usada
-  @Prop()
-  Nome: string;
-  @Prop()
+  @Prop({
+    required: true,
+    type: String,  
+    minlength: UsuarioSchemaDtoRestraints.tamMinNomeAutomovel, 
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeAutomovel
+  })
+  Nome: string
+
+  @Prop({
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinDescricaoAutomovel,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxDescricaoAutomovel,
+  })
   Descricao: string;
-  @Prop()
+
+  @Prop({
+    type: Number,
+    minlength: UsuarioSchemaDtoRestraints.pesoMinAutomovel,
+    maxlength: UsuarioSchemaDtoRestraints.pesoMaxAutomovel
+  })
   Peso: number;
-  @Prop()
+
+  @Prop({
+    type: Number,
+    minlength: UsuarioSchemaDtoRestraints.comprimentoMinAutomovel,
+    maxlength: UsuarioSchemaDtoRestraints.comprimentoMaxAutomovel,
+  })
   Comprimento: number;
-  @Prop()
+
+  @Prop({
+    type: Number,
+    minlength: UsuarioSchemaDtoRestraints.larguraMinAutomovel,
+    maxlength: UsuarioSchemaDtoRestraints.larguraMaxAutomovel,
+  })
   Largura: number;
-  @Prop()
+
+  @Prop({
+    type: Number,
+    minlength: UsuarioSchemaDtoRestraints.alturaMinAutomovel,
+    maxlength: UsuarioSchemaDtoRestraints.alturaMaxAutomovel,
+  })
   Altura: number;
-  @Prop()
+
+  @Prop({
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinAutomovelFoto,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxAutomovelFoto,
+  })
   Imagens: Array<string>;
+
   @Prop({ type: Categoria })
   Categoria: Categoria;
 }
@@ -39,6 +77,7 @@ class Automovel {
 // se for um array preciso coloca-lo dentro de [] ex: depois na linha posterior
 //chamar a classe novamente e atribuir a classe ex: @Prop({ type: [Automovel] })
 //CadastroComum: CadastroComum;
+
 @Schema()
 class CadastroFreteiro {
   @Prop()
@@ -46,37 +85,116 @@ class CadastroFreteiro {
   @Prop({ type: [Automovel] }) // aqui o type faz referência ao padrão do nest
   Automovel: Automovel[];
 }
+
 @Schema()
 class Enderecos {
-  @Prop()
+  @Prop({
+  required: true,
+  type: String,
+  minlength: UsuarioSchemaDtoRestraints.tamMinCep,
+  maxlength: UsuarioSchemaDtoRestraints.tamMaxCep,
+  })
   Cep: string;
-  @Prop()
+
+  @Prop({
+  required: true,
+  type: String,
+  minlength: UsuarioSchemaDtoRestraints.tamMinNomeCidade,
+  maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeCidade,
+  })
   Cidade: string;
-  @Prop()
+
+  @Prop({
+  type: String,
+  minlength: UsuarioSchemaDtoRestraints.tamMinNomeBairro,
+  maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeBairro,
+  })
   Bairro: string;
-  @Prop()
+
+  @Prop({
+   required: true,
+   type: String,
+   minlength: UsuarioSchemaDtoRestraints.tamMinLogradouro,
+   maxlength: UsuarioSchemaDtoRestraints.tamMaxLogradouro,
+  })
   Logradouro: string;
-  @Prop()
+
+  @Prop({
+   type: String,
+   minlength: UsuarioSchemaDtoRestraints.tamMinComplemento,
+   maxlength: UsuarioSchemaDtoRestraints.tamMaxComplemento,
+  })
   Complemento: string;
-  @Prop()
+
+  @Prop({
+  type: Number,
+  minlength: UsuarioSchemaDtoRestraints.tamMinNumero,
+  maxlength: UsuarioSchemaDtoRestraints.tamMaxNumero,
+  })
   Numero: number;
+
 }
+
 @Schema()
 class CadastroComum {
-  @Prop()
-  NomeCompleto: string;
-  @Prop()
-  DataDeNascimento: Date;
-  @Prop()
+  @Prop({
+  required: true,
+  type: String,
+  minlength: UsuarioSchemaDtoRestraints.tamMinNome,
+  maxlength: UsuarioSchemaDtoRestraints.tamMaxNome,
+  })
+  Nome: string;
+
+  @Prop({
+  required: true,
+  type: String,
+  minlength: UsuarioSchemaDtoRestraints.tamMinSobrenome,
+  maxlength: UsuarioSchemaDtoRestraints.tamMaxSobrenome,
+  })
+  Sobrenome: string;
+
+ /* @Prop({
+  required: true,
+  type: Date,
+  minlength: ,
+  maxlength: ,
+  })
+  DataDeNascimento: Date; */
+
+  @Prop({
+  required: true,
+  type: String,
+  minlength: UsuarioSchemaDtoRestraints.tamMinSexo,
+  maxlength: UsuarioSchemaDtoRestraints.tamMaxSexo,
+  })
   Sexo: string;
-  @Prop()
+
+  @Prop({
+  type: String,
+  minlength: UsuarioSchemaDtoRestraints.tamMinNumeroTelefone,
+  maxlength: UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone,
+  })
   Telefone: Array<string>;
-  @Prop()
+
+  @Prop({
+  type: String,
+  minlength: UsuarioSchemaDtoRestraints.tamMinCpf,
+  maxlength: UsuarioSchemaDtoRestraints.tamMaxCpf,
+  })
   Cpf: string;
-  @Prop()
+
+  @Prop({
+  type: String,
+  minlength: UsuarioSchemaDtoRestraints.tamMinCnpj,
+  maxlenght: UsuarioSchemaDtoRestraints.tamMaxCnpj,
+  })
   Cnpj: string;
-  @Prop()
+
+  @Prop({
+
+  })
   Foto: string;
+
   @Prop({ type: [Enderecos] })
   Enderecos: [Enderecos];
 }
