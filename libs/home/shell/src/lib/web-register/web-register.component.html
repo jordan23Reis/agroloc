@@ -1,19 +1,6 @@
-<mat-grid-list class="GridContainerRegister" cols="4" rowHeight="35px">
-  <mat-grid-tile
-    *ngFor="let tile of section"
-    [colspan]="tile.cols"
-    [rowspan]="tile.rows"
-  >
-    <section>
-      <agroloc-register></agroloc-register>
-    </section>
-  </mat-grid-tile>
-
-  <mat-grid-tile
-    *ngFor="let tile of footer"
-    [colspan]="tile.cols"
-    [rowspan]="tile.rows"
-  >
-    <footer></footer>
-  </mat-grid-tile>
-</mat-grid-list>
+<div class="container">
+  <section>
+    <agroloc-register></agroloc-register>
+  </section>
+  <footer></footer>
+</div>

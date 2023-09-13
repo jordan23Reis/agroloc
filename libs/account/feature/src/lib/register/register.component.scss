@@ -6,10 +6,6 @@
   margin-top: 16px;
 }
 
-#firststep {
-  display: none;
-}
-
 .buttonGoogle {
   max-width: 320px;
   display: flex;
@@ -36,4 +32,10 @@
 
 button:hover {
   transform: scale(1.02);
+}
+
+input {
+  width: 600px;
+  height: 60px;
+  border-radius: 20px;
 }
