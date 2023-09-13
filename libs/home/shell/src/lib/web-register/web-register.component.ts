@@ -14,5 +14,5 @@ export interface Tile {
 })
 export class WebRegisterComponent {
   section: Tile[] = [{ text: 'Two', cols: 4, rows: 20, color: 'lightgreen' }];
-  footer: Tile[] = [{ text: 'Three', cols: 4, rows: 1, color: 'lightpink' }];
+  footer: Tile[] = [{ text: 'Three', cols: 4, rows: 2, color: 'lightpink' }];
 }
