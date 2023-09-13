@@ -26,7 +26,7 @@ import { config } from './configs/config';
     AppController
   ],
   providers: [
-    AppService
+    AppService,
   ],
 })
 export class AppModule {}

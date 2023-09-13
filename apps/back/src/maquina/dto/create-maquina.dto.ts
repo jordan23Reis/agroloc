@@ -98,6 +98,19 @@ class DonoDaMaquina {
     Foto: string
 }
 
+class Imagem{
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(MaquinaSchemaDtoRestraints.tamMinImagem)
+    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxImagem)
+    Url: string;
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(MaquinaSchemaDtoRestraints.tamMinImagem)
+    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxImagem)
+    NomeArquivo: string;
+}
+
 export class CreateMaquinaDto {
     @IsNotEmpty()
     @IsString()
@@ -136,9 +149,14 @@ export class CreateMaquinaDto {
     Altura: number;
 
     @IsOptional()
-    @IsArray()
-    @IsString({each: true})
-    Imagens: string[];
+    @ValidateNested()
+    @Type(() => Imagem)
+    ImagemPrincipal: Imagem
+
+    @IsOptional()
+    @ValidateNested()
+    @Type(() => Imagem)
+    ImagensSecundarias: Imagem[]
 
     @IsNotEmpty()
     @IsBoolean()

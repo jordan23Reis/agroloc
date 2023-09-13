@@ -129,6 +129,25 @@ class DonoDaMaquina {
   Foto: string
 }
 
+@Schema()
+class Imagem{
+  @Prop({
+    required: true,
+    type: String,  
+    minlength: MaquinaSchemaDtoRestraints.tamMinImagem, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxImagem
+  })
+  Url: string;
+
+  @Prop({
+    required: true,
+    type: String,  
+    minlength: MaquinaSchemaDtoRestraints.tamMinImagem, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxImagem
+  })
+  NomeArquivo: string;
+}
+
 @Schema({ timestamps: true })
 export class Maquina {
 
@@ -176,10 +195,11 @@ export class Maquina {
   })
   Altura: number;
 
-  @Prop({
-    type: [String]
-  })
-  Imagens: string[];
+  @Prop({type: Imagem})
+  ImagemPrincipal: Imagem;
+
+  @Prop([{ type: Imagem }])
+  ImagensSecundarias: Imagem[];
 
   @Prop({ 
     required: true,

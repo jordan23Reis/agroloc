@@ -19,8 +19,9 @@ import { MaquinaService } from './maquina.service';
 import { CreateMaquinaDto } from './dto/create-maquina.dto';
 import { UpdateMaquinaDto } from './dto/update-maquina.dto';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { MaquinaLimites } from '@agroloc/shared/util';
+import { MaquinaConfigs, MaquinaLimites } from '@agroloc/shared/util';
 import 'multer';
+import { join } from 'path';
 
 @Controller('maquina')
 export class MaquinaController {
@@ -51,8 +52,8 @@ export class MaquinaController {
     return this.maquinaService.remove(id);
   }
 
-  @Post('imagemprincipal/:idmaquina')
-  @UseInterceptors(FileInterceptor('Imagem'))
+  @Post('imagem/principal/:idMaquina')
+  @UseInterceptors(FileInterceptor('Imagem', {dest: join(__dirname, MaquinaConfigs.caminhoImagemPrincipalLocal)}))
   createImagemPrincipal(
     @UploadedFile(
       new ParseFilePipe({
@@ -64,14 +65,14 @@ export class MaquinaController {
         ],
       })
     )
-    Imagem: Express.Multer.File,
-    @Param('idmaquina') idMaquina: string
+    imagem: Express.Multer.File,
+    @Param('idMaquina') idMaquina: string
   ) {
-    return this.maquinaService.createImagemPrincipal(Imagem, idMaquina);
+    return this.maquinaService.createImagemPrincipal(imagem, idMaquina);
   }
 
-  @Post('imagemsecundaria/:idmaquina')
-  @UseInterceptors(FilesInterceptor('Imagens', MaquinaLimites.maxImagemsACriar))
+  @Post('imagem/secundaria/:idMaquina')
+  @UseInterceptors(FilesInterceptor('Imagens', MaquinaLimites.maxImagemsACriar, {dest: join(__dirname, MaquinaConfigs.CaminhoImagensSecundariasLocal)}))
   createImagemsSecundarias(
     @UploadedFiles(
       new ParseFilePipe({
@@ -83,17 +84,17 @@ export class MaquinaController {
         ],
       })
     )
-    Imagens: Array<Express.Multer.File>,
-    @Param('idmaquina') idMaquina: string
+    imagens: Array<Express.Multer.File>,
+    @Param('idMaquina') idMaquina: string
   ) {
-    return this.maquinaService.createImagemsSecundarias(Imagens, idMaquina);
+    return this.maquinaService.createImagemsSecundarias(imagens, idMaquina);
   }
 
-  @Delete('imagemsecundaria/:foto/:idmaquina')
-  deleteImagemsSecundarias(
-    @Param('foto') foto: string,
-    @Param('idmaquina') idMaquina: string
+  @Delete('imagem/secundaria/:idMaquina/:filename')
+  deleteImagemSecundaria(
+    @Param('filename') filename: string,
+    @Param('idMaquina') idMaquina: string
   ) {
-    return this.maquinaService.deleteImagemsSecundarias(foto, idMaquina);
+    return this.maquinaService.deleteImagemSecundaria(filename, idMaquina);
   }
 }
