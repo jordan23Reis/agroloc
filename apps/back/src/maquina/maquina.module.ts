@@ -6,6 +6,7 @@ import { Maquina, MaquinaSchema } from './entities/maquina.entity';
 import { MaquinaMiddlewares } from './entities/maquina.middlewares';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { CheckMachineExistance } from './middlewares/checkmachineexistance.middleware';
+import { ImagemModule } from '../imagem/imagem.module';
 
 
 const modelMaquina = MongooseModule.forFeatureAsync([
@@ -19,6 +20,7 @@ const modelMaquina = MongooseModule.forFeatureAsync([
   imports: [
     modelMaquina,
     CloudinaryModule,
+    ImagemModule
     // MulterModule.register({dest: join(__dirname, "assets/maquina")})
   ],
   controllers: [MaquinaController],

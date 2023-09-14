@@ -22,10 +22,11 @@ import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { MaquinaConfigs, MaquinaLimites } from '@agroloc/shared/util';
 import 'multer';
 import { join } from 'path';
+import { ImagemService } from '../imagem/imagem.service';
 
 @Controller('maquina')
 export class MaquinaController {
-  constructor(private readonly maquinaService: MaquinaService) {}
+  constructor(private readonly maquinaService: MaquinaService, private imagemService: ImagemService) {}
 
   @Post()
   create(@Body() createMaquinaDto: CreateMaquinaDto) {
@@ -35,6 +36,11 @@ export class MaquinaController {
   @Get()
   find(@Query() query) {
     return this.maquinaService.find(query);
+  }
+
+  @Get("teste")
+  finnnd() {
+    return this.imagemService.findAll(this.maquinaService);
   }
 
   @Get(':id')
