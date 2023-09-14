@@ -10,7 +10,7 @@ import { MaquinaService } from '../maquina.service';
 export class CheckMachineExistance implements NestMiddleware {
   constructor(private readonly maquinaService: MaquinaService) {}
   async use(req: Request, res: Response, next: NextFunction) {
-    const maquina = await this.maquinaService.findOne(req.params.idMaquina);
+    const maquina = await this.maquinaService.findOne(req.params.idMaquina || req.params.id);
 
     if (maquina == null) {
       throw new BadRequestException('Algo de ruim ocorreu', {

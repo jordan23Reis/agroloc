@@ -71,8 +71,16 @@ export class MaquinaController {
     return this.maquinaService.createImagemPrincipal(imagem, idMaquina);
   }
 
+  @Delete('imagem/principal/:idMaquina/')
+  deleteImagemPrincipal(
+    @Param('idMaquina') idMaquina: string
+  ) {
+    return this.maquinaService.deleteImagemPrincipal(idMaquina);
+  }
+
+
   @Post('imagem/secundaria/:idMaquina')
-  @UseInterceptors(FilesInterceptor('Imagens', MaquinaLimites.maxImagemsACriar, {dest: join(__dirname, MaquinaConfigs.CaminhoImagensSecundariasLocal)}))
+  @UseInterceptors(FilesInterceptor('Imagens', MaquinaLimites.maxImagemsACriar, {dest: join(__dirname, MaquinaConfigs.caminhoImagensSecundariasLocal)}))
   createImagemsSecundarias(
     @UploadedFiles(
       new ParseFilePipe({
@@ -90,6 +98,7 @@ export class MaquinaController {
     return this.maquinaService.createImagemsSecundarias(imagens, idMaquina);
   }
 
+
   @Delete('imagem/secundaria/:idMaquina/:filename')
   deleteImagemSecundaria(
     @Param('filename') filename: string,
@@ -97,4 +106,6 @@ export class MaquinaController {
   ) {
     return this.maquinaService.deleteImagemSecundaria(filename, idMaquina);
   }
+
+
 }

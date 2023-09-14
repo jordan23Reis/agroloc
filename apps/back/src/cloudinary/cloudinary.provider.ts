@@ -7,13 +7,11 @@ export const CloudinaryProvider: Provider = {
   provide: CloudinaryService,
   inject: [ConfigService],
   useFactory: async (configService: ConfigService) => {
-    console.log('a');
     v2.config({
       cloud_name: configService.get('cloudinaryCloudName'),
       api_key: configService.get('cloudinaryKey'),
       api_secret: configService.get('cloudinarySecret'),
     })
-    console.log(configService.get('cloudinaryCloudName'));
     return new CloudinaryService();
   },
 };
