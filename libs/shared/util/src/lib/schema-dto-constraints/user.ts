@@ -56,8 +56,12 @@ enum UsuarioSchemaDtoRestraints {
     alturaMinAutomovel = 0.1,
     alturaMaxAutomovel = 30,
 
-    tamMinAutomovelFoto = 0,
-    tamMaxAutomovelFoto = 100,
+    tamMinAutomovelImagem = 0,
+    tamMaxAutomovelImagem = 100,
+
+    tamMinUsuarioImagem = 0,
+    tamMaxUsuarioImagem = 100,
+
 }
 
 export {UsuarioSchemaDtoRestraints}

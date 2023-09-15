@@ -1,6 +1,7 @@
 import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
+import { IsNotEmpty } from '@nestjs/class-validator';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 import { Date, HydratedDocument } from 'mongoose';
 
 export type UsuarioDocument = HydratedDocument<Usuario>;
@@ -20,11 +21,11 @@ class Categoria {
 class Automovel {
   @Prop({
     required: true,
-    type: String,  
-    minlength: UsuarioSchemaDtoRestraints.tamMinNomeAutomovel, 
-    maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeAutomovel
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNomeAutomovel,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeAutomovel,
   })
-  Nome: string
+  Nome: string;
 
   @Prop({
     required: true,
@@ -37,7 +38,7 @@ class Automovel {
   @Prop({
     type: Number,
     minlength: UsuarioSchemaDtoRestraints.pesoMinAutomovel,
-    maxlength: UsuarioSchemaDtoRestraints.pesoMaxAutomovel
+    maxlength: UsuarioSchemaDtoRestraints.pesoMaxAutomovel,
   })
   Peso: number;
 
@@ -64,8 +65,8 @@ class Automovel {
 
   @Prop({
     type: String,
-    minlength: UsuarioSchemaDtoRestraints.tamMinAutomovelFoto,
-    maxlength: UsuarioSchemaDtoRestraints.tamMaxAutomovelFoto,
+    minlength: UsuarioSchemaDtoRestraints.tamMinAutomovelImagemtamMinUsuarioImagem,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxAutomovelImagemtamMinUsuarioImagem,
   })
   Imagens: Array<string>;
 
@@ -89,71 +90,89 @@ class CadastroFreteiro {
 @Schema()
 class Enderecos {
   @Prop({
-  required: true,
-  type: String,
-  minlength: UsuarioSchemaDtoRestraints.tamMinCep,
-  maxlength: UsuarioSchemaDtoRestraints.tamMaxCep,
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinCep,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxCep,
   })
   Cep: string;
 
   @Prop({
-  required: true,
-  type: String,
-  minlength: UsuarioSchemaDtoRestraints.tamMinNomeCidade,
-  maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeCidade,
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNomeCidade,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeCidade,
   })
   Cidade: string;
 
   @Prop({
-  type: String,
-  minlength: UsuarioSchemaDtoRestraints.tamMinNomeBairro,
-  maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeBairro,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNomeBairro,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeBairro,
   })
   Bairro: string;
 
   @Prop({
-   required: true,
-   type: String,
-   minlength: UsuarioSchemaDtoRestraints.tamMinLogradouro,
-   maxlength: UsuarioSchemaDtoRestraints.tamMaxLogradouro,
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinLogradouro,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxLogradouro,
   })
   Logradouro: string;
 
   @Prop({
-   type: String,
-   minlength: UsuarioSchemaDtoRestraints.tamMinComplemento,
-   maxlength: UsuarioSchemaDtoRestraints.tamMaxComplemento,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinComplemento,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxComplemento,
   })
   Complemento: string;
 
   @Prop({
-  type: Number,
-  minlength: UsuarioSchemaDtoRestraints.tamMinNumero,
-  maxlength: UsuarioSchemaDtoRestraints.tamMaxNumero,
+    type: Number,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNumero,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNumero,
   })
   Numero: number;
+}
 
+@Schema()
+class Imagem {
+  @Prop({
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinUsuarioImagem,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxUsuarioImagem,
+  })
+  Url: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinUsuarioImagem,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxUsuarioImagem,
+  })
+  NomedoArquivo: string;
 }
 
 @Schema()
 class CadastroComum {
   @Prop({
-  required: true,
-  type: String,
-  minlength: UsuarioSchemaDtoRestraints.tamMinNome,
-  maxlength: UsuarioSchemaDtoRestraints.tamMaxNome,
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNome,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNome,
   })
   Nome: string;
 
   @Prop({
-  required: true,
-  type: String,
-  minlength: UsuarioSchemaDtoRestraints.tamMinSobrenome,
-  maxlength: UsuarioSchemaDtoRestraints.tamMaxSobrenome,
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinSobrenome,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxSobrenome,
   })
   Sobrenome: string;
 
- /* @Prop({
+  /* @Prop({
   required: true,
   type: Date,
   minlength: ,
@@ -162,54 +181,67 @@ class CadastroComum {
   DataDeNascimento: Date; */
 
   @Prop({
-  required: true,
-  type: String,
-  minlength: UsuarioSchemaDtoRestraints.tamMinSexo,
-  maxlength: UsuarioSchemaDtoRestraints.tamMaxSexo,
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinSexo,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxSexo,
   })
   Sexo: string;
 
   @Prop({
-  type: String,
-  minlength: UsuarioSchemaDtoRestraints.tamMinNumeroTelefone,
-  maxlength: UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNumeroTelefone,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone,
   })
   Telefone: Array<string>;
 
   @Prop({
-  type: String,
-  minlength: UsuarioSchemaDtoRestraints.tamMinCpf,
-  maxlength: UsuarioSchemaDtoRestraints.tamMaxCpf,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinCpf,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxCpf,
   })
   Cpf: string;
 
   @Prop({
-  type: String,
-  minlength: UsuarioSchemaDtoRestraints.tamMinCnpj,
-  maxlenght: UsuarioSchemaDtoRestraints.tamMaxCnpj,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinCnpj,
+    maxlenght: UsuarioSchemaDtoRestraints.tamMaxCnpj,
   })
   Cnpj: string;
 
-  @Prop({
-
-  })
-  Foto: string;
+  @Prop({type: Imagem})
+  Imagem: Imagem
 
   @Prop({ type: [Enderecos] })
   Enderecos: [Enderecos];
 }
+
 @Schema()
 class Pix {
-  @Prop()
+  @Prop({
+    required: true,
+    type: String,
+  })
   Chave: string;
-  @Prop()
+
+  @Prop({
+    required: true,
+    type: String,
+  })
   Tipo: string;
 }
 @Schema()
 class ContaBancaria {
-  @Prop()
+  @Prop({
+    required: true,
+    type: String,
+  })
   Agencia: string;
-  @Prop()
+
+  @Prop({
+    required: true,
+    type: String,
+  })
   Conta: string;
 }
 @Schema()
@@ -221,26 +253,40 @@ class InformacoesBancarias {
 }
 @Schema()
 class Login {
-  @Prop()
-  UserName: string;
-  @Prop()
+  @Prop({
+    required: true,
+    type: String,
+  })
   Email: string;
-  @Prop()
+
+  @Prop({
+    required: true,
+    type: String,
+  })
   Senha: string;
-  @Prop()
+
+  @Prop({
+    required: true,
+    type: String,
+  })
   Salt: string;
-  @Prop()
+
+  @Prop({
+    required: true,
+    type: String,
+  })
   Tipo: string;
 }
 @Schema()
 export class Usuario {
   @Prop({ type: CadastroComum })
   CadastroComum: CadastroComum;
+
   @Prop({ type: CadastroFreteiro })
   CadastroFreteiro: CadastroFreteiro;
+
   @Prop({ type: Login })
   Login: Login;
-
 
   //====================================
   //A IMPLEMENTAR
@@ -279,7 +325,6 @@ export class Usuario {
   // FretesSolicitados: ProcessoDeFrete[];
   @Prop({ type: InformacoesBancarias })
   InformacoesBancarias: InformacoesBancarias;
-
 }
 
-export const MaquinaSchema = SchemaFactory.createForClass(Usuario);
+export const UserSchema = SchemaFactory.createForClass(Usuario);

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+  IsDate,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
@@ -10,22 +12,29 @@ import {
 } from '@nestjs/class-validator';
 import mongoose from 'mongoose';
 import { Type } from 'class-transformer';
+import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 
 class CadastroComum {
   _id: mongoose.Schema.Types.ObjectId;
   @IsNotEmpty()
+  @IsString()
   Nome: string;
   @IsNotEmpty()
+  @IsString()
   Sobrenome: string;
   @IsNotEmpty()
+  @IsDate()
   DataDeNascimento: Date;
   @IsNotEmpty()
+  @IsString()
   Sexo: string;
   @IsNotEmpty()
   Telefone: string[];
   @IsNotEmpty()
+  @IsString()
   Cpf: string;
   @IsNotEmpty()
+  @IsString()
   Cnpj: string;
   @IsOptional()
   Foto: string;
@@ -89,8 +98,15 @@ class Automovel {
   @IsNotEmpty()
   Altura: number;
   @IsNotEmpty()
-  Imagens: string[];
+  //Imagem: string[];
   Categoria: Categoria[];
+}
+
+class Imagem {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinAutomovelImagem)
+  
 }
 
 class Categoria {
@@ -147,12 +163,16 @@ class ProcessoDeAluguel {
 
 class Pagamento {
   @IsNotEmpty()
+  @IsString()
   TipoPagamento: string;
   @IsNotEmpty()
+  @IsNumber()
   Valor: number;
   @IsNotEmpty()
+  @IsNumber()
   QuantificadorPreco: number;
   @IsNotEmpty()
+  @IsString()
   Status: string;
 
   @IsNotEmpty()
@@ -163,6 +183,7 @@ class Pagamento {
 
 class Preco {
   @IsNotEmpty()
+  @IsNumber()
   ValorPorTipo: number;
 
   @IsNotEmpty()
@@ -174,6 +195,7 @@ class Preco {
 class Tipo {
   idTipo: mongoose.Schema.Types.ObjectId;
   @IsNotEmpty()
+  @IsString()
   Nome: string;
 }
 
@@ -192,24 +214,31 @@ class Envolvidos {
 class Locador {
   idLocador: mongoose.Schema.Types.ObjectId;
   @IsNotEmpty()
+  @IsString()
   Nome: string;
   @IsOptional()
+  @IsString()
   Foto: string;
 }
 
 class Locatario {
   idLocatario: mongoose.Schema.Types.ObjectId;
   @IsNotEmpty()
+  @IsString()
   Nome: string;
   @IsOptional()
+  @IsString()
   Foto: string;
 }
 
 export class CreateUserDto {
-
   CadastroComum: CadastroComum;
+
   Login: Login;
+
   CadastroFreteiro: CadastroFreteiro;
+
   Favoritos: Favoritos;
+
   MaquinasAlugadas: MaquinasAlugadas;
 }
