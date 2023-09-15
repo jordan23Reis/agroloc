@@ -2,43 +2,149 @@
 }
 
 .webForm {
-  // .matClass > * {
-  //   background: rgba(252, 252, 252, 0.5);
-  // }
+  min-width: 370px;
+  align-content: center;
+  .backAndNext {
+    min-width: 370px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    button {
+      width: 170px;
+      height: 60px;
+      font-size: 22px;
+      border-radius: 10px;
+    }
+  }
+  .texto {
+    display: flex;
+    justify-content: center;
+    max-width: 370px;
+    p {
+      text-align: center;
+      text-justify: inter-word;
+      overflow-wrap: break-word;
+      font-size: 17px;
+      font-family: Montserrat;
+      color: white;
+      font-weight: 500;
+    }
+  }
+  .matClass {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+  }
   form {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  input {
+  .logo {
     display: flex;
-    flex-direction: column;
-    margin: 10px;
+    color: #60be37;
+    font-family: 'Patua One-Regular', Helvetica;
+    font-size: 4em;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 40px;
+    font-weight: 400;
+    height: 25%;
+    width: 100%;
+    letter-spacing: 0;
+    line-height: normal;
+  }
+  input {
     width: auto;
     height: 20px;
-    background: rgba(252, 252, 252, 0.5);
+  }
+
+  .line {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .pline {
+      border-color: rgba($color: #ffffff, $alpha: 0.8);
+      width: 38%;
+      height: 0;
+      border-style: none none solid none;
+    }
+    p {
+      color: rgba($color: #ffffff, $alpha: 0.8);
+    }
+  }
+
+  .registerOrLogin {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 40px;
+      p {
+        display: flex;
+        margin: 0;
+        font-size: 17px;
+        font-family: Montserrat;
+        color: white;
+        font-weight: 500;
+      }
+      a {
+        display: flex;
+        margin: 0;
+        font-size: 17px;
+        font-family: Montserrat;
+        color: white;
+        font-weight: 900;
+      }
+    }
+    button {
+      width: 170px;
+      height: 60px;
+      font-size: 22px;
+      border-radius: 10px;
+    }
+  }
+
+  .googleRegister {
+    display: flex;
+    justify-content: center;
   }
   .buttonGoogle {
-    max-width: 320px;
     display: flex;
+    justify-content: center;
+    height: 50px;
+    width: 350px;
     padding: 0.5rem 1.4rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    font-weight: 700;
-    text-align: center;
-    text-transform: uppercase;
-    vertical-align: middle;
+    margin: 10px;
+    p {
+      font-size: 17px;
+      line-height: 1.25rem;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
     align-items: center;
-    border-radius: 0.5rem;
+    border-radius: 20px;
     border: 1px solid rgba(0, 0, 0, 0.25);
     gap: 0.75rem;
     color: rgb(65, 63, 63);
     background-color: #fff;
     cursor: pointer;
     transition: all 0.6s ease;
-  }
-  .buttonGoogle svg {
-    height: 24px;
+    svg {
+      height: 24px;
+      width: 24px;
+    }
   }
   button:hover {
     transform: scale(1.02);

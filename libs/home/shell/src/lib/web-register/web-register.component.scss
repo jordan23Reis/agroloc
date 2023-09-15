@@ -21,31 +21,10 @@ footer {
 
 .registerContainer {
   display: flex;
-  height: 65%;
-  width: 41%;
+  // height: 65%;
+  // width: 41%;
   flex-direction: column;
+  padding: 30px;
   border-radius: 25px;
   background-color: rgba($color: #000000, $alpha: 0.5);
-}
-
-.featureRegister > form {
-  display: flex;
-  height: 100%;
-  .matClass {
-    width: 100px;
-  }
-}
-
-.logo {
-  display: flex;
-  color: #60be37;
-  font-family: 'Patua One-Regular', Helvetica;
-  font-size: 4em;
-  justify-content: center;
-  margin-top: 6%;
-  font-weight: 400;
-  height: 25%;
-  width: 100%;
-  letter-spacing: 0;
-  line-height: normal;
 }

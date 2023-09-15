@@ -32,6 +32,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatIconModule,
     AsyncPipe,
     HttpClientModule,
+    RouterModule,
   ],
   declarations: [RegisterComponent, LoginComponent],
   exports: [RegisterComponent],

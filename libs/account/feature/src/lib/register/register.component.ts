@@ -5,6 +5,7 @@ import { Observable, map } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
 import { Platform } from '@angular/cdk/platform';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'agroloc-register',
@@ -16,6 +17,7 @@ export class RegisterComponent {
   breakpointObserver = inject(BreakpointObserver);
   http = inject(HttpClient);
   platform = inject(Platform);
+  router = inject(Router);
 
   firstFormGroup = this._formBuilder.group({
     Nome: ['', Validators.required],
@@ -73,5 +75,6 @@ export class RegisterComponent {
 
   register() {
     this.http.post('/api/users', this.firstFormGroup.value);
+    this.router.navigate(['web', 'login']);
   }
 }
