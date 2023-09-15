@@ -11,16 +11,27 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { unlinkSync } from 'fs';
-import { MaquinaConfigs, MaquinaLimites } from '@agroloc/shared/util';
+import { ImageFile, MaquinaConfigs, MaquinaLimites } from '@agroloc/shared/util';
 import Imagem from './dto/imagem.interface';
 import { join } from 'path';
+import { CreateImagemPrincipalResposta, MaquinaService } from '@agroloc/maquina/domain';
+import { Maquina } from 'libs/maquina/domain/src/lib/entities/maquina';
 
 @Injectable()
-export class MaquinaService {
+export class MaquinaServiceImpl implements MaquinaService {
   constructor(
     @InjectModel(Maquina.name) private maquinaModel: Model<Maquina>,
     private cloudinaryService: CloudinaryService
   ) {}
+  createImagemPrincipal(imagem: ImageFile, id: string): CreateImagemPrincipalResposta {
+    throw new Error('Method not implemented.');
+  }
+  updateMaquina(id: string, parte: Partial<Maquina>): Promise<Maquina> {
+    throw new Error('Method not implemented.');
+  }
+  removeArquivoLocal(caminho: string, filename: string): void {
+    throw new Error('Method not implemented.');
+  }
 
   create(createMaquinaDto: CreateMaquinaDto) {
     try {
@@ -135,9 +146,9 @@ export class MaquinaService {
     }
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     try {
-      const foundMaquina = this.maquinaModel.findById(id);
+      const foundMaquina = await this.maquinaModel.findById(id);
       return foundMaquina;
     } catch (e) {
       return e;
@@ -183,58 +194,57 @@ export class MaquinaService {
     }
   }
 
-  async createImagemPrincipal(imagem: Express.Multer.File, idMaquina: string) {
-    try {
-      const maquina = await this.maquinaModel.findById(idMaquina);
-      const result = await this.cloudinaryService.uploadImagem(
-        imagem,
-        MaquinaConfigs.caminhoImagemPrincipalCloudinary,
-        MaquinaLimites.tiposPermitidos
-      );
+  // async createImagemPrincipal(imagem: Express.Multer.File, idMaquina: string) {
+  //   try {
+  //     const result = await this.cloudinaryService.uploadImagem(
+  //       imagem,
+  //       MaquinaConfigs.caminhoImagemPrincipalCloudinary,
+  //       MaquinaLimites.tiposPermitidos
+  //     );
 
-      unlinkSync(
-        join(
-          __dirname,
-          MaquinaConfigs.caminhoImagemPrincipalLocal + imagem.filename
-        )
-      );
+  //     unlinkSync(
+  //       join(
+  //         __dirname,
+  //         MaquinaConfigs.caminhoImagemPrincipalLocal + imagem.filename
+  //       )
+  //     );
 
-      // console.log(result);
+  //     // console.log(result);
+  //     const maquina = await this.maquinaModel.findById(idMaquina);
+  //     if (maquina.ImagemPrincipal) {
+  //       const ImagemADeletar = {
+  //         Url: maquina.ImagemPrincipal.Url,
+  //         NomeArquivo: maquina.ImagemPrincipal.NomeArquivo,
+  //       };
+  //       this.deleteImagemMaquina(
+  //         ImagemADeletar,
+  //         MaquinaConfigs.caminhoImagemPrincipalCloudinary
+  //       );
+  //     }
 
-      if (maquina.ImagemPrincipal !== undefined) {
-        const ImagemADeletar = {
-          Url: maquina.ImagemPrincipal.Url,
-          NomeArquivo: maquina.ImagemPrincipal.NomeArquivo,
-        };
-        this.deleteImagemMaquina(
-          ImagemADeletar,
-          MaquinaConfigs.caminhoImagemPrincipalCloudinary
-        );
-      }
+  //     const ImagemPrincipal = {
+  //       ImagemPrincipal: {
+  //         Url: result.secure_url,
+  //         NomeArquivo: result.original_filename,
+  //       },
+  //     };
 
-      const ImagemPrincipal = {
-        ImagemPrincipal: {
-          Url: result.secure_url,
-          NomeArquivo: result.original_filename,
-        },
-      };
+  //     await this.maquinaModel.updateOne(
+  //       { _id: idMaquina },
+  //       { $set: ImagemPrincipal }
+  //     );
 
-      await this.maquinaModel.updateOne(
-        { _id: idMaquina },
-        { $set: ImagemPrincipal }
-      );
+  //     const resposta = {
+  //       message: 'Criado/atualizado com sucesso!',
+  //       urlFoto: result.secure_url,
+  //       nomeArquivo: result.original_filename,
+  //     };
 
-      const resposta = {
-        message: 'Criado/atualizado com sucesso!',
-        urlFoto: result.secure_url,
-        nomeArquivo: result.original_filename,
-      };
-
-      return resposta;
-    } catch (e) {
-      return e;
-    }
-  }
+  //     return resposta;
+  //   } catch (e) {
+  //     return e;
+  //   }
+  // }
 
   async deleteImagemPrincipal(id: string) {
     try {

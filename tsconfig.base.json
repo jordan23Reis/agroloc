@@ -14,11 +14,14 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "strictPropertyInitialization": false,
     "paths": {
       "@agroloc/home/api": ["libs/home/api/src/index.ts"],
       "@agroloc/home/feature": ["libs/home/feature/src/index.ts"],
       "@agroloc/home/shell": ["libs/home/shell/src/index.ts"],
       "@agroloc/home/ui": ["libs/home/ui/src/index.ts"],
+      "@agroloc/maquina/data-source": ["libs/maquina/data-source/src/index.ts"],
+      "@agroloc/maquina/domain": ["libs/maquina/domain/src/index.ts"],
       "@agroloc/shared/util": ["libs/shared/util/src/index.ts"]
     }
   },

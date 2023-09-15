@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { MaquinaModule } from '../maquina/maquina.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from './configs/config';
+import { ImagemService, ImagemServiceImpl } from '@agroloc/shared/util';
 
 @Module({
   imports: [

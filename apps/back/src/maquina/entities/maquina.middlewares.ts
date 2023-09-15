@@ -1,23 +1,17 @@
-import { MaquinaService } from "../maquina.service";
-import { MaquinaSchema } from "./maquina.entity";
-
-
-
-
-
+import { MaquinaServiceImpl } from '../maquina.service';
+import { MaquinaSchema } from './maquina.entity';
 
 export async function MaquinaMiddlewares() {
+  const schema = MaquinaSchema;
+  schema.pre('findOneAndRemove', function () {
+    console.log('AAA');
+    //IMPLEMENTAR AQUI A REMOÇÃO DE TUDO ATRELADO A MAQUINA QUE DEVE SER REMOVIDO
+  });
 
-    const schema = MaquinaSchema;
-    schema.pre('findOneAndRemove', function () {
-        console.log("AAA");
-        //IMPLEMENTAR AQUI A REMOÇÃO DE TUDO ATRELADO A MAQUINA QUE DEVE SER REMOVIDO
-    });
+  schema.post('findOneAndUpdate', function () {
+    console.log('BBBBBBBB');
+    //IMPLEMENTAR AQUI A ATUALIZACAO DE TUDO ATRELADO A MAQUINA QUE DEVE SER ATUALIZADO
+  });
 
-    schema.post('findOneAndUpdate', function () {
-        console.log("BBBBBBBB");
-        //IMPLEMENTAR AQUI A ATUALIZACAO DE TUDO ATRELADO A MAQUINA QUE DEVE SER ATUALIZADO
-    });
-
-    return schema;
+  return schema;
 }

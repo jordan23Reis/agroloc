@@ -4,13 +4,15 @@ import {
   NestMiddleware,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { MaquinaService } from '../maquina.service';
+import { MaquinaServiceImpl } from '../maquina.service';
 
 @Injectable()
 export class CheckMachineExistance implements NestMiddleware {
-  constructor(private readonly maquinaService: MaquinaService) {}
+  constructor(private readonly maquinaService: MaquinaServiceImpl) {}
   async use(req: Request, res: Response, next: NextFunction) {
-    const maquina = await this.maquinaService.findOne(req.params.idMaquina || req.params.id);
+    const maquina = await this.maquinaService.findOne(
+      req.params.idMaquina || req.params.id
+    );
 
     if (maquina == null) {
       throw new BadRequestException('Algo de ruim ocorreu', {
@@ -18,6 +20,6 @@ export class CheckMachineExistance implements NestMiddleware {
         description: 'Essa maquina não existe',
       });
     }
-    next()
+    next();
   }
 }

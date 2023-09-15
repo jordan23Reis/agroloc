@@ -15,7 +15,7 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
 } from '@nestjs/common';
-import { MaquinaService } from './maquina.service';
+import { MaquinaServiceImpl } from './maquina.service';
 import { CreateMaquinaDto } from './dto/create-maquina.dto';
 import { UpdateMaquinaDto } from './dto/update-maquina.dto';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
@@ -26,7 +26,10 @@ import { ImagemService } from '../imagem/imagem.service';
 
 @Controller('maquina')
 export class MaquinaController {
-  constructor(private readonly maquinaService: MaquinaService, private imagemService: ImagemService) {}
+  constructor(
+    private readonly maquinaService: MaquinaServiceImpl,
+    private imagemService: ImagemService
+  ) {}
 
   @Post()
   create(@Body() createMaquinaDto: CreateMaquinaDto) {
@@ -38,7 +41,7 @@ export class MaquinaController {
     return this.maquinaService.find(query);
   }
 
-  @Get("teste")
+  @Get('teste')
   finnnd() {
     return this.imagemService.findAll(this.maquinaService);
   }
@@ -59,7 +62,11 @@ export class MaquinaController {
   }
 
   @Post('imagem/principal/:idMaquina')
-  @UseInterceptors(FileInterceptor('Imagem', {dest: join(__dirname, MaquinaConfigs.caminhoImagemPrincipalLocal)}))
+  @UseInterceptors(
+    FileInterceptor('Imagem', {
+      dest: join(__dirname, MaquinaConfigs.caminhoImagemPrincipalLocal),
+    })
+  )
   createImagemPrincipal(
     @UploadedFile(
       new ParseFilePipe({
@@ -78,15 +85,16 @@ export class MaquinaController {
   }
 
   @Delete('imagem/principal/:idMaquina/')
-  deleteImagemPrincipal(
-    @Param('idMaquina') idMaquina: string
-  ) {
+  deleteImagemPrincipal(@Param('idMaquina') idMaquina: string) {
     return this.maquinaService.deleteImagemPrincipal(idMaquina);
   }
 
-
   @Post('imagem/secundaria/:idMaquina')
-  @UseInterceptors(FilesInterceptor('Imagens', MaquinaLimites.maxImagemsACriar, {dest: join(__dirname, MaquinaConfigs.caminhoImagensSecundariasLocal)}))
+  @UseInterceptors(
+    FilesInterceptor('Imagens', MaquinaLimites.maxImagemsACriar, {
+      dest: join(__dirname, MaquinaConfigs.caminhoImagensSecundariasLocal),
+    })
+  )
   createImagemsSecundarias(
     @UploadedFiles(
       new ParseFilePipe({
@@ -104,7 +112,6 @@ export class MaquinaController {
     return this.maquinaService.createImagemsSecundarias(imagens, idMaquina);
   }
 
-
   @Delete('imagem/secundaria/:idMaquina/:filename')
   deleteImagemSecundaria(
     @Param('filename') filename: string,
@@ -112,6 +119,4 @@ export class MaquinaController {
   ) {
     return this.maquinaService.deleteImagemSecundaria(filename, idMaquina);
   }
-
-
 }
