@@ -1,9 +1,10 @@
 import { StepperOrientation } from '@angular/cdk/stepper';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Observable, map } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
+import { Platform } from '@angular/cdk/platform';
 
 @Component({
   selector: 'agroloc-register',
@@ -11,6 +12,11 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
+  _formBuilder = inject(FormBuilder);
+  breakpointObserver = inject(BreakpointObserver);
+  http = inject(HttpClient);
+  platform = inject(Platform);
+
   firstFormGroup = this._formBuilder.group({
     Nome: ['', Validators.required],
     Sobrenome: ['', Validators.required],
@@ -24,13 +30,22 @@ export class RegisterComponent {
   firstPassword = true;
   secondPassword = true;
   container = 1;
+  isMobile = this.platform.ANDROID || this.platform.IOS;
 
-  constructor(
-    private _formBuilder: FormBuilder,
-    breakpointObserver: BreakpointObserver,
-    private http: HttpClient
-  ) {
-    this.stepperOrientation = breakpointObserver
+  // applyStyle() {
+  //   this.styleUrls = this.getStyleUrl();
+  // }
+
+  // getStyleUrl() {
+  //   if (this.isMobile) {
+  //     return ['./register.component.scss'];
+  //   } else {
+  //     return ['./register.component.scss'];
+  //   }
+  // }
+
+  constructor() {
+    this.stepperOrientation = this.breakpointObserver
       .observe('(min-width: 800px)')
       .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
   }

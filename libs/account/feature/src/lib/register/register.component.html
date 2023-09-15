@@ -1,4 +1,8 @@
-<form [formGroup]="firstFormGroup" *ngIf="container === 1">
+<form
+  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
+  [formGroup]="firstFormGroup"
+  *ngIf="container === 1"
+>
   <mat-form-field class="matClass">
     <mat-label>Nome</mat-label>
     <input matInput formControlName="Nome" placeholder="Ex: Carol" required />
@@ -41,7 +45,11 @@
   </button>
 </form>
 
-<form [formGroup]="firstFormGroup" *ngIf="container === 2">
+<form
+  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
+  [formGroup]="firstFormGroup"
+  *ngIf="container === 2"
+>
   <mat-form-field class="matClass">
     <mat-label>Email</mat-label>
     <input
@@ -85,13 +93,20 @@
   <button mat-raised-button color="primary" (click)="next()">Proximo</button>
 </form>
 
-<form [formGroup]="firstFormGroup" *ngIf="container === 3">
+<form
+  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
+  [formGroup]="firstFormGroup"
+  *ngIf="container === 3"
+>
   <p>Deseja criar uma conta para realizar fretes?</p>
   <button mat-raised-button color="accent" (click)="next()">Não</button>
   <button mat-raised-button color="primary" (click)="isFreteiro()">Sim</button>
 </form>
 
-<div *ngIf="container === 4">
+<div
+  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
+  *ngIf="container === 4"
+>
   <p>Deseja finalizar cadastro?</p>
   <button mat-raised-button color="accent" (click)="reset()">Alterar</button>
   <button mat-raised-button color="primary">Finalizar</button>
