@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+  IsArray,
   IsDate,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
+  Min,
   MinLength,
   ValidateNested,
   isNotEmpty,
@@ -14,231 +17,305 @@ import mongoose from 'mongoose';
 import { Type } from 'class-transformer';
 import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 
-class CadastroComum {
-  _id: mongoose.Schema.Types.ObjectId;
+class Categoria {
   @IsNotEmpty()
   @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinIdCategoria)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxIdCategoria)
+  idCategoria: mongoose.Schema.Types.ObjectId;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinCategoria)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCategoria)
   Nome: string;
-  @IsNotEmpty()
-  @IsString()
-  Sobrenome: string;
-  @IsNotEmpty()
-  @IsDate()
-  DataDeNascimento: Date;
-  @IsNotEmpty()
-  @IsString()
-  Sexo: string;
-  @IsNotEmpty()
-  Telefone: string[];
-  @IsNotEmpty()
-  @IsString()
-  Cpf: string;
-  @IsNotEmpty()
-  @IsString()
-  Cnpj: string;
-  @IsOptional()
-  Foto: string;
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Enderecos)
-  Enderecos: Enderecos[];
-}
-
-class Enderecos {
-  //idEnderecos: mongoose.Schema.Types.ObjectId;
-  _id: mongoose.Schema.Types.ObjectId;
-  @IsNotEmpty()
-  Cep: string;
-  @IsNotEmpty()
-  Cidade: string;
-  @IsOptional()
-  Bairro: string;
-  @IsNotEmpty()
-  Logradouro: string;
-  @IsOptional()
-  Complemento: string;
-  @IsOptional()
-  Numero: number;
-}
-
-class Login {
-  @IsNotEmpty()
-  UserName: string;
-  @IsNotEmpty()
-  Email: string;
-  @IsNotEmpty()
-  Senha: string;
-  @IsNotEmpty()
-  Salt: string;
-  @IsNotEmpty()
-  Tipo: string;
-}
-
-class CadastroFreteiro {
-  CNH: string;
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Automovel)
-  Automovel: Automovel[];
-}
-
-class Automovel {
-  //idAutomovel
-  _id: mongoose.Schema.Types.ObjectId;
-  @IsNotEmpty()
-  Nome: string;
-  @IsNotEmpty()
-  Descricao: string;
-  @IsNotEmpty()
-  Peso: number;
-  @IsNotEmpty()
-  Comprimento: number;
-  @IsNotEmpty()
-  Largura: number;
-  @IsNotEmpty()
-  Altura: number;
-  @IsNotEmpty()
-  //Imagem: string[];
-  Categoria: Categoria[];
 }
 
 class Imagem {
   @IsNotEmpty()
   @IsString()
-  @MinLength(UsuarioSchemaDtoRestraints.tamMinAutomovelImagem)
-  
-}
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinUrlImagem)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxAutomovelImagem)
+  Url: string;
 
-class Categoria {
-  idCategoria: mongoose.Schema.Types.ObjectId;
-  @IsNotEmpty()
-  Nome: string;
-}
-
-class Favoritos {
-  //idFavoritos: mongoose.Schema.Types.ObjectId;
-  _id: mongoose.Schema.Types.ObjectId;
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Maquina)
-  Maquina: Maquina[];
-}
-
-class Maquina {
-  idMaquina: mongoose.Schema.Types.ObjectId;
-  @IsNotEmpty()
-  Nome: string;
-  @IsNotEmpty()
-  Imagens: string[];
-}
-
-class MaquinasAlugadas {
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => ProcessoDeAluguel)
-  ProcessoDeAluguel: ProcessoDeAluguel[];
-}
-
-class ProcessoDeAluguel {
-  _id: mongoose.Schema.Types.ObjectId;
-  @IsNotEmpty()
-  DataInicio: Date;
-  @IsNotEmpty()
-  DataTermino: Date;
-  @IsNotEmpty()
-  Status: string;
-
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Pagamento)
-  Pagamento: Pagamento[];
-
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Maquina)
-  Maquina: Maquina[];
-
-  Envolvidos: Envolvidos[];
-}
-
-class Pagamento {
   @IsNotEmpty()
   @IsString()
-  TipoPagamento: string;
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinUrlImagem)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxAutomovelImagem)
+  NomeArquivo: string;
+}
+
+class Automovel {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNomeAutomovel)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNomeAutomovel)
+  Nome: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinDescricaoAutomovel)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxDescricaoAutomovel)
+  Descricao: string;
+
   @IsNotEmpty()
   @IsNumber()
-  Valor: number;
+  @Min(UsuarioSchemaDtoRestraints.pesoMinAutomovel)
+  @Max(UsuarioSchemaDtoRestraints.pesoMaxAutomovel)
+  Peso: number;
+
   @IsNotEmpty()
   @IsNumber()
-  QuantificadorPreco: number;
-  @IsNotEmpty()
-  @IsString()
-  Status: string;
+  @Min(UsuarioSchemaDtoRestraints.comprimentoMinAutomovel)
+  @Max(UsuarioSchemaDtoRestraints.comprimentoMaxAutomovel)
+  Comprimento: number;
 
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Preco)
-  Preco: Preco[];
-}
-
-class Preco {
   @IsNotEmpty()
   @IsNumber()
-  ValorPorTipo: number;
+  @Min(UsuarioSchemaDtoRestraints.larguraMinAutomovel)
+  @Max(UsuarioSchemaDtoRestraints.larguraMaxAutomovel)
+  Largura: number;
 
   @IsNotEmpty()
+  @IsNumber()
+  @Min(UsuarioSchemaDtoRestraints.alturaMinAutomovel)
+  @Max(UsuarioSchemaDtoRestraints.alturaMaxAutomovel)
+  Altura: number;
+
+  @IsOptional()
   @ValidateNested()
-  @Type(() => Tipo)
-  Tipo: Tipo[];
+  @Type(() => Imagem)
+  ImagemPrincipal: Imagem;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Imagem)
+  ImagensSecundarias: Imagem[];
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Categoria)
+  Categoria: Categoria;
 }
 
-class Tipo {
-  idTipo: mongoose.Schema.Types.ObjectId;
+class CadastroFreteiro {
   @IsNotEmpty()
   @IsString()
-  Nome: string;
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinCnh)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMinCnh)
+  CNH: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Automovel)
+  Automovel: Automovel[];
 }
 
-class Envolvidos {
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Locador)
-  Locador: Locador[];
-
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Locatario)
-  Locatario: Locatario[];
-}
-
-class Locador {
-  idLocador: mongoose.Schema.Types.ObjectId;
+class Enderecos {
   @IsNotEmpty()
   @IsString()
-  Nome: string;
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinCep)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCep)
+  Cep: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNomeCidade)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNomeCidade)
+  Cidade: string;
+
   @IsOptional()
   @IsString()
-  Foto: string;
-}
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNomeBairro)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNomeBairro)
+  Bairro: string;
 
-class Locatario {
-  idLocatario: mongoose.Schema.Types.ObjectId;
   @IsNotEmpty()
   @IsString()
-  Nome: string;
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinLogradouro)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxLogradouro)
+  Logradouro: string;
+
   @IsOptional()
   @IsString()
-  Foto: string;
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinComplemento)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxComplemento)
+  Complemento: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(UsuarioSchemaDtoRestraints.tamMinNumero)
+  @Max(UsuarioSchemaDtoRestraints.tamMaxNumero)
+  Numero: number;
+}
+
+class Pix {
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinChavePix)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxChavePix)
+  @IsString()
+  Chave: string;
+
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinTipoPix)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxTipoPix)
+  @IsString()
+  Tipo: string;
+}
+
+class CadastroComum {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNome)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNome)
+  Nome: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinSobrenome)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxSobrenome)
+  Sobrenome: string;
+
+  @IsNotEmpty()
+  @IsDate()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinDataNascimento)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxDataNascimento)
+  DataDeNascimento: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinSexo)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxSexo)
+  Sexo: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNumeroTelefone)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone)
+  Telefone: string[];
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinCpf)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCpf)
+  Cpf: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinCnpj)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCnpj)
+  Cnpj: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Imagem)
+  Foto: Imagem;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Enderecos)
+  Enderecos: Enderecos[];
+}
+
+class ContaBancaria {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinAgenciaContaBancaria)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxAgenciaContaBancaria)
+  Agencia: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinContaContaBancaria)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxContaContabancaria)
+  Conta: string;
+}
+
+class InformacoesBancarias {
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ContaBancaria)
+  ContaBancaria: ContaBancaria;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Pix)
+  Pix: Pix;
+}
+
+class Login {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinEmail)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxEmail)
+  Email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinSenha)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxSenha)
+  Senha: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinSalt)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxSalt)
+  Salt: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinTipo)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxTipo)
+  Tipo: string;
 }
 
 export class CreateUserDto {
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CadastroComum)
   CadastroComum: CadastroComum;
 
-  Login: Login;
-
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CadastroFreteiro)
   CadastroFreteiro: CadastroFreteiro;
 
-  Favoritos: Favoritos;
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  Maquinas: mongoose.Schema.Types.ObjectId[];
 
-  MaquinasAlugadas: MaquinasAlugadas;
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  Favoritos: mongoose.Schema.Types.ObjectId[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  MaquinasAlugadas: mongoose.Schema.Types.ObjectId[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  MaquinasLocadas: mongoose.Schema.Types.ObjectId[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  FretesRealizados: mongoose.Schema.Types.ObjectId[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  FretesSolicitados: mongoose.Schema.Types.ObjectId[];
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Login)
+  Login: Login;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => InformacoesBancarias)
+  InformacoesBancarias: InformacoesBancarias;
 }
