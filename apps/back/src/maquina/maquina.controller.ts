@@ -15,21 +15,20 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
 } from '@nestjs/common';
-import { MaquinaServiceImpl } from './maquina.service';
 import { CreateMaquinaDto } from './dto/create-maquina.dto';
 import { UpdateMaquinaDto } from './dto/update-maquina.dto';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { MaquinaConfigs, MaquinaLimites } from '@agroloc/shared/util';
+import {
+  MaquinaImagemConfigs,
+  MaquinaImagemLimites,
+} from '@agroloc/shared/util';
 import 'multer';
 import { join } from 'path';
-import { ImagemService } from '../imagem/imagem.service';
+import { MaquinaService } from './maquina.service';
 
 @Controller('maquina')
 export class MaquinaController {
-  constructor(
-    private readonly maquinaService: MaquinaServiceImpl,
-    private imagemService: ImagemService
-  ) {}
+  constructor(private readonly maquinaService: MaquinaService) {}
 
   @Post()
   create(@Body() createMaquinaDto: CreateMaquinaDto) {
@@ -39,11 +38,6 @@ export class MaquinaController {
   @Get()
   find(@Query() query) {
     return this.maquinaService.find(query);
-  }
-
-  @Get('teste')
-  finnnd() {
-    return this.imagemService.findAll(this.maquinaService);
   }
 
   @Get(':id')
@@ -64,16 +58,20 @@ export class MaquinaController {
   @Post('imagem/principal/:idMaquina')
   @UseInterceptors(
     FileInterceptor('Imagem', {
-      dest: join(__dirname, MaquinaConfigs.caminhoImagemPrincipalLocal),
+      dest: join(__dirname, MaquinaImagemConfigs.caminhoImagemPrincipalLocal),
     })
   )
   createImagemPrincipal(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: MaquinaLimites.tamMaxImagem }),
+          new MaxFileSizeValidator({
+            maxSize: MaquinaImagemLimites.tamMaxImagem,
+          }),
           new FileTypeValidator({
-            fileType: new RegExp('(' + MaquinaLimites.tiposPermitidos + ')$'),
+            fileType: new RegExp(
+              '(' + MaquinaImagemLimites.tiposPermitidos + ')$'
+            ),
           }),
         ],
       })
@@ -91,17 +89,24 @@ export class MaquinaController {
 
   @Post('imagem/secundaria/:idMaquina')
   @UseInterceptors(
-    FilesInterceptor('Imagens', MaquinaLimites.maxImagemsACriar, {
-      dest: join(__dirname, MaquinaConfigs.caminhoImagensSecundariasLocal),
+    FilesInterceptor('Imagens', MaquinaImagemLimites.maxImagemsACriar, {
+      dest: join(
+        __dirname,
+        MaquinaImagemConfigs.caminhoImagensSecundariasLocal
+      ),
     })
   )
   createImagemsSecundarias(
     @UploadedFiles(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: MaquinaLimites.tamMaxImagem }),
+          new MaxFileSizeValidator({
+            maxSize: MaquinaImagemLimites.tamMaxImagem,
+          }),
           new FileTypeValidator({
-            fileType: new RegExp('(' + MaquinaLimites.tiposPermitidos + ')$'),
+            fileType: new RegExp(
+              '(' + MaquinaImagemLimites.tiposPermitidos + ')$'
+            ),
           }),
         ],
       })

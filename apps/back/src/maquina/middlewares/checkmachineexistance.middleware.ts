@@ -4,11 +4,11 @@ import {
   NestMiddleware,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { MaquinaServiceImpl } from '../maquina.service';
+import { MaquinaService } from '../maquina.service';
 
 @Injectable()
 export class CheckMachineExistance implements NestMiddleware {
-  constructor(private readonly maquinaService: MaquinaServiceImpl) {}
+  constructor(private readonly maquinaService: MaquinaService) {}
   async use(req: Request, res: Response, next: NextFunction) {
     const maquina = await this.maquinaService.findOne(
       req.params.idMaquina || req.params.id

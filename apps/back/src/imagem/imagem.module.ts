@@ -1,22 +1,10 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ImagemService } from './imagem.service';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 
 @Module({
+  imports: [CloudinaryModule],
   providers: [ImagemService],
-  exports: [ImagemService]
+  exports: [ImagemService],
 })
-export class ImagemModule {
-  
-  static forRoot(Schema): DynamicModule {
-    return {
-      module: ImagemModule,
-      providers: [
-        {
-          provide: 'Schema',
-          useValue: Schema,
-        },
-      ],
-      exports: [ImagemService],
-    }
-  }
-}
+export class ImagemModule {}

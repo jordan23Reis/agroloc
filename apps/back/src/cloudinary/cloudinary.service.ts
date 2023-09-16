@@ -23,4 +23,8 @@ export class CloudinaryService {
     const result = await v2.uploader.destroy(caminho + imagemNome);
     return result;
   }
+
+  async aaaa() {
+    return 'aaa';
+  }
 }

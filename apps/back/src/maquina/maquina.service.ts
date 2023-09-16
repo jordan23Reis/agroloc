@@ -10,28 +10,19 @@ import { Maquina } from './entities/maquina.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { unlinkSync } from 'fs';
-import { ImageFile, MaquinaConfigs, MaquinaLimites } from '@agroloc/shared/util';
-import Imagem from './dto/imagem.interface';
-import { join } from 'path';
-import { CreateImagemPrincipalResposta, MaquinaService } from '@agroloc/maquina/domain';
-import { Maquina } from 'libs/maquina/domain/src/lib/entities/maquina';
+import {
+  MaquinaImagemConfigs,
+  MaquinaImagemLimites,
+} from '@agroloc/shared/util';
+import { ImagemService } from '../imagem/imagem.service';
 
 @Injectable()
-export class MaquinaServiceImpl implements MaquinaService {
+export class MaquinaService {
   constructor(
     @InjectModel(Maquina.name) private maquinaModel: Model<Maquina>,
-    private cloudinaryService: CloudinaryService
+    private cloudinaryService: CloudinaryService,
+    private imagemService: ImagemService
   ) {}
-  createImagemPrincipal(imagem: ImageFile, id: string): CreateImagemPrincipalResposta {
-    throw new Error('Method not implemented.');
-  }
-  updateMaquina(id: string, parte: Partial<Maquina>): Promise<Maquina> {
-    throw new Error('Method not implemented.');
-  }
-  removeArquivoLocal(caminho: string, filename: string): void {
-    throw new Error('Method not implemented.');
-  }
 
   create(createMaquinaDto: CreateMaquinaDto) {
     try {
@@ -157,15 +148,11 @@ export class MaquinaServiceImpl implements MaquinaService {
 
   async update(id: string, updateMaquinaDto: UpdateMaquinaDto) {
     try {
-      const currentMaquina = await this.maquinaModel.findById(id);
-      if (updateMaquinaDto.ImagemPrincipal || currentMaquina.ImagemPrincipal) {
-        updateMaquinaDto.ImagemPrincipal = currentMaquina.ImagemPrincipal;
-      }
-
-      updateMaquinaDto.ImagensSecundarias = currentMaquina.ImagensSecundarias;
+      const updateSemAtualizacaoImagensDto =
+        await this.protecaoAntiUpdateDiretoImagens(id, updateMaquinaDto);
       const updatedMaquina = this.maquinaModel.findByIdAndUpdate(
         id,
-        updateMaquinaDto,
+        updateSemAtualizacaoImagensDto,
         { new: true }
       );
       return updatedMaquina;
@@ -174,19 +161,21 @@ export class MaquinaServiceImpl implements MaquinaService {
     }
   }
 
+  async protecaoAntiUpdateDiretoImagens(
+    id: string,
+    updateMaquinaDto: UpdateMaquinaDto
+  ) {
+    const currentMaquina = await this.maquinaModel.findById(id);
+    if (updateMaquinaDto.ImagemPrincipal || currentMaquina.ImagemPrincipal) {
+      updateMaquinaDto.ImagemPrincipal = currentMaquina.ImagemPrincipal;
+    }
+    updateMaquinaDto.ImagensSecundarias = currentMaquina.ImagensSecundarias;
+    return updateMaquinaDto;
+  }
+
   async remove(id: string) {
     try {
-      //implementar aqui no futuro, caso a maquina esteja atrelada a algum processo, nao excluir a imagem principal
-      await this.deleteImagemPrincipal(id);
-      const foundMaquina = await this.maquinaModel.findById(id);
-
-      await Promise.all(
-        foundMaquina.ImagensSecundarias.map(async (Imagem) => {
-          await this.deleteImagemSecundaria(Imagem.NomeArquivo, id);
-          return 'Ok';
-        })
-      );
-
+      await this.deletarImagensAoExcluirMaquina(id);
       const deletedMaquina = await this.maquinaModel.findByIdAndDelete(id);
       return deletedMaquina;
     } catch (e) {
@@ -194,63 +183,61 @@ export class MaquinaServiceImpl implements MaquinaService {
     }
   }
 
-  // async createImagemPrincipal(imagem: Express.Multer.File, idMaquina: string) {
-  //   try {
-  //     const result = await this.cloudinaryService.uploadImagem(
-  //       imagem,
-  //       MaquinaConfigs.caminhoImagemPrincipalCloudinary,
-  //       MaquinaLimites.tiposPermitidos
-  //     );
+  async deletarImagensAoExcluirMaquina(id: string) {
+    //implementar aqui no futuro, caso a maquina esteja atrelada a algum processo, nao excluir a imagem principal
+    await this.deleteImagemPrincipal(id);
+    const foundMaquina = await this.maquinaModel.findById(id);
 
-  //     unlinkSync(
-  //       join(
-  //         __dirname,
-  //         MaquinaConfigs.caminhoImagemPrincipalLocal + imagem.filename
-  //       )
-  //     );
+    await Promise.all(
+      foundMaquina.ImagensSecundarias.map(async (Imagem) => {
+        await this.deleteImagemSecundaria(Imagem.NomeArquivo, id);
+        return 'Ok';
+      })
+    );
+  }
 
-  //     // console.log(result);
-  //     const maquina = await this.maquinaModel.findById(idMaquina);
-  //     if (maquina.ImagemPrincipal) {
-  //       const ImagemADeletar = {
-  //         Url: maquina.ImagemPrincipal.Url,
-  //         NomeArquivo: maquina.ImagemPrincipal.NomeArquivo,
-  //       };
-  //       this.deleteImagemMaquina(
-  //         ImagemADeletar,
-  //         MaquinaConfigs.caminhoImagemPrincipalCloudinary
-  //       );
-  //     }
+  async createImagemPrincipal(imagem: Express.Multer.File, idMaquina: string) {
+    try {
+      let ImagemAtual = undefined;
+      const maquina = await this.maquinaModel.findById(idMaquina);
+      if (maquina.ImagemPrincipal) {
+        ImagemAtual = {
+          Url: maquina.ImagemPrincipal.Url,
+          NomeArquivo: maquina.ImagemPrincipal.NomeArquivo,
+        };
+      }
 
-  //     const ImagemPrincipal = {
-  //       ImagemPrincipal: {
-  //         Url: result.secure_url,
-  //         NomeArquivo: result.original_filename,
-  //       },
-  //     };
+      const result = await this.imagemService.createImagem(
+        imagem,
+        MaquinaImagemConfigs,
+        MaquinaImagemLimites,
+        ImagemAtual
+      );
 
-  //     await this.maquinaModel.updateOne(
-  //       { _id: idMaquina },
-  //       { $set: ImagemPrincipal }
-  //     );
+      const ImagemPrincipal = {
+        ImagemPrincipal: {
+          Url: result.secure_url,
+          NomeArquivo: result.original_filename,
+        },
+      };
 
-  //     const resposta = {
-  //       message: 'Criado/atualizado com sucesso!',
-  //       urlFoto: result.secure_url,
-  //       nomeArquivo: result.original_filename,
-  //     };
+      await this.maquinaModel.updateOne(
+        { _id: idMaquina },
+        { $set: ImagemPrincipal }
+      );
 
-  //     return resposta;
-  //   } catch (e) {
-  //     return e;
-  //   }
-  // }
+      return result.response;
+    } catch (e) {
+      return e;
+    }
+  }
 
   async deleteImagemPrincipal(id: string) {
     try {
       const Maquina = new this.maquinaModel(
         await this.maquinaModel.findById(id)
       );
+
       const ImagemAchada = Maquina.ImagemPrincipal;
 
       if (ImagemAchada === undefined) {
@@ -265,21 +252,16 @@ export class MaquinaServiceImpl implements MaquinaService {
         NomeArquivo: ImagemAchada.NomeArquivo,
       };
 
-      Maquina.ImagemPrincipal = undefined;
-
-      this.deleteImagemMaquina(
-        ImagemADeletar,
-        MaquinaConfigs.caminhoImagemPrincipalCloudinary
+      const response = this.imagemService.deleteImagem(
+        MaquinaImagemConfigs.caminhoImagemPrincipalCloudinary,
+        ImagemADeletar
       );
+
+      Maquina.ImagemPrincipal = undefined;
 
       await Maquina.save();
 
-      const resposta = {
-        message: 'Foto removida com sucesso!',
-        FotoRemovida: { ...ImagemADeletar },
-      };
-
-      return resposta;
+      return response;
     } catch (e) {
       return e;
     }
@@ -290,41 +272,19 @@ export class MaquinaServiceImpl implements MaquinaService {
     idMaquina: string
   ) {
     try {
+      const result = await this.imagemService.createImagemsSecundarias(
+        imagens,
+        MaquinaImagemConfigs,
+        MaquinaImagemLimites
+      );
       const maquina = await this.maquinaModel.findById(idMaquina);
-      const imagensAdicionadas = await this.criaMultiplasImagens(imagens);
-      maquina.ImagensSecundarias.push(...imagensAdicionadas);
+      maquina.ImagensSecundarias.push(...result.imagensAdicionadas);
       maquina.save();
-      const resposta = {
-        message: 'Criadas com sucesso!',
-        Fotos: [...imagensAdicionadas],
-      };
-      return resposta;
+
+      return result.response;
     } catch (e) {
       return e;
     }
-  }
-
-  async criaMultiplasImagens(imagens: Array<Express.Multer.File>) {
-    return await Promise.all(
-      imagens.map(async (i) => {
-        const imagemCriada = await this.cloudinaryService.uploadImagem(
-          i,
-          MaquinaConfigs.caminhoImagensSecundariasCloudinary,
-          MaquinaLimites.tiposPermitidos
-        );
-        const ImagemInfo = {
-          Url: imagemCriada.secure_url,
-          NomeArquivo: imagemCriada.original_filename,
-        };
-        unlinkSync(
-          join(
-            __dirname,
-            MaquinaConfigs.caminhoImagensSecundariasLocal + i.filename
-          )
-        );
-        return ImagemInfo;
-      })
-    );
   }
 
   async deleteImagemSecundaria(filename: string, id: string) {
@@ -347,14 +307,15 @@ export class MaquinaServiceImpl implements MaquinaService {
         Url: ImagemAchada.Url,
         NomeArquivo: ImagemAchada.NomeArquivo,
       };
+
       Maquina.ImagensSecundarias = Maquina.ImagensSecundarias.filter(
         (ImagensSecundarias) =>
           ImagensSecundarias.NomeArquivo != ImagemADeletar.NomeArquivo
       );
 
-      this.deleteImagemMaquina(
-        ImagemADeletar,
-        MaquinaConfigs.caminhoImagensSecundariasCloudinary
+      await this.imagemService.deleteImagem(
+        MaquinaImagemConfigs.caminhoImagensSecundariasCloudinary,
+        ImagemADeletar
       );
 
       await Maquina.save();
@@ -367,22 +328,6 @@ export class MaquinaServiceImpl implements MaquinaService {
       return resposta;
     } catch (e) {
       return e;
-    }
-  }
-
-  async deleteImagemMaquina(imagem: Imagem, caminhoImagem: string) {
-    try {
-      const result = await this.cloudinaryService.deletaImagem(
-        imagem.NomeArquivo,
-        caminhoImagem
-      );
-      return result;
-    } catch (e) {
-      throw new BadRequestException('Algo de ruim ocorreu', {
-        cause: new Error(),
-        description:
-          'Não foi possivel deletar a imagem principal atual, ela provavelmente não existe.',
-      });
     }
   }
 }

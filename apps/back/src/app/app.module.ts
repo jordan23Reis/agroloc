@@ -5,29 +5,24 @@ import { AppService } from './app.service';
 import { MaquinaModule } from '../maquina/maquina.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from './configs/config';
-import { ImagemService, ImagemServiceImpl } from '@agroloc/shared/util';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [config],
-      envFilePath: 'development.env', 
+      envFilePath: 'development.env',
       isGlobal: true,
-      ignoreEnvFile: process.env.NODE_ENV === 'production'
-    }), 
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
+    }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configSecret: ConfigService) => ({
-        uri: configSecret.get("mongoUri")
-      })
-  }), 
-    MaquinaModule
+        uri: configSecret.get('mongoUri'),
+      }),
+    }),
+    MaquinaModule,
   ],
-  controllers: [
-    AppController
-  ],
-  providers: [
-    AppService,
-  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -1,4 +1,3 @@
-import { MaquinaServiceImpl } from '../maquina.service';
 import { MaquinaSchema } from './maquina.entity';
 
 export async function MaquinaMiddlewares() {
