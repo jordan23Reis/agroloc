@@ -26,6 +26,9 @@ export class RegisterComponent {
     Senha: ['', Validators.required],
     ConfSenha: ['', Validators.required],
     Freteiro: [false, Validators.required],
+    Nascimento: [null, Validators.required],
+    Sexo: ['', Validators.required],
+    CNH: [''],
   });
 
   stepperOrientation: Observable<StepperOrientation>;
@@ -56,6 +59,10 @@ export class RegisterComponent {
     this.container += 1;
   }
 
+  doubloNext() {
+    this.container += 2;
+  }
+
   back() {
     this.container -= 1;
   }
@@ -73,8 +80,12 @@ export class RegisterComponent {
     this.next();
   }
 
+  login() {
+    this.router.navigate(['web', 'login']);
+  }
+
   register() {
     this.http.post('/api/users', this.firstFormGroup.value);
-    this.router.navigate(['web', 'login']);
+    this.login();
   }
 }

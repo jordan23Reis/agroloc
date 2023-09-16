@@ -16,6 +16,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
+import { MatSelectModule } from '@angular/material/select';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   imports: [
@@ -27,14 +30,17 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+    MatSelectModule,
     MatInputModule,
     MatButtonModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
     MatIconModule,
     AsyncPipe,
     HttpClientModule,
     RouterModule,
   ],
   declarations: [RegisterComponent, LoginComponent],
-  exports: [RegisterComponent],
+  exports: [RegisterComponent, LoginComponent],
 })
 export class AccountFeatureModule {}

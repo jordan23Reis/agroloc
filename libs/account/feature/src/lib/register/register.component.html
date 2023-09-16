@@ -19,8 +19,8 @@
   </mat-form-field>
   <div class="registerOrLogin">
     <div>
-      <p>Ja possui conta ?</p>
-      <a>Entrar</a>
+      <p>Ja possui conta?</p>
+      <a (click)="login()">Entrar</a>
     </div>
     <button mat-raised-button color="primary" (click)="next()">Proximo</button>
   </div>
@@ -65,19 +65,63 @@
   *ngIf="container === 2"
 >
   <div class="logo">Agroloc</div>
+  <h3 class="tituloContainer">Dados da Pessoais</h3>
+
+  <mat-form-field class="matClass">
+    <mat-label>Sexo</mat-label>
+    <mat-select formControlName="Sexo">
+      <mat-option value="Masculino">Masculino</mat-option>
+      <mat-option value="Feminino">Feminino</mat-option>
+      <mat-option value="Outro">Outro</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="matClass">
+    <mat-label>Data de Nascimento</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      formControlName="Nascimento"
+      placeholder="DD/MM/AAAA"
+      required
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <div class="registerOrLogin">
+    <button mat-raised-button color="accent" (click)="back()">Voltar</button>
+    <button mat-raised-button color="primary" (click)="next()">Proximo</button>
+  </div>
+</form>
+
+<form
+  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
+  [formGroup]="firstFormGroup"
+  *ngIf="container === 3"
+>
+  <div class="logo">Agroloc</div>
+  <h3 class="tituloContainer">Dados da Conta</h3>
+
   <mat-form-field class="matClass">
     <mat-label>Email</mat-label>
     <input
       matInput
       formControlName="Email"
-      placeholder="exemplo.outlook.com"
+      placeholder="
+      exemplo@exemplo.com
+      "
       required
     />
   </mat-form-field>
 
   <mat-form-field class="matClass">
     <mat-label>Senha</mat-label>
-    <input matInput [type]="firstPassword ? 'password' : 'text'" />
+    <input
+      id="password"
+      matInput
+      [type]="firstPassword ? 'password' : 'text'"
+    />
     <button
       mat-icon-button
       matSuffix
@@ -91,7 +135,11 @@
 
   <mat-form-field class="matClass">
     <mat-label>Confirmar Senha</mat-label>
-    <input matInput [type]="secondPassword ? 'password' : 'text'" />
+    <input
+      id="password"
+      matInput
+      [type]="secondPassword ? 'password' : 'text'"
+    />
     <button
       mat-icon-button
       matSuffix
@@ -114,9 +162,10 @@
 <form
   [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
   [formGroup]="firstFormGroup"
-  *ngIf="container === 3"
+  *ngIf="container === 4"
 >
   <div class="logo">Agroloc</div>
+  <h3 class="tituloContainer">Tipo de Conta</h3>
   <div class="texto">
     <p>
       Seu cadastro esta quase pronto, mas antes responda a sequinte pergunta,
@@ -124,31 +173,40 @@
     </p>
   </div>
   <div class="registerOrLogin">
-    <button mat-raised-button color="accent" (click)="next()">Não</button>
+    <button mat-raised-button color="accent" (click)="doubloNext()">Não</button>
     <button mat-raised-button color="primary" (click)="isFreteiro()">
       Sim
     </button>
   </div>
 </form>
 
-<!-- <div class="backAndNext">
-  <div>
-    <button mat-raised-button color="accent" (click)="back()">
-      Voltar
-    </button>
-    <button mat-raised-button color="primary" (click)="next()">
-      Proximo
-    </button>
+<form
+  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
+  [formGroup]="firstFormGroup"
+  *ngIf="container === 5"
+>
+  <div class="logo">Agroloc</div>
+  <h3 class="tituloContainer">Dados do Freteiro</h3>
+
+  <mat-form-field class="matClass">
+    <mat-label>CNH</mat-label>
+    <input matInput formControlName="CNH" required />
+  </mat-form-field>
+
+  <div class="registerOrLogin">
+    <button mat-raised-button color="accent" (click)="back()">Voltar</button>
+    <button mat-raised-button color="primary" (click)="next()">Proximo</button>
   </div>
-</div> -->
+</form>
 
 <div
   [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
-  *ngIf="container === 4"
+  *ngIf="container === 6"
 >
   <div class="logo">Agroloc</div>
+  <h3 class="tituloContainer">Finalizar Cadastro</h3>
   <div class="texto">
-    <p>Deseja finalizar cadastro?</p>
+    <p>Seu cadastro esta quase concluido, deseja alterar alguma informação?</p>
   </div>
   <div class="registerOrLogin">
     <button mat-raised-button color="accent" (click)="reset()">Alterar</button>

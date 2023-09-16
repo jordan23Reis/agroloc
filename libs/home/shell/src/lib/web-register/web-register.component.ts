@@ -12,7 +12,4 @@ export interface Tile {
   templateUrl: './web-register.component.html',
   styleUrls: ['./web-register.component.scss'],
 })
-export class WebRegisterComponent {
-  section: Tile[] = [{ text: 'Two', cols: 4, rows: 20, color: 'lightgreen' }];
-  footer: Tile[] = [{ text: 'Three', cols: 4, rows: 2, color: 'lightpink' }];
-}
+export class WebRegisterComponent {}
