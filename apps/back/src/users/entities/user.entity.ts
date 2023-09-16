@@ -13,8 +13,31 @@ class Categoria {
   //====================================
   // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' })
   // idCategoria: Categoria
-  @Prop()
+  @Prop({
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinCategoria,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxCategoria,
+  })
   Nome: string;
+}
+
+@Schema()
+class Imagem {
+  @Prop({
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinUrlImagem,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxUrlImagem,
+  })
+  Url: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinArquivoImagem,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxArquivoImagem,
+  })
+  NomeDoArquivo: string;
 }
 
 @Schema()
@@ -63,12 +86,8 @@ class Automovel {
   })
   Altura: number;
 
-  @Prop({
-    type: String,
-    minlength: UsuarioSchemaDtoRestraints.tamMinAutomovelImagemtamMinUsuarioImagem,
-    maxlength: UsuarioSchemaDtoRestraints.tamMaxAutomovelImagemtamMinUsuarioImagem,
-  })
-  Imagens: Array<string>;
+  @Prop({ type: [Imagem] })
+  Imagens: Imagem[];
 
   @Prop({ type: Categoria })
   Categoria: Categoria;
@@ -81,7 +100,12 @@ class Automovel {
 
 @Schema()
 class CadastroFreteiro {
-  @Prop()
+  @Prop({
+    type: String,
+    required: true,
+    minlength: UsuarioSchemaDtoRestraints.tamMinCnh,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxCnh,
+  })
   CNH: string;
   @Prop({ type: [Automovel] }) // aqui o type faz referência ao padrão do nest
   Automovel: Automovel[];
@@ -136,25 +160,6 @@ class Enderecos {
 }
 
 @Schema()
-class Imagem {
-  @Prop({
-    required: true,
-    type: String,
-    minlength: UsuarioSchemaDtoRestraints.tamMinUsuarioImagem,
-    maxlength: UsuarioSchemaDtoRestraints.tamMaxUsuarioImagem,
-  })
-  Url: string;
-
-  @Prop({
-    required: true,
-    type: String,
-    minlength: UsuarioSchemaDtoRestraints.tamMinUsuarioImagem,
-    maxlength: UsuarioSchemaDtoRestraints.tamMaxUsuarioImagem,
-  })
-  NomedoArquivo: string;
-}
-
-@Schema()
 class CadastroComum {
   @Prop({
     required: true,
@@ -172,13 +177,13 @@ class CadastroComum {
   })
   Sobrenome: string;
 
-  /* @Prop({
-  required: true,
-  type: Date,
-  minlength: ,
-  maxlength: ,
+  @Prop({
+    required: true,
+    type: Date,
+    minlength: UsuarioSchemaDtoRestraints.tamMinDataNascimento,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxDataNascimento,
   })
-  DataDeNascimento: Date; */
+  DataDeNascimento: Date;
 
   @Prop({
     required: true,
@@ -193,7 +198,7 @@ class CadastroComum {
     minlength: UsuarioSchemaDtoRestraints.tamMinNumeroTelefone,
     maxlength: UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone,
   })
-  Telefone: Array<string>;
+  Telefone: string[];
 
   @Prop({
     type: String,
@@ -209,8 +214,8 @@ class CadastroComum {
   })
   Cnpj: string;
 
-  @Prop({type: Imagem})
-  Imagem: Imagem
+  @Prop({ type: Imagem })
+  Foto: Imagem;
 
   @Prop({ type: [Enderecos] })
   Enderecos: [Enderecos];
@@ -219,12 +224,16 @@ class CadastroComum {
 @Schema()
 class Pix {
   @Prop({
+    minlength: UsuarioSchemaDtoRestraints.tamMinChavePix,
+    maxlenght: UsuarioSchemaDtoRestraints.tamMaxChavePix,
     required: true,
     type: String,
   })
   Chave: string;
 
   @Prop({
+    minlength: UsuarioSchemaDtoRestraints.tamMinTipoPix,
+    maxlenght: UsuarioSchemaDtoRestraints.tamMaxTipoPix,
     required: true,
     type: String,
   })
@@ -233,12 +242,16 @@ class Pix {
 @Schema()
 class ContaBancaria {
   @Prop({
+    minlength: UsuarioSchemaDtoRestraints.tamMinAgenciaContaBancaria,
+    maxlenght: UsuarioSchemaDtoRestraints.tamMaxAgenciaContaBancaria,
     required: true,
     type: String,
   })
   Agencia: string;
 
   @Prop({
+    minlength: UsuarioSchemaDtoRestraints.tamMinContaContaBancaria,
+    maxlenght: UsuarioSchemaDtoRestraints.tamMaxContaContabancaria,
     required: true,
     type: String,
   })
@@ -256,24 +269,32 @@ class Login {
   @Prop({
     required: true,
     type: String,
+    min: UsuarioSchemaDtoRestraints.tamMinEmail,
+    max: UsuarioSchemaDtoRestraints.tamMaxEmail,
   })
   Email: string;
 
   @Prop({
     required: true,
     type: String,
+    min: UsuarioSchemaDtoRestraints.tamMinSenha,
+    max: UsuarioSchemaDtoRestraints.tamMaxSenha,
   })
   Senha: string;
 
   @Prop({
     required: true,
     type: String,
+    min: UsuarioSchemaDtoRestraints.tamMinSalt,
+    max: UsuarioSchemaDtoRestraints.tamMaxSalt,
   })
   Salt: string;
 
   @Prop({
     required: true,
     type: String,
+    min: UsuarioSchemaDtoRestraints.tamMinTipo,
+    max: UsuarioSchemaDtoRestraints.tamMaxTipo,
   })
   Tipo: string;
 }
@@ -284,9 +305,6 @@ export class Usuario {
 
   @Prop({ type: CadastroFreteiro })
   CadastroFreteiro: CadastroFreteiro;
-
-  @Prop({ type: Login })
-  Login: Login;
 
   //====================================
   //A IMPLEMENTAR
@@ -323,6 +341,10 @@ export class Usuario {
   //====================================
   // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProcessoDeFrete' }] })
   // FretesSolicitados: ProcessoDeFrete[];
+
+  @Prop({ type: Login, required: true })
+  Login: Login;
+
   @Prop({ type: InformacoesBancarias })
   InformacoesBancarias: InformacoesBancarias;
 }

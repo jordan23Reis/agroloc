@@ -1,67 +1,105 @@
-
-
 enum UsuarioSchemaDtoRestraints {
-    
-    tamMinNome = 3,
-    tamMaxNome = 50,
+  tamMinNome = 3,
+  tamMaxNome = 50,
 
-    tamMinSobrenome = 3,
-    tamMaxSobrenome = 100,
+  tamMinSobrenome = 3,
+  tamMaxSobrenome = 100,
 
-    tamMinSexo = 3,
-    tamMaxSexo = 15,
+  tamMinDataNascimento = 0,
+  tamMaxDataNascimento = 100000000000000000000000000000000000,
 
-    tamMinNumeroTelefone = 11,
-    tamMaxNumeroTelefone = 20,
+  tamMinUrlImagem = 0,
+  tamMaxUrlImagem = 500,
 
-    tamMinCpf = 14,
-    tamMaxCpf = 14,
+  tamMinArquivoImagem = 0,
+  tamMaxArquivoImagem = 100,
 
-    tamMinCnpj = 18,
-    tamMaxCnpj = 20,
+  tamMinSexo = 3,
+  tamMaxSexo = 15,
 
-    tamMinCep = 9, 
-    tamMaxCep = 9,
+  tamMinNumeroTelefone = 11,
+  tamMaxNumeroTelefone = 20,
 
-    tamMinNomeCidade = 3,
-    tamMaxNomeCidade = 60,
+  tamMinCpf = 14,
+  tamMaxCpf = 14,
 
-    tamMinNomeBairro = 3,
-    tamMaxNomeBairro = 100,
+  tamMinCnpj = 18,
+  tamMaxCnpj = 20,
 
-    tamMinLogradouro = 0,
-    tamMaxLogradouro = 200,
+  tamMinCnh = 1,
+  tamMaxCnh = 5,
 
-    tamMinComplemento = 0,
-    tamMaxComplemento = 100,
+  tamMinCep = 9,
+  tamMaxCep = 9,
 
-    tamMinNumero = 0,
-    tamMaxNumero = 50,
-    
-    tamMinNomeAutomovel = 3,
-    tamMaxNomeAutomovel = 100,
+  tamMinNomeCidade = 3,
+  tamMaxNomeCidade = 60,
 
-    tamMinDescricaoAutomovel = 10,
-    tamMaxDescricaoAutomovel = 200,
+  tamMinNomeBairro = 3,
+  tamMaxNomeBairro = 100,
 
-    pesoMinAutomovel = 0.1,
-    pesoMaxAutomovel = 200000,
+  tamMinLogradouro = 0,
+  tamMaxLogradouro = 200,
 
-    comprimentoMinAutomovel = 0.1,
-    comprimentoMaxAutomovel = 70,
+  tamMinComplemento = 0,
+  tamMaxComplemento = 100,
 
-    larguraMinAutomovel = 0.1,
-    larguraMaxAutomovel = 70,
+  tamMinNumero = 0,
+  tamMaxNumero = 50,
 
-    alturaMinAutomovel = 0.1,
-    alturaMaxAutomovel = 30,
+  tamMinNomeAutomovel = 3,
+  tamMaxNomeAutomovel = 100,
 
-    tamMinAutomovelImagem = 0,
-    tamMaxAutomovelImagem = 100,
+  tamMinDescricaoAutomovel = 10,
+  tamMaxDescricaoAutomovel = 200,
 
-    tamMinUsuarioImagem = 0,
-    tamMaxUsuarioImagem = 100,
+  pesoMinAutomovel = 0.1,
+  pesoMaxAutomovel = 200000,
 
+  comprimentoMinAutomovel = 0.1,
+  comprimentoMaxAutomovel = 70,
+
+  larguraMinAutomovel = 0.1,
+  larguraMaxAutomovel = 70,
+
+  alturaMinAutomovel = 0.1,
+  alturaMaxAutomovel = 30,
+
+  tamMinAutomovelImagem = 0,
+  tamMaxAutomovelImagem = 100,
+
+  tamMinUsuarioImagem = 0,
+  tamMaxUsuarioImagem = 100,
+
+  tamMinChavePix = 0,
+  tamMaxChavePix = 200,
+
+  tamMinTipoPix = 0,
+  tamMaxTipoPix = 200,
+
+  tamMinAgenciaContaBancaria = 0,
+  tamMaxAgenciaContaBancaria = 200,
+
+  tamMinContaContaBancaria = 0,
+  tamMaxContaContabancaria = 200,
+
+  tamMinIdCategoria = 0,
+  tamMaxIdCategoria = 100,
+
+  tamMinCategoria = 0,
+  tamMaxCategoria = 100,
+
+  tamMinEmail = 0,
+  tamMaxEmail = 150,
+
+  tamMinSenha = 0,
+  tamMaxSenha = 100,
+
+  tamMinSalt = 0,
+  tamMaxSalt = 100,
+
+  tamMinTipo = 0,
+  tamMaxTipo = 100,
 }
 
-export {UsuarioSchemaDtoRestraints}
+export { UsuarioSchemaDtoRestraints };
