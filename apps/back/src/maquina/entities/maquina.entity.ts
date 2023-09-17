@@ -10,7 +10,9 @@ class Tipo {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'TipoPreco' }] })
+  // @Prop({
+  // required: true, type: mongoose.Schema.Types.ObjectId, ref: 'TipoPreco' 
+  // })
   // idTipo: TipoPreco
   @Prop({
     required: true,
@@ -26,9 +28,9 @@ class Tipo {
 class Preco {
   @Prop({
     required: true,
-    type: String,  
-    minlength: MaquinaSchemaDtoRestraints.tamMinValorPorTipo, 
-    maxlength: MaquinaSchemaDtoRestraints.tamMaxValorPorTipo,
+    type: Number,  
+    min: MaquinaSchemaDtoRestraints.ValorPorTipoMin, 
+    max: MaquinaSchemaDtoRestraints.ValorPorTipoMax,
   })
   ValorPorTipo: number
   @Prop({type: Tipo})
@@ -77,8 +79,8 @@ class Endereco {
 
   @Prop({
     type: Number,
-    minlength: MaquinaSchemaDtoRestraints.numeroMin, 
-    maxlength: MaquinaSchemaDtoRestraints.numeroMax
+    min: MaquinaSchemaDtoRestraints.numeroMin, 
+    max: MaquinaSchemaDtoRestraints.numeroMax
   })
   Numero: number
 }
@@ -88,7 +90,9 @@ class Categoria {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' }] })
+  // @Prop({ 
+  // required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' 
+  // })
   // idCategoria: Categoria
   @Prop({
     required: true,
@@ -104,7 +108,9 @@ class DonoDaMaquina {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ required: true, type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }] })
+  // @Prop({ 
+  // required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' 
+  // })
   // idDono: Usuario
 
   @Prop({
@@ -121,6 +127,25 @@ class DonoDaMaquina {
     maxlength: MaquinaSchemaDtoRestraints.tamMaxFoto
   })
   Foto: string
+}
+
+@Schema()
+class Imagem{
+  @Prop({
+    required: true,
+    type: String,  
+    minlength: MaquinaSchemaDtoRestraints.tamMinImagem, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxImagem
+  })
+  Url: string;
+
+  @Prop({
+    required: true,
+    type: String,  
+    minlength: MaquinaSchemaDtoRestraints.tamMinImagem, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxImagem
+  })
+  NomeArquivo: string;
 }
 
 @Schema({ timestamps: true })
@@ -170,10 +195,11 @@ export class Maquina {
   })
   Altura: number;
 
-  @Prop({
-    type: [String]
-  })
-  Imagens: string[];
+  @Prop({type: Imagem})
+  ImagemPrincipal: Imagem;
+
+  @Prop([{ type: Imagem }])
+  ImagensSecundarias: Imagem[];
 
   @Prop({ 
     required: true,
@@ -185,7 +211,9 @@ export class Maquina {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop()
+  // @Prop({
+  //  type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Avaliacao' }]
+  // })
   // Avaliacoes: Avaliacoes[]
 
   @Prop({
