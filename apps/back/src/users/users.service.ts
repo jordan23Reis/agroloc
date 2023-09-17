@@ -4,12 +4,16 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Usuario } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(Usuario.name) private UserModel: Model<Usuario>) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
+    createUserDto.Login.Senha = await this.encryparSenha(
+      createUserDto.Login.Senha
+    );
     const createdUser = this.UserModel.create(createUserDto);
     return createdUser;
   }
@@ -36,6 +40,11 @@ export class UsersService {
       new: true,
     }).select('-login');
     return updatedUser;
+  }
+
+  async encryparSenha(senha: string) {
+    const saltOrRounds = 10;
+    return await bcrypt.hash(senha, saltOrRounds);
   }
 
   remove(id: string) {
