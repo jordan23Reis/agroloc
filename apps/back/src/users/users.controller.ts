@@ -16,9 +16,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto) {
     try {
-      const createdUser = await this.usersService.create(createUserDto);
+      const createdUser = this.usersService.create(createUserDto);
       return createdUser;
     } catch (e) {
       return e;
@@ -27,21 +27,37 @@ export class UsersController {
 
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    try {
+      return this.usersService.findAll();
+    } catch (e) {
+      return e;
+    }
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+    try {
+      return this.usersService.findOne(id);
+    } catch (e) {
+      return e;
+    }
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+    try {
+      return this.usersService.update(id, updateUserDto);
+    } catch (e) {
+      return e;
+    }
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+    try {
+      return this.usersService.remove(id);
+    } catch (e) {
+      return e;
+    }
   }
 }

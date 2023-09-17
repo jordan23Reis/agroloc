@@ -8,24 +8,38 @@ import { Usuario } from './entities/user.entity';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(Usuario.name) private UserModel: Model<Usuario>) {}
-  async create(createUserDto: CreateUserDto) {
-    const createdUser = await this.UserModel.create(createUserDto);
+
+  create(createUserDto: CreateUserDto) {
+    const createdUser = this.UserModel.create(createUserDto);
     return createdUser;
   }
 
   findAll() {
-    return `This action returns all users`;
+    const listedUsers = this.UserModel.find({}).select('-Login');
+    return listedUsers;
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} user`;
+    const foundUser = this.UserModel.findById(id).select('-Login');
+    return foundUser;
+  }
+
+  async findOneCredentials(email: string) {
+    const foundCredentials = await this.UserModel.findOne({
+      'Login.Email': email,
+    }).select('Login _id');
+    return foundCredentials;
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    const updatedUser = this.UserModel.findByIdAndUpdate(id, updateUserDto, {
+      new: true,
+    }).select('-login');
+    return updatedUser;
   }
 
   remove(id: string) {
-    return `This action removes a #${id} user`;
+    const deletedUser = this.UserModel.findByIdAndDelete(id).select('-Login');
+    return deletedUser;
   }
 }

@@ -16,5 +16,6 @@ const modelUsuario = MongooseModule.forFeatureAsync([
   imports: [modelUsuario],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}

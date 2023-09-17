@@ -2,6 +2,7 @@
 import {
   IsArray,
   IsDateString,
+  IsEmail,
   IsNotEmpty,
   IsNumber,
   IsObject,
@@ -254,6 +255,7 @@ class InformacoesBancarias {
 class Login {
   @IsNotEmpty()
   @IsString()
+  @IsEmail()
   @MinLength(UsuarioSchemaDtoRestraints.tamMinEmail)
   @MaxLength(UsuarioSchemaDtoRestraints.tamMaxEmail)
   Email: string;
