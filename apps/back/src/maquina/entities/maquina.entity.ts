@@ -30,7 +30,7 @@ class Preco {
     minlength: MaquinaSchemaDtoRestraints.tamMinValorPorTipo, 
     maxlength: MaquinaSchemaDtoRestraints.tamMaxValorPorTipo,
   })
-  ValorPorTipo: string
+  ValorPorTipo: number
   @Prop({type: Tipo})
   Tipo: Tipo;
 }
