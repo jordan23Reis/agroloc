@@ -5,14 +5,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Usuario } from './entities/user.entity';
 
-
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(Usuario.name) private UserModel: Model<Usuario>,
-  ) {}
-  create(createUserDto: CreateUserDto) {
-    return createUserDto;
+  constructor(@InjectModel(Usuario.name) private UserModel: Model<Usuario>) {}
+  async create(createUserDto: CreateUserDto) {
+    const createdUser = await this.UserModel.create(createUserDto);
+    return createdUser;
   }
 
   findAll() {
@@ -27,7 +25,7 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: string ){
+  remove(id: string) {
     return `This action removes a #${id} user`;
   }
 }

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   IsArray,
-  IsDate,
+  IsDateString,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Max,
@@ -35,13 +36,13 @@ class Imagem {
   @IsNotEmpty()
   @IsString()
   @MinLength(UsuarioSchemaDtoRestraints.tamMinUrlImagem)
-  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxAutomovelImagem)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxUrlImagem)
   Url: string;
 
   @IsNotEmpty()
   @IsString()
-  @MinLength(UsuarioSchemaDtoRestraints.tamMinUrlImagem)
-  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxAutomovelImagem)
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinArquivoImagem)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxArquivoImagem)
   NomeArquivo: string;
 }
 
@@ -58,25 +59,25 @@ class Automovel {
   @MaxLength(UsuarioSchemaDtoRestraints.tamMaxDescricaoAutomovel)
   Descricao: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   @Min(UsuarioSchemaDtoRestraints.pesoMinAutomovel)
   @Max(UsuarioSchemaDtoRestraints.pesoMaxAutomovel)
   Peso: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   @Min(UsuarioSchemaDtoRestraints.comprimentoMinAutomovel)
   @Max(UsuarioSchemaDtoRestraints.comprimentoMaxAutomovel)
   Comprimento: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   @Min(UsuarioSchemaDtoRestraints.larguraMinAutomovel)
   @Max(UsuarioSchemaDtoRestraints.larguraMaxAutomovel)
   Largura: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   @Min(UsuarioSchemaDtoRestraints.alturaMinAutomovel)
   @Max(UsuarioSchemaDtoRestraints.alturaMaxAutomovel)
@@ -85,15 +86,18 @@ class Automovel {
   @IsOptional()
   @ValidateNested()
   @Type(() => Imagem)
+  @IsObject()
   ImagemPrincipal: Imagem;
 
   @IsOptional()
   @ValidateNested()
+  @IsArray()
   @Type(() => Imagem)
   ImagensSecundarias: Imagem[];
 
   @IsOptional()
   @ValidateNested()
+  @IsObject()
   @Type(() => Categoria)
   Categoria: Categoria;
 }
@@ -107,6 +111,7 @@ class CadastroFreteiro {
 
   @IsOptional()
   @ValidateNested()
+  @IsArray()
   @Type(() => Automovel)
   Automovel: Automovel[];
 }
@@ -175,7 +180,7 @@ class CadastroComum {
   Sobrenome: string;
 
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   @MinLength(UsuarioSchemaDtoRestraints.tamMinDataNascimento)
   @MaxLength(UsuarioSchemaDtoRestraints.tamMaxDataNascimento)
   DataDeNascimento: Date;
@@ -188,18 +193,18 @@ class CadastroComum {
 
   @IsOptional()
   @IsArray()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNumeroTelefone, { each: true })
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone, { each: true })
   @IsString({ each: true })
-  @MinLength(UsuarioSchemaDtoRestraints.tamMinNumeroTelefone)
-  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone)
   Telefone: string[];
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @MinLength(UsuarioSchemaDtoRestraints.tamMinCpf)
   @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCpf)
   Cpf: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @MinLength(UsuarioSchemaDtoRestraints.tamMinCnpj)
   @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCnpj)
@@ -207,11 +212,13 @@ class CadastroComum {
 
   @IsOptional()
   @ValidateNested()
+  @IsObject()
   @Type(() => Imagem)
   Foto: Imagem;
 
   @IsOptional()
   @ValidateNested()
+  @IsArray()
   @Type(() => Enderecos)
   Enderecos: Enderecos[];
 }
@@ -233,11 +240,13 @@ class ContaBancaria {
 class InformacoesBancarias {
   @IsOptional()
   @ValidateNested()
+  @IsObject()
   @Type(() => ContaBancaria)
   ContaBancaria: ContaBancaria;
 
   @IsOptional()
   @ValidateNested()
+  @IsObject()
   @Type(() => Pix)
   Pix: Pix;
 }
@@ -272,50 +281,74 @@ export class CreateUserDto {
   @IsOptional()
   @ValidateNested()
   @Type(() => CadastroComum)
+  @IsObject()
   CadastroComum: CadastroComum;
 
   @IsOptional()
   @ValidateNested()
   @Type(() => CadastroFreteiro)
+  @IsObject()
   CadastroFreteiro: CadastroFreteiro;
 
   @IsOptional()
   @IsArray()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinIdMaquina, { each: true })
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxIdMaquina, { each: true })
   @IsString({ each: true })
   Maquinas: mongoose.Schema.Types.ObjectId[];
 
   @IsOptional()
   @IsArray()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinIdFavorito, { each: true })
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxIdFavorito, { each: true })
   @IsString({ each: true })
   Favoritos: mongoose.Schema.Types.ObjectId[];
 
   @IsOptional()
   @IsArray()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinIdProcessoDeAluguel, {
+    each: true,
+  })
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxIdProcessoDeAluguel, {
+    each: true,
+  })
   @IsString({ each: true })
   MaquinasAlugadas: mongoose.Schema.Types.ObjectId[];
 
   @IsOptional()
   @IsArray()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinIdProcessoDeAluguel, {
+    each: true,
+  })
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxIdProcessoDeAluguel, {
+    each: true,
+  })
   @IsString({ each: true })
   MaquinasLocadas: mongoose.Schema.Types.ObjectId[];
 
   @IsOptional()
   @IsArray()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinIdProcessoDeFrete, { each: true })
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxIdProcessoDeFrete, { each: true })
   @IsString({ each: true })
   FretesRealizados: mongoose.Schema.Types.ObjectId[];
 
   @IsOptional()
   @IsArray()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinIdProcessoDeFrete, { each: true })
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxIdProcessoDeFrete, { each: true })
   @IsString({ each: true })
   FretesSolicitados: mongoose.Schema.Types.ObjectId[];
 
   @IsNotEmpty()
   @ValidateNested()
+  @IsObject()
   @Type(() => Login)
   Login: Login;
 
-  @IsNotEmpty()
+  @IsOptional()
   @ValidateNested()
+  @IsObject()
   @Type(() => InformacoesBancarias)
   InformacoesBancarias: InformacoesBancarias;
 }

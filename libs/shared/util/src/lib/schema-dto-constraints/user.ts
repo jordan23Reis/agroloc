@@ -8,11 +8,11 @@ enum UsuarioSchemaDtoRestraints {
   tamMinDataNascimento = 0,
   tamMaxDataNascimento = 100000000000000000000000000000000000,
 
-  tamMinUrlImagem = 0,
-  tamMaxUrlImagem = 500,
+  tamMinUrlImagem = 1,
+  tamMaxUrlImagem = 1000,
 
-  tamMinArquivoImagem = 0,
-  tamMaxArquivoImagem = 100,
+  tamMinArquivoImagem = 1,
+  tamMaxArquivoImagem = 1000,
 
   tamMinSexo = 3,
   tamMaxSexo = 15,
@@ -32,10 +32,10 @@ enum UsuarioSchemaDtoRestraints {
   tamMinCep = 9,
   tamMaxCep = 9,
 
-  tamMinNomeCidade = 3,
-  tamMaxNomeCidade = 60,
+  tamMinNomeCidade = 0,
+  tamMaxNomeCidade = 100,
 
-  tamMinNomeBairro = 3,
+  tamMinNomeBairro = 0,
   tamMaxNomeBairro = 100,
 
   tamMinLogradouro = 0,
@@ -45,7 +45,7 @@ enum UsuarioSchemaDtoRestraints {
   tamMaxComplemento = 100,
 
   tamMinNumero = 0,
-  tamMaxNumero = 50,
+  tamMaxNumero = 10000,
 
   tamMinNomeAutomovel = 3,
   tamMaxNomeAutomovel = 100,
@@ -65,12 +65,6 @@ enum UsuarioSchemaDtoRestraints {
   alturaMinAutomovel = 0.1,
   alturaMaxAutomovel = 30,
 
-  tamMinAutomovelImagem = 0,
-  tamMaxAutomovelImagem = 100,
-
-  tamMinUsuarioImagem = 0,
-  tamMaxUsuarioImagem = 100,
-
   tamMinChavePix = 0,
   tamMaxChavePix = 200,
 
@@ -82,6 +76,18 @@ enum UsuarioSchemaDtoRestraints {
 
   tamMinContaContaBancaria = 0,
   tamMaxContaContabancaria = 200,
+
+  tamMinIdMaquina = 0,
+  tamMaxIdMaquina = 0,
+
+  tamMinIdFavorito = 0,
+  tamMaxIdFavorito = 0,
+
+  tamMinIdProcessoDeAluguel = 0,
+  tamMaxIdProcessoDeAluguel = 0,
+
+  tamMinIdProcessoDeFrete = 0,
+  tamMaxIdProcessoDeFrete = 0,
 
   tamMinIdCategoria = 0,
   tamMaxIdCategoria = 100,

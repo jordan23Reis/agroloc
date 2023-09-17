@@ -1,7 +1,5 @@
 import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
-import { IsNotEmpty } from '@nestjs/class-validator';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
 import { Date, HydratedDocument } from 'mongoose';
 
 export type UsuarioDocument = HydratedDocument<Usuario>;
@@ -11,7 +9,12 @@ class Categoria {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' })
+  // @Prop({
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Categoria'
+  //   minlength: UsuarioSchemaDtoRestraints.tamMinIdCategoria,
+  //   maxlength: UsuarioSchemaDtoRestraints.tamMaxIdCategoria,
+  // })
   // idCategoria: Categoria
   @Prop({
     type: String,
@@ -37,7 +40,7 @@ class Imagem {
     minlength: UsuarioSchemaDtoRestraints.tamMinArquivoImagem,
     maxlength: UsuarioSchemaDtoRestraints.tamMaxArquivoImagem,
   })
-  NomeDoArquivo: string;
+  NomeArquivo: string;
 }
 
 @Schema()
@@ -86,8 +89,11 @@ class Automovel {
   })
   Altura: number;
 
-  @Prop({ type: [Imagem] })
-  Imagens: Imagem[];
+  @Prop({ type: Imagem })
+  ImagemPrincipal: Imagem;
+
+  @Prop([{ type: Imagem }])
+  ImagensSecundarias: Imagem[];
 
   @Prop({ type: Categoria })
   Categoria: Categoria;
@@ -107,7 +113,7 @@ class CadastroFreteiro {
     maxlength: UsuarioSchemaDtoRestraints.tamMaxCnh,
   })
   CNH: string;
-  @Prop({ type: [Automovel] }) // aqui o type faz referência ao padrão do nest
+  @Prop([{ type: Automovel }]) // aqui o type faz referência ao padrão do nest
   Automovel: Automovel[];
 }
 
@@ -193,11 +199,13 @@ class CadastroComum {
   })
   Sexo: string;
 
-  @Prop({
-    type: String,
-    minlength: UsuarioSchemaDtoRestraints.tamMinNumeroTelefone,
-    maxlength: UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone,
-  })
+  @Prop([
+    {
+      type: String,
+      minlength: UsuarioSchemaDtoRestraints.tamMinNumeroTelefone,
+      maxlength: UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone,
+    },
+  ])
   Telefone: string[];
 
   @Prop({
@@ -217,8 +225,8 @@ class CadastroComum {
   @Prop({ type: Imagem })
   Foto: Imagem;
 
-  @Prop({ type: [Enderecos] })
-  Enderecos: [Enderecos];
+  @Prop([{ type: Enderecos }])
+  Enderecos: Enderecos[];
 }
 
 @Schema()
@@ -298,6 +306,7 @@ class Login {
   })
   Tipo: string;
 }
+
 @Schema()
 export class Usuario {
   @Prop({ type: CadastroComum })
