@@ -4,6 +4,7 @@ import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Usuario } from './entities/user.entity';
 import { UserMiddlewares } from './entities/user.middleware';
+import { ConfigModule } from '@nestjs/config';
 
 const modelUsuario = MongooseModule.forFeatureAsync([
   {
@@ -13,7 +14,7 @@ const modelUsuario = MongooseModule.forFeatureAsync([
 ]);
 
 @Module({
-  imports: [modelUsuario],
+  imports: [modelUsuario, ConfigModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],
