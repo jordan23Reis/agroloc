@@ -8,6 +8,7 @@ import { MaquinaUsuarioTipos } from '@agroloc/shared/util';
 import { CadastroDto } from './dto/cadastro-user.dto';
 import { InformacoesBancarias } from './dto/full-user.dto';
 import { Automovel } from './dto/automovel.dto';
+import { Senha } from './dto/senha.dto';
 
 @Injectable()
 export class UsersService {
@@ -115,7 +116,15 @@ async updateCadastro(id: string, cadastro: CadastroDto){
   };
   return response;
 }
-
+  async updateSenha(id: string, senhaNova: Senha){
+    const foundUser = await this.UserModel.findById(id);
+    foundUser.Login.Senha = await this.encryparSenha(senhaNova.Senha);
+    await foundUser.save();
+    const response = {
+      message: 'Senha atualizada com sucesso!',
+    };
+    return response;
+  }
 
   async findInformacoesBancarias(id: string) {
     const foundUser = await this.UserModel.findById(id).select('InformacoesBancarias');
@@ -150,20 +159,47 @@ async updateCadastro(id: string, cadastro: CadastroDto){
   }
 
   async editarAutomovel(id:string, idAutomovel:string, automovel: Automovel){
-
-    const foundUser = await this.UserModel.findById(id);
-    // const objeto = foundUser.toObject();
-
-
-
+    // const foundUser = await this.UserModel.findById(id);
+    // // const objeto = foundUser.toObject();
     // foundUser.CadastroFreteiro.Automovel.findIndex( aut => aut._id == idAutomovel);
-
+    //A IMPLEMENTAR
+    return "A implementar"
   }
 
-  // async removerAutomovel(){
-    
-  // }
+  async removerAutomovel(id:string, idAutomovel: string){
+    //A IMPLEMENTAR
+    return "A implementar";
+  }
 
+  async createFotoPerfil(imagem: Express.Multer.File, idMaquina: string){
+    //A IMPLEMENTAR
+    return "A implementar";
+  }
+
+  async removerFotoPerfil(id: string){
+    //A IMPLEMENTAR
+    return "A implementar";
+  }
+
+  async createImagemPrincipalVeiculo(imagem: Express.Multer.File, idMaquina: string){
+    //A IMPLEMENTAR
+    return "A implementar";
+  }
+
+  async deleteImagemPrincipalVeiculo(id: string){
+    //A IMPLEMENTAR
+    return "A implementar";
+  }
+
+  async createImagemsSecundarias(imagens: Array<Express.Multer.File>, idMaquina: string){
+    //A IMPLEMENTAR
+    return "A implementar";
+  }
+
+  async deleteImagemSecundaria(filename: string, id: string){
+    //A IMPLEMENTAR
+    return "A implementar";
+  }
 
   async findOneCredentials(email: string) {
     const foundCredentials = await this.UserModel.findOne({

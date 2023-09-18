@@ -98,6 +98,8 @@ class Automovel {
 
   @Prop({ type: Categoria })
   Categoria: Categoria;
+  
+  
 }
 
 //depois que crio a classe e insiro os atributos eu preciso chamar a @Prop({ type: + nome da classe})

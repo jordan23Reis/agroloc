@@ -17,6 +17,7 @@ import { CadastroDto } from './dto/cadastro-user.dto';
 import { InformacoesBancarias } from './dto/full-user.dto';
 import { UsuarioFreteiroGuard } from './guards/UsuarioFreteiro';
 import { Automovel } from './dto/automovel.dto';
+import { Senha } from './dto/senha.dto';
 
 @Controller('usuario')
 export class UsersController {
@@ -67,6 +68,16 @@ export class UsersController {
   updateCadastroUsuario(@Param("id") id: string, @Body() cadastro: CadastroDto) {
     try {
       return this.usersService.updateCadastro(id, cadastro);
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
+  @Put("senha/:id")
+  updateSenhaUsuario(@Param("id") id: string, @Body() senha: Senha) {
+    try {
+      return this.usersService.updateSenha(id, senha);
     } catch (e) {
       return e;
     }
