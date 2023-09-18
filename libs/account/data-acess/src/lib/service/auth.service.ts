@@ -14,7 +14,7 @@ export class AuthService {
   router = inject(Router);
   SingIn(account: Login) {
     this.http.post<Token>('api/auth/login', account).subscribe((token) => {
-      this.authStorage.setAcessToken(token.acess_token);
+      this.authStorage.setAcessToken(token.access_token);
     });
   }
   SingOut() {

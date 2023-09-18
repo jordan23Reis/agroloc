@@ -4,6 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Login } from 'libs/account/data-acess/src/lib/entities/login.interface';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { AuthService } from 'libs/account/data-acess/src/lib/service/auth.service';
 
 @Component({
   selector: 'agroloc-login',
@@ -16,10 +19,11 @@ export class LoginComponent {
   http = inject(HttpClient);
   platform = inject(Platform);
   router = inject(Router);
+  authService = inject(AuthService);
 
   account = this._formBuilder.group({
-    Email: ['', Validators.required, Validators.email],
-    Senha: ['', Validators.required],
+    email: ['', Validators.required, Validators.email],
+    password: ['', Validators.required],
   });
 
   firstPassword = true;
@@ -29,8 +33,12 @@ export class LoginComponent {
     this.router.navigate(['web', 'register']);
   }
 
-  login() {
-    this.http.post('/api/auth', this.account.value);
+  SingIn() {
+    const login = {
+      email = this.account.get('email').value,
+      password = this.account.get('password').value,
+    };
+    this.authService.SingIn(this.account.value);
     this.router.navigate(['web', 'home']);
   }
 }
