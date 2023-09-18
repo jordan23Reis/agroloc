@@ -1,6 +1,7 @@
 import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Date, HydratedDocument } from 'mongoose';
+import mongoose, { Date, HydratedDocument } from 'mongoose';
+import { Maquina } from '../../maquina/entities/maquina.entity';
 
 export type UsuarioDocument = HydratedDocument<Usuario>;
 
@@ -279,6 +280,7 @@ class Login {
     type: String,
     min: UsuarioSchemaDtoRestraints.tamMinEmail,
     max: UsuarioSchemaDtoRestraints.tamMaxEmail,
+    unique: true
   })
   Email: string;
 
@@ -290,13 +292,7 @@ class Login {
   })
   Senha: string;
 
-  @Prop({
-    required: true,
-    type: String,
-    min: UsuarioSchemaDtoRestraints.tamMinSalt,
-    max: UsuarioSchemaDtoRestraints.tamMaxSalt,
-  })
-  Salt: string;
+
 
   @Prop({
     required: true,
@@ -307,7 +303,7 @@ class Login {
   Tipo: string;
 }
 
-@Schema()
+@Schema({ timestamps: true })
 export class Usuario {
   @Prop({ type: CadastroComum })
   CadastroComum: CadastroComum;
@@ -315,11 +311,9 @@ export class Usuario {
   @Prop({ type: CadastroFreteiro })
   CadastroFreteiro: CadastroFreteiro;
 
-  //====================================
-  //A IMPLEMENTAR
-  //====================================
-  // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Maquina' }] })
-  // Maquinas: Maquina[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Maquina' }] })
+  Maquinas: Maquina[];
 
   //====================================
   //A IMPLEMENTAR
@@ -359,3 +353,5 @@ export class Usuario {
 }
 
 export const UserSchema = SchemaFactory.createForClass(Usuario);
+
+

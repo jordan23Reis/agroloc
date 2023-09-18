@@ -101,9 +101,6 @@ enum UsuarioSchemaDtoRestraints {
   tamMinSenha = 0,
   tamMaxSenha = 100,
 
-  tamMinSalt = 0,
-  tamMaxSalt = 100,
-
   tamMinTipo = 0,
   tamMaxTipo = 100,
 }

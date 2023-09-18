@@ -56,4 +56,9 @@ enum MaquinaSchemaDtoRestraints {
     tamMaxFoto = 100,
 }
 
-export {MaquinaSchemaDtoRestraints};
+enum MaquinaUsuarioTipos {
+    Comum = "Comum",
+    Freteiro = "Freteiro",
+}
+
+export {MaquinaSchemaDtoRestraints, MaquinaUsuarioTipos};
