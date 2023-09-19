@@ -6,15 +6,9 @@ import { MobLoginComponent } from './mob-login/mob-login.component';
 import { Error404Component } from './error404/error404.component';
 import { MobRegisterComponent } from './mob-register/mob-register.component';
 import { WebRegisterComponent } from './web-register/web-register.component';
+import { MachineryRegisterComponent } from 'libs/machinery/feature/src/lib/register/register.component';
 
 export const homeShellRoutes: Route[] = [
-  {
-    path: 'machinery-feature',
-    loadChildren: () =>
-      import('@agroloc/machinery/feature').then(
-        (m) => m.MachineryFeatureModule
-      ),
-  },
   {
     path: 'web',
     pathMatch: 'prefix',
@@ -30,6 +24,12 @@ export const homeShellRoutes: Route[] = [
         path: 'register',
         pathMatch: 'prefix',
         component: WebRegisterComponent,
+        children: [],
+      },
+      {
+        path: 'machinery',
+        pathMatch: 'prefix',
+        component: MachineryRegisterComponent,
         children: [],
       },
     ],
@@ -64,7 +64,13 @@ export const homeShellRoutes: Route[] = [
     path: '**',
     redirectTo: '404',
   },
-
+  // {
+  //   path: 'machinery-feature',
+  //   loadChildren: () =>
+  //     import('@agroloc/machinery/feature').then(
+  //       (m) => m.MachineryFeatureModule
+  //     ),
+  // },
   // {
   //   path: 'home-feature',
   //   loadChildren: () =>

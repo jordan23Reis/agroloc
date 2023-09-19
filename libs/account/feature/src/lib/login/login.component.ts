@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class AccountLoginComponent {
   _formBuilder = inject(FormBuilder);
   breakpointObserver = inject(BreakpointObserver);
   http = inject(HttpClient);

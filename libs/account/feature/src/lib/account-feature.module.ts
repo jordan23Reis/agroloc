@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { accountFeatureRoutes } from './lib.routes';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
+import { AccountRegisterComponent } from './register/register.component';
+import { AccountLoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -31,7 +31,7 @@ import { AccountDataAcessModule } from '@agroloc/account/data-acess';
     MatIconModule,
     AccountDataAcessModule,
   ],
-  declarations: [RegisterComponent, LoginComponent],
-  exports: [RegisterComponent, LoginComponent],
+  declarations: [AccountRegisterComponent, AccountLoginComponent],
+  exports: [AccountRegisterComponent, AccountLoginComponent],
 })
 export class AccountFeatureModule {}
