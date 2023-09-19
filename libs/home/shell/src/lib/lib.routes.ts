@@ -9,6 +9,13 @@ import { WebRegisterComponent } from './web-register/web-register.component';
 
 export const homeShellRoutes: Route[] = [
   {
+    path: 'machinery-feature',
+    loadChildren: () =>
+      import('@agroloc/machinery/feature').then(
+        (m) => m.MachineryFeatureModule
+      ),
+  },
+  {
     path: 'web',
     pathMatch: 'prefix',
     component: WebComponent,

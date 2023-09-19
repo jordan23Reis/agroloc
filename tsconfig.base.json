@@ -24,6 +24,12 @@
       "@agroloc/home/feature": ["libs/home/feature/src/index.ts"],
       "@agroloc/home/shell": ["libs/home/shell/src/index.ts"],
       "@agroloc/home/ui": ["libs/home/ui/src/index.ts"],
+      "@agroloc/machinery/api": ["libs/machinery/api/src/index.ts"],
+      "@agroloc/machinery/data-access": [
+        "libs/machinery/data-access/src/index.ts"
+      ],
+      "@agroloc/machinery/feature": ["libs/machinery/feature/src/index.ts"],
+      "@agroloc/machinery/ui": ["libs/machinery/ui/src/index.ts"],
       "@agroloc/shared/util": ["libs/shared/util/src/index.ts"]
     }
   },
