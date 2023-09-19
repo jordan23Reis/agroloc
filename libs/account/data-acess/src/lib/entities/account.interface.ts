@@ -1,5 +1,3 @@
-import moongose from 'mongoose';
-
 class Pix {
   Chave: string;
   Tipo: string;
@@ -61,12 +59,12 @@ class CadastroComum {
 export class Account {
   CadastroComun: CadastroComum;
   CadastroFreteiro: CadastroFreteiro;
-  Maquinas: moongose.Types.ObjectId[];
-  Favoritos: moongose.Types.ObjectId[];
-  MaquinasAlugadas: moongose.Types.ObjectId[];
-  MaquinasLocadas: moongose.Types.ObjectId[];
-  FretesRealizados: moongose.Types.ObjectId[];
-  FretesSolicitados: moongose.Types.ObjectId[];
+  Maquinas: string[]
+  Favoritos: string[]
+  MaquinasAlugadas: string[]
+  MaquinasLocadas: string[]
+  FretesRealizados: string[]
+  FretesSolicitados: string[]
   Login: Login;
   InformacoesBancarias: InformacoesBancarias;
 }

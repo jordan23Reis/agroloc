@@ -1,3 +1,3 @@
 export class Token {
-  access_token!: string;
+  access_token: string;
 }

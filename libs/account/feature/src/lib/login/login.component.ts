@@ -1,12 +1,10 @@
+import { AuthService, AuthStorage, Login } from '@agroloc/account/data-acess';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Platform } from '@angular/cdk/platform';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Login } from 'libs/account/data-acess/src/lib/entities/login.interface';
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { AuthService } from 'libs/account/data-acess/src/lib/service/auth.service';
 
 @Component({
   selector: 'agroloc-login',
@@ -20,6 +18,9 @@ export class LoginComponent {
   platform = inject(Platform);
   router = inject(Router);
   authService = inject(AuthService);
+  authStorage = inject(AuthStorage);
+  accountError = false;
+  date: Login;
 
   account = this._formBuilder.group({
     email: ['', Validators.required, Validators.email],
@@ -34,11 +35,30 @@ export class LoginComponent {
   }
 
   SingIn() {
-    const login = {
-      email = this.account.get('email').value,
-      password = this.account.get('password').value,
+    this.date = {
+      email: this.account.value.email,
+      password: this.account.value.password,
     };
-    this.authService.SingIn(this.account.value);
-    this.router.navigate(['web', 'home']);
+    this.authService.SingIn(this.date);
+    if (this.authStorage.getAcessToken()) {
+      this.router.navigate(['web', 'home']);
+    } else {
+      this.accountError = true;
+    }
+  }
+
+  invalidAccount(control: AbstractControl): { [key: string]: boolean } | null {
+    if (this.accountError) {
+      return { required: true }; // Senha obrigatória
+    } else {
+      return null; // A validação passou
+    }
+  }
+
+  getErrorMessage() {
+    if (this.account.hasError('required')) {
+      return 'You must enter a value';
+    }
+    return this.account.hasError('account') ? 'Not a valid email' : '';
   }
 }

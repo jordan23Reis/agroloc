@@ -13,6 +13,7 @@
       "
       required
     />
+    <mat-error *ngIf="account.invalid">{{getErrorMessage()}}</mat-error>
   </mat-form-field>
 
   <mat-form-field class="matClass">
@@ -31,6 +32,7 @@
     >
       <mat-icon>{{ firstPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
     </button>
+    <mat-error *ngIf="account.invalid">{{getErrorMessage()}}</mat-error>
   </mat-form-field>
 
   <div class="registerOrLogin">
@@ -38,7 +40,7 @@
       <p>Não possui conta?</p>
       <a (click)="register()">Cadastra-se</a>
     </div>
-    <button mat-raised-button color="primary" (click)="login()">Entrar</button>
+    <button mat-raised-button color="primary" (click)="SingIn()">Entrar</button>
   </div>
 
   <div class="line">
