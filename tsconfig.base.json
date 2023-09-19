@@ -5,6 +5,7 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "strictPropertyInitialization": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -16,6 +17,10 @@
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "paths": {
+      "@agroloc/account/api": ["libs/account/api/src/index.ts"],
+      "@agroloc/account/data-acess": ["libs/account/data-acess/src/index.ts"],
+      "@agroloc/account/feature": ["libs/account/feature/src/index.ts"],
+      "@agroloc/account/ui": ["libs/account/ui/src/index.ts"],
       "@agroloc/home/api": ["libs/home/api/src/index.ts"],
       "@agroloc/home/feature": ["libs/home/feature/src/index.ts"],
       "@agroloc/home/shell": ["libs/home/shell/src/index.ts"],
