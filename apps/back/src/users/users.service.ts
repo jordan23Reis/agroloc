@@ -97,7 +97,6 @@ export class UsersService {
 }
 
 async updateCadastro(id: string, cadastro: CadastroDto){
-  //IMPLEMENTAR NA PROXIMA SPRINT QUE QUANDO ATUALIZAR O NOME COMPLETO, MUDAR EM TODAS AS MAQUINAS QUE O USUARIO TEM CADASTRADO
   const userFound = await this.UserModel.findById(id);
   const cadastroMongoose = new this.UserModel(cadastro);
 
