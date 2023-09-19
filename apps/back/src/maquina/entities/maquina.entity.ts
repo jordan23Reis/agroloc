@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import {MaquinaSchemaDtoRestraints } from "@agroloc/shared/util"
+import { Usuario } from '../../users/entities/user.entity';
 
 export type MaquinaDocument = HydratedDocument<Maquina>;
 
@@ -108,10 +109,10 @@ class DonoDaMaquina {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ 
-  // required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' 
-  // })
-  // idDono: Usuario
+  @Prop({ 
+  required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' 
+  })
+  idDono: Usuario
 
   @Prop({
     required: true,

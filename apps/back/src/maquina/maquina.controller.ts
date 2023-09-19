@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Request,  
   Put,
   Param,
   Delete,
@@ -14,9 +14,9 @@ import {
   FileTypeValidator,
   ParseFilePipe,
   MaxFileSizeValidator,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateMaquinaDto } from './dto/create-maquina.dto';
-import { UpdateMaquinaDto } from './dto/update-maquina.dto';
+import { CreateUpdateMaquinaDto } from './dto/create-update-maquina.dto';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import {
   MaquinaImagemConfigs,
@@ -25,14 +25,19 @@ import {
 import 'multer';
 import { join } from 'path';
 import { MaquinaService } from './maquina.service';
+import { JwtAuthGuard } from '../auth-user/guards/jwt.auth-user.guard';
+import { MaquinaExiste } from './guards/MaquinaExiste';
+import { UsuarioComumGuard } from '../users/guards/UsuarioComum';
+import { UsuarioDonoDaMaquina } from './guards/UsuarioDonoDaMaquina';
 
 @Controller('maquina')
 export class MaquinaController {
   constructor(private readonly maquinaService: MaquinaService) {}
 
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard)
   @Post()
-  create(@Body() createMaquinaDto: CreateMaquinaDto) {
-    return this.maquinaService.create(createMaquinaDto);
+  create(@Body() createMaquinaDto: CreateUpdateMaquinaDto, @Request() req) {
+    return this.maquinaService.create(createMaquinaDto, req);
   }
 
   @Get()
@@ -45,17 +50,20 @@ export class MaquinaController {
     return this.maquinaService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateMaquinaDto: UpdateMaquinaDto) {
+  update(@Param('id') id: string, @Body() updateMaquinaDto: CreateUpdateMaquinaDto) {
     return this.maquinaService.update(id, updateMaquinaDto);
   }
 
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.maquinaService.remove(id);
+  remove(@Param('id') id: string, @Request() req) {
+    return this.maquinaService.remove(id, req);
   }
 
-  @Post('imagem/principal/:idMaquina')
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
+  @Post('imagem/principal/:id')
   @UseInterceptors(
     FileInterceptor('Imagem', {
       dest: join(__dirname, MaquinaImagemConfigs.caminhoImagemPrincipalLocal),
@@ -77,17 +85,19 @@ export class MaquinaController {
       })
     )
     imagem: Express.Multer.File,
-    @Param('idMaquina') idMaquina: string
+    @Param('id') id: string
   ) {
-    return this.maquinaService.createImagemPrincipal(imagem, idMaquina);
+    return this.maquinaService.createImagemPrincipal(imagem, id);
   }
 
-  @Delete('imagem/principal/:idMaquina/')
-  deleteImagemPrincipal(@Param('idMaquina') idMaquina: string) {
-    return this.maquinaService.deleteImagemPrincipal(idMaquina);
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
+  @Delete('imagem/principal/:id/')
+  deleteImagemPrincipal(@Param('id') id: string) {
+    return this.maquinaService.deleteImagemPrincipal(id);
   }
 
-  @Post('imagem/secundaria/:idMaquina')
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
+  @Post('imagem/secundaria/:id')
   @UseInterceptors(
     FilesInterceptor('Imagens', MaquinaImagemLimites.maxImagemsACriar, {
       dest: join(
@@ -112,16 +122,17 @@ export class MaquinaController {
       })
     )
     imagens: Array<Express.Multer.File>,
-    @Param('idMaquina') idMaquina: string
+    @Param('id') id: string
   ) {
-    return this.maquinaService.createImagemsSecundarias(imagens, idMaquina);
+    return this.maquinaService.createImagemsSecundarias(imagens, id);
   }
 
-  @Delete('imagem/secundaria/:idMaquina/:filename')
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
+  @Delete('imagem/secundaria/:id/:filename')
   deleteImagemSecundaria(
     @Param('filename') filename: string,
-    @Param('idMaquina') idMaquina: string
+    @Param('id') id: string
   ) {
-    return this.maquinaService.deleteImagemSecundaria(filename, idMaquina);
+    return this.maquinaService.deleteImagemSecundaria(filename, id);
   }
 }

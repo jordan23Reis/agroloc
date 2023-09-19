@@ -1,38 +1,44 @@
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { CreateMaquinaDto } from './dto/create-maquina.dto';
-import { UpdateMaquinaDto } from './dto/update-maquina.dto';
+import { CreateUpdateMaquinaDto } from './dto/create-update-maquina.dto';
 import { Maquina } from './entities/maquina.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import {
   MaquinaImagemConfigs,
   MaquinaImagemLimites,
 } from '@agroloc/shared/util';
 import { ImagemService } from '../imagem/imagem.service';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class MaquinaService {
   constructor(
     @InjectModel(Maquina.name) private maquinaModel: Model<Maquina>,
-    private cloudinaryService: CloudinaryService,
-    private imagemService: ImagemService
+    private imagemService: ImagemService,
+    private usersService: UsersService
   ) {}
 
-  create(createMaquinaDto: CreateMaquinaDto) {
-    try {
-      createMaquinaDto.ImagemPrincipal = undefined;
-      createMaquinaDto.ImagensSecundarias = [];
-      //implementar aqui colocar avaliação nula
-      const createdMaquina = this.maquinaModel.create(createMaquinaDto);
+  async create(createMaquinaDto: CreateUpdateMaquinaDto, request) {
+    try{
+    const idUsuario = request.user.IdUsuario
+    const usuarioDono = await this.usersService.findOne(idUsuario);
+    const maquinaDtoComIdUsuario = {
+      ...createMaquinaDto, 
+      DonoDaMaquina: {
+        idDono: idUsuario,
+        Nome: usuarioDono.CadastroComum.Nome + " " + usuarioDono.CadastroComum.Sobrenome,
+        Foto: usuarioDono.CadastroComum.Foto
+      }};
+      //QUANDO PRECO E CATEGORIA ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI
+      const createdMaquina = await this.maquinaModel.create(maquinaDtoComIdUsuario);
+      usuarioDono.Maquinas.push(createdMaquina.id);
+      await usuarioDono.save();
       return createdMaquina;
-    } catch (e) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }catch(e){
+      return e;
     }
   }
 
@@ -138,43 +144,35 @@ export class MaquinaService {
   }
 
   async findOne(id: string) {
-    try {
+    try{
       const foundMaquina = await this.maquinaModel.findById(id);
       return foundMaquina;
-    } catch (e) {
+    }catch(e){
       return e;
     }
+
   }
 
-  async update(id: string, updateMaquinaDto: UpdateMaquinaDto) {
-    try {
-      const updateSemAtualizacaoImagensDto =
-        await this.protecaoAntiUpdateDiretoImagens(id, updateMaquinaDto);
+  async update(id: string, updateMaquinaDto: CreateUpdateMaquinaDto) {
+    try{
+      //QUANDO PRECO E CATEGORIA ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI
       const updatedMaquina = this.maquinaModel.findByIdAndUpdate(
         id,
-        updateSemAtualizacaoImagensDto,
+        updateMaquinaDto,
         { new: true }
       );
       return updatedMaquina;
-    } catch (e) {
+    }catch(e){
       return e;
     }
   }
 
-  async protecaoAntiUpdateDiretoImagens(
-    id: string,
-    updateMaquinaDto: UpdateMaquinaDto
-  ) {
-    const currentMaquina = await this.maquinaModel.findById(id);
-    if (updateMaquinaDto.ImagemPrincipal || currentMaquina.ImagemPrincipal) {
-      updateMaquinaDto.ImagemPrincipal = currentMaquina.ImagemPrincipal;
-    }
-    updateMaquinaDto.ImagensSecundarias = currentMaquina.ImagensSecundarias;
-    return updateMaquinaDto;
-  }
-
-  async remove(id: string) {
+  async remove(id: string, request) {
     try {
+      const idUsuario = request.user.IdUsuario;
+      const usuarioDono = await this.usersService.findOne(idUsuario);
+      usuarioDono.Maquinas = usuarioDono.Maquinas.filter( (maq) => maq.toString() !== id);
+      await usuarioDono.save();
       await this.deletarImagensAoExcluirMaquina(id);
       const deletedMaquina = await this.maquinaModel.findByIdAndDelete(id);
       return deletedMaquina;
