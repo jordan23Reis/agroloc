@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateUpdateMaquinaDto } from './dto/create-update-maquina.dto';
 import { Maquina } from './entities/maquina.entity';
@@ -18,6 +20,7 @@ export class MaquinaService {
   constructor(
     @InjectModel(Maquina.name) private maquinaModel: Model<Maquina>,
     private imagemService: ImagemService,
+    @Inject(forwardRef(() => UsersService))
     private usersService: UsersService
   ) {}
 

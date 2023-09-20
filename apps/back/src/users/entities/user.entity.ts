@@ -46,6 +46,9 @@ class Imagem {
 
 @Schema()
 class Automovel {
+  @Prop({type: mongoose.Types.ObjectId, required:false})
+  _id: mongoose.Types.ObjectId;
+
   @Prop({
     required: true,
     type: String,
@@ -122,6 +125,9 @@ class CadastroFreteiro {
 
 @Schema()
 class Enderecos {
+  @Prop({type: mongoose.Types.ObjectId, required:false})
+  _id: mongoose.Types.ObjectId;
+
   @Prop({
     required: true,
     type: String,

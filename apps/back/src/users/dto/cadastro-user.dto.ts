@@ -48,11 +48,11 @@ class CadastroComum {
     @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCnpj)
     Cnpj: string;
   
-    @IsOptional()
-    @ValidateNested()
-    @IsArray()
-    @Type(() => Enderecos)
-    Enderecos: Enderecos[];
+    // @IsOptional()
+    // @ValidateNested()
+    // @IsArray()
+    // @Type(() => Enderecos)
+    // Enderecos: Enderecos[];
   
   }
 

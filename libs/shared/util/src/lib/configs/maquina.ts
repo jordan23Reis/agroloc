@@ -6,11 +6,8 @@ const MaquinaImagemConfigs = {
   caminhoImagensSecundariasLocal: 'assets/maquina/imagenssecundarias/',
 };
 
-const MaquinaCaminhoImagemPrincipalDoDto = 'ImagemPrincipal?';
-const MaquinaCaminhoImagensSecundariasDoDto = 'ImagensSecundarias';
+
 
 export {
   MaquinaImagemConfigs,
-  MaquinaCaminhoImagemPrincipalDoDto,
-  MaquinaCaminhoImagensSecundariasDoDto,
 };
