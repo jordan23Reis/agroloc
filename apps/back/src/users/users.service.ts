@@ -223,7 +223,7 @@ export class UsersService {
     const EnderecoComId = {...endereco, _id: new mongoose.Types.ObjectId()};
     usuario.CadastroComum.Enderecos.push(EnderecoComId);
     await usuario.save();
-    return endereco;
+    return EnderecoComId;
   }
 
   async editarEndereco(id:string, idEndereco:string, endereco: Enderecos){

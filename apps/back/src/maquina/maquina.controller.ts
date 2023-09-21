@@ -29,6 +29,7 @@ import { JwtAuthGuard } from '../auth-user/guards/jwt.auth-user.guard';
 import { MaquinaExiste } from './guards/MaquinaExiste';
 import { UsuarioComumGuard } from '../users/guards/UsuarioComum';
 import { UsuarioDonoDaMaquina } from './guards/UsuarioDonoDaMaquina';
+import mongoose from 'mongoose';
 
 @Controller('maquina')
 export class MaquinaController {
@@ -61,6 +62,14 @@ export class MaquinaController {
   remove(@Param('id') id: string, @Request() req) {
     return this.maquinaService.remove(id, req);
   }
+
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
+  @Put(':id/:idEndereco')
+  atualizarEndereco(@Param('id') id: string, @Param('idEndereco') idEndereco: mongoose.Schema.Types.ObjectId) {
+    return this.maquinaService.atualizarEndereco(id, idEndereco);
+  }
+
+
 
   @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
   @Post('imagem/principal/:id')

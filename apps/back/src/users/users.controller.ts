@@ -164,7 +164,7 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard)
+  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
   @Delete("endereco/:id/:idEndereco")
   removerEnderecoUsuario(@Param("id") id: string, @Param("idEndereco") idEndereco: string) {
     try {

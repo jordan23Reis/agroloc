@@ -16,11 +16,14 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(Email: string, Senha: string): Promise<any> {
 
     const usuarioAchado = await this.usersService.findOneCredentials(Email);
-
+    if (!usuarioAchado) {
+      throw new UnauthorizedException("Dados Inválidos!");
+    }
+    
     const user = await this.authService.validarSenha(Senha, usuarioAchado.Login.Senha);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("Dados Inválidos!");
     }
     return user;
   }

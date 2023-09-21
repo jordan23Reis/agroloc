@@ -12,6 +12,10 @@ export class AuthUserService {
 
   async signIn(email: string): Promise<any> {
     const user = await this.usersService.findOneCredentials(email);
+    if(!user) {
+      throw new UnauthorizedException('Dados Inválidos!')
+    };
+
     const payload = { IdUsuario: user._id, EmailUsuario: user.Login.Email, TipoUsuario: user.Login.Tipo };
     return {
       access_token: await this.jwtService.signAsync(payload),

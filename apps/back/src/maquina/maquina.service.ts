@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateUpdateMaquinaDto } from './dto/create-update-maquina.dto';
 import { Maquina } from './entities/maquina.entity';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   MaquinaImagemConfigs,
@@ -196,6 +196,27 @@ export class MaquinaService {
       })
     );
   }
+
+  async atualizarEndereco(id:string, idEndereco: mongoose.Schema.Types.ObjectId){
+    try{
+      const maquina = await this.maquinaModel.findById(id);
+      const usuario = await this.usersService.findCadastro(maquina.DonoDaMaquina.idDono.toString());
+      const endereco = usuario.CadastroComum.Enderecos.find( (end) => end._id.toString() === idEndereco.toString());
+      if(endereco === undefined){
+        throw new BadRequestException('Esse endereco não existe');
+      }
+      const enderecoComId = { ...endereco, idEndereco};
+
+      enderecoComId._id = undefined;
+      maquina.Endereco = enderecoComId;
+
+      await maquina.save();
+      return maquina;
+    }catch(e){
+      return e;
+    }
+  }
+
 
   async createImagemPrincipal(imagem: Express.Multer.File, idMaquina: string) {
     try {

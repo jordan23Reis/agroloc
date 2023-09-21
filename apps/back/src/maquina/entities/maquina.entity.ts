@@ -41,6 +41,14 @@ class Preco {
 @Schema()
 class Endereco {
   @Prop({
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    minlength: MaquinaSchemaDtoRestraints.tamMinIdEndereco, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxEndereco
+  })
+  idEndereco: mongoose.Schema.Types.ObjectId
+
+  @Prop({
     required: true, 
     type: String,
     minlength: MaquinaSchemaDtoRestraints.tamMinCep, 
