@@ -1,4 +1,4 @@
-import {  Module } from '@nestjs/common';
+import {  Module, forwardRef } from '@nestjs/common';
 import { MaquinaController } from './maquina.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Maquina } from './entities/maquina.entity';
@@ -16,9 +16,10 @@ const modelMaquina = MongooseModule.forFeatureAsync([
 ]);
 
 @Module({
-  imports: [modelMaquina, CloudinaryModule, ImagemModule, UsersModule],
+  imports: [modelMaquina, CloudinaryModule, ImagemModule, forwardRef(() => UsersModule)],
   controllers: [MaquinaController],
   providers: [MaquinaService],
+  exports: [MaquinaService],
 })
 export class MaquinaModule {
 }

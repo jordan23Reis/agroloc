@@ -1,18 +1,22 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException, forwardRef } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Usuario } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { MaquinaUsuarioTipos } from '@agroloc/shared/util';
+import { MaquinaUsuarioTipos, UsuarioImagemConfigs, UsuarioImagemLimites, VeiculoImagemConfigs, VeiculoImagemLimites } from '@agroloc/shared/util';
 import { CadastroDto } from './dto/cadastro-user.dto';
-import { InformacoesBancarias } from './dto/full-user.dto';
+import { Enderecos, InformacoesBancarias } from './dto/full-user.dto';
 import { Automovel } from './dto/automovel.dto';
 import { Senha } from './dto/senha.dto';
+import { MaquinaService } from '../maquina/maquina.service';
+import { ImagemService } from '../imagem/imagem.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(Usuario.name) private UserModel: Model<Usuario>) {}
+  constructor(@InjectModel(Usuario.name) private UserModel: Model<Usuario>, 
+  @Inject(forwardRef(() => MaquinaService)) private readonly maquinaService: MaquinaService,
+  private imagemService: ImagemService) {}
 
   async create(createUserDto: CreateUserDto) {
 
@@ -37,20 +41,32 @@ export class UsersService {
     return createdUser;
   }
 
-  findFreteiros(query) {
+  selectUsuario = {
+    Login: 0,
+    InformacoesBancarias: 0,
+    CadastroComum:{
+      Enderecos: 0
+    },
+    CadastroFreteiro:{
+      EnderecoAtivo: {
+            idEndereco: 0,
+            Cep: 0,
+            Bairro: 0,
+            Logradouro: 0,
+            Complemento: 0,
+            Numero: 0,
+            _id: 0
+          },
+    }
+  }
+
+
+  async findFreteiros(query) {
     const tipoFreteiro = {'Login.Tipo': MaquinaUsuarioTipos.Freteiro}
     const resPerPage = Number(query.quantidadePorPagina) || 0;
     const currentPage = Number(query.page) || 1;
     const skip = resPerPage * (currentPage - 1);
-    const busca = query.busca
-    ? {
-        "CadastroComum.Nome": {
-          $regex: query.busca,
-          $options: 'i',
-        },
-      }
-    : {};
-
+    
     let ordenar;
     switch (query.ordernarPor) {
       case 'MaisBemAvaliado':
@@ -72,18 +88,31 @@ export class UsersService {
         ordenar = {};
     }
 
-    const select = "-Login -InformacoesBancarias";
 
-    const listedUsers = this.UserModel.find({
+    let listedUsers = await this.UserModel.find({
       ...tipoFreteiro,
-      ...busca
+      // ...busca
       }) 
       .limit(resPerPage)
       .skip(skip)
       .sort(ordenar)
-      .select(select);
+      .select(this.selectUsuario);
 
-      return listedUsers;
+      if(query.busca){
+      const regexPattern = new RegExp(
+        query.busca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        .normalize("NFD") //desconsidera acentos
+        .replace(/[\u0300-\u036f]/g, "") //desconsidera acentos
+        , 'ui');
+      listedUsers = listedUsers.filter( (user) =>{
+        
+        return regexPattern.test(
+          user["NomeCompleto"]
+          .normalize("NFD") //desconsidera acentos
+          .replace(/[\u0300-\u036f]/g, "") //desconsidera acentos
+          )}
+          )}
+        return listedUsers;
   }
 
   async findOne(id: string) {
@@ -91,32 +120,133 @@ export class UsersService {
     return foundUser;
   }
 
+  async findOneSafe(id: string) {
+    const foundUser = await this.UserModel.findById(id)
+    //ADICIONAR NO SELECT OS FUTUROS CASOS QUANDO TIVER CATEGORIA, AVALIACAO, PROCESSOS ETC...
+    .select(this.selectUsuario)
+    return foundUser;
+  }
+
+
   async findCadastro(id: string){
     const cadastro = await this.UserModel.findById(id).select("+CadastroComum +CadastroFreteiro");
     return cadastro;
-}
-
-async updateCadastro(id: string, cadastro: CadastroDto){
-  //IMPLEMENTAR PRA PROXIMA SPRINT NO FUTURO QUANDO MUDAR O NOME MUDAR TAMBEM EM TODAS MAQUINAS REGISTRADAS DESTE USUARIO
-  const userFound = await this.UserModel.findById(id);
-  const cadastroMongoose = new this.UserModel(cadastro);
-
-
-  if (userFound.Login.Tipo !== "Freteiro"){
-    cadastroMongoose.CadastroFreteiro = undefined;
-  }else{
-    userFound.CadastroFreteiro = cadastroMongoose.CadastroFreteiro;
   }
 
-  userFound.CadastroComum = cadastroMongoose.CadastroComum;
-  await userFound.save();
+  async findMaquinasRegistradas(id: string){
+    const userFound = await this.UserModel.findById(id);  
+    let maquinasRegistradas = await Promise.all(userFound.Maquinas.map( async maquina => {
+      return await this.maquinaService.findOne(maquina.toString());
+    }))
+    maquinasRegistradas = maquinasRegistradas.filter( maquina => maquina !== null);
+    return maquinasRegistradas;
+  }
 
-  const response = {
-    message: 'Cadastro atualizado com sucesso!',
-    cadastro: cadastroMongoose
-  };
-  return response;
-}
+  async updateCadastro(id: string, cadastro: CadastroDto){
+    const userFound = await this.UserModel.findById(id);
+    if((userFound.CadastroComum.Nome !== cadastro.CadastroComum.Nome) || (userFound.CadastroComum.Sobrenome !== cadastro.CadastroComum.Sobrenome)){
+      const maquinasAchadas = await this.findMaquinasRegistradas(id);
+      maquinasAchadas.forEach(async maquina => {
+        maquina.DonoDaMaquina.Nome = cadastro.CadastroComum?.Nome + " " + cadastro.CadastroComum?.Sobrenome;
+        await maquina.save();
+      }); 
+    }
+    let cadastroMongoose = new this.UserModel(cadastro);
+
+    if (userFound.Login.Tipo !== "Freteiro"){
+      cadastroMongoose.CadastroFreteiro = undefined;
+    }else{
+      userFound.CadastroFreteiro = cadastroMongoose.CadastroFreteiro;
+      if(cadastro.CadastroFreteiro.EstaAtivo == true && cadastro.CadastroFreteiro.IdEndereco == undefined){
+        throw new BadRequestException('Para ativar a maquina, é necessario informar o endereco');
+      }
+    }
+
+    const enderecos = userFound.CadastroComum.Enderecos;
+    userFound.CadastroComum = cadastroMongoose.CadastroComum;
+    userFound.CadastroComum.Enderecos = enderecos;
+    await userFound.save();
+
+    if(userFound.Login.Tipo == "Freteiro"){
+      if(cadastro.CadastroFreteiro.IdEndereco == undefined && userFound.CadastroFreteiro.EnderecoAtivo != undefined){
+        await this.deleteEnderecoFreteiro(id);
+      }
+
+      if(cadastro.CadastroFreteiro.IdEndereco != undefined){
+        if(cadastro.CadastroFreteiro.IdEndereco.toString() != userFound.CadastroFreteiro.EnderecoAtivo?.idEndereco?.toString()){
+          cadastroMongoose = await this.atualizarEnderecoFreteiro(id, cadastro.CadastroFreteiro.IdEndereco);
+        }
+      }
+    }
+
+    const response = {
+      message: 'Cadastro atualizado com sucesso!',
+      cadastro: cadastroMongoose
+    };
+    return response;
+  }
+
+  async atualizarEnderecoFreteiro(id:string, idEndereco: mongoose.Schema.Types.ObjectId){
+    try{
+      const usuario = await this.UserModel.findById(id);
+
+      const endereco = usuario.CadastroComum.Enderecos.find( (end) => end._id.toString() === idEndereco.toString());
+      if(endereco === undefined){
+        throw new BadRequestException('Esse endereco não existe');
+      }
+
+      const enderecoComId = {
+        idEndereco,
+        Cep: endereco.Cep, 
+        Estado: endereco.Estado,
+        Cidade: endereco.Cidade, 
+        Bairro: endereco.Bairro, 
+        Logradouro: endereco.Logradouro,
+        Complemento: endereco.Complemento, 
+        Numero: endereco.Numero, 
+      };
+      
+      usuario.CadastroFreteiro.EnderecoAtivo = enderecoComId;
+      await usuario.save();
+
+      return usuario;
+    }catch(e){
+      return e;
+    }
+  }
+
+  async deleteEnderecoFreteiro(id:string){
+    try{
+      const usuarioFreteiro = await this.UserModel.findById(id);
+      const enderecoFreteiro = usuarioFreteiro.CadastroFreteiro.EnderecoAtivo;
+
+      if (enderecoFreteiro == undefined){
+        throw new BadRequestException('Esse freteiro não possui endereço!');
+      }
+
+      usuarioFreteiro.CadastroFreteiro.EnderecoAtivo = undefined;
+      let resposta;
+      if (usuarioFreteiro.CadastroFreteiro.EstaAtivo == true){
+        usuarioFreteiro.CadastroFreteiro.EstaAtivo = false
+        resposta = {
+          message: 'Endereco removido com sucesso! A maquina foi desativada pois precisa de um endereço pra estar ativa.',
+          enderecoMaquina: enderecoFreteiro
+        };
+      }else{
+        resposta = {
+          message: 'Endereco removido com sucesso!',
+          enderecoMaquina: enderecoFreteiro
+        };
+      }
+      await usuarioFreteiro.save();
+      return resposta;
+
+
+    }catch(e){
+      return e;
+    }
+  }
+
   async updateSenha(id: string, senhaNova: Senha){
     const foundUser = await this.UserModel.findById(id);
     foundUser.Login.Senha = await this.encryparSenha(senhaNova.Senha);
@@ -152,54 +282,357 @@ async updateCadastro(id: string, cadastro: CadastroDto){
 
 
   async adicionarAutomovel(id:string, automovel: Automovel){
-    const Automovel = {...automovel, ImagensSecundarias: [], ImagemPrincipal: undefined};
+    const Automovel = {...automovel, ImagensSecundarias: [], ImagemPrincipal: undefined, _id: new mongoose.Types.ObjectId()};
     const usuario = new this.UserModel(await this.UserModel.findById(id));
     usuario.CadastroFreteiro.Automovel.push(Automovel);
+
     await usuario.save();
     return Automovel;
   }
 
   async editarAutomovel(id:string, idAutomovel:string, automovel: Automovel){
-    // const foundUser = await this.UserModel.findById(id);
-    // // const objeto = foundUser.toObject();
-    // foundUser.CadastroFreteiro.Automovel.findIndex( aut => aut._id == idAutomovel);
-    //A IMPLEMENTAR
-    return "A implementar"
+    //IMPLEMENTAR AQUI QUANDO TIVER PROCESSO DE FRETE ATUALIZAR EM TODOS OS PROCESSOS DE FRETE O NOME
+
+    const foundUser = await this.UserModel.findById(id);
+    const indexAutomovel = foundUser.CadastroFreteiro.Automovel.findIndex( aut => aut._id.toString() == idAutomovel);
+    
+    if(indexAutomovel === -1){
+      throw new UnauthorizedException("Automovel não encontrado!");
+    }
+    const Automovel = {
+      ...automovel, 
+      ImagensSecundarias: foundUser.CadastroFreteiro.Automovel[indexAutomovel].ImagensSecundarias, 
+      ImagemPrincipal: foundUser.CadastroFreteiro.Automovel[indexAutomovel].ImagemPrincipal, 
+      _id: foundUser.CadastroFreteiro.Automovel[indexAutomovel]._id
+    };
+    foundUser.CadastroFreteiro.Automovel[indexAutomovel] = Automovel;
+    await foundUser.save();
+    const response = {
+      message: 'Automovel atualizado com sucesso!',
+      automovel: automovel
+    };
+    return response
   }
 
   async removerAutomovel(id:string, idAutomovel: string){
-    //A IMPLEMENTAR
-    return "A implementar";
+    const foundUser = await this.UserModel.findById(id);
+    const automoveisSemAtualAutomovel = foundUser.CadastroFreteiro.Automovel.filter((aut) => aut._id.toString() != idAutomovel);
+    
+    if(foundUser.CadastroFreteiro.Automovel.length === automoveisSemAtualAutomovel.length){
+      throw new UnauthorizedException("Automovel não encontrado!");
+    }
+    foundUser.CadastroFreteiro.Automovel = automoveisSemAtualAutomovel;
+    await foundUser.save();
+    const response = {
+      message: 'Automovel removido com sucesso!',
+    };
+
+    return response
   }
 
-  async createFotoPerfil(imagem: Express.Multer.File, idMaquina: string){
-    //A IMPLEMENTAR
-    return "A implementar";
+  async adicionarEndereco(id:string, endereco: Enderecos){
+    const usuario = new this.UserModel(await this.UserModel.findById(id));
+    const EnderecoComId = {...endereco, _id: new mongoose.Types.ObjectId()};
+    usuario.CadastroComum.Enderecos.push(EnderecoComId);
+    await usuario.save();
+    return EnderecoComId;
+  }
+
+  async editarEndereco(id:string, idEndereco:string, endereco: Enderecos){
+    const foundUser = await this.UserModel.findById(id);
+    const indexEndereco = foundUser.CadastroComum.Enderecos.findIndex( end => end._id.toString() == idEndereco);
+    
+    if(indexEndereco === -1){
+      throw new UnauthorizedException("Endereço não encontrado!");
+    }
+    const Endereco = {
+      ...endereco, 
+      _id: foundUser.CadastroComum.Enderecos[indexEndereco]._id
+    };
+    foundUser.CadastroComum.Enderecos[indexEndereco] = Endereco;
+
+    const maquinasAchadas = await this.findMaquinasRegistradas(id);
+
+    maquinasAchadas.filter( maq => maq.Endereco?.idEndereco == idEndereco)
+
+    maquinasAchadas.forEach(async maq => {
+      maq.Endereco.idEndereco = idEndereco;
+      maq.Endereco.Cep = Endereco.Cep;
+      maq.Endereco.Estado = Endereco.Estado;
+      maq.Endereco.Cidade = Endereco.Cidade;
+      maq.Endereco.Bairro = Endereco.Bairro;
+      maq.Endereco.Logradouro = Endereco.Logradouro;
+      maq.Endereco.Complemento = Endereco.Complemento;
+      maq.Endereco.Numero = Endereco.Numero;
+      await maq.save();
+    });
+
+    if(foundUser.Login.Tipo == "Freteiro"){
+      if(foundUser.CadastroFreteiro.EnderecoAtivo.idEndereco.toString() == idEndereco){
+      const EnderecoAtivo = {
+        idEndereco: foundUser.CadastroFreteiro.EnderecoAtivo?.idEndereco,
+        Cep: Endereco.Cep, 
+        Estado: Endereco.Estado,
+        Cidade: Endereco.Cidade, 
+        Bairro: Endereco.Bairro, 
+        Logradouro: Endereco.Logradouro,
+        Complemento: Endereco.Complemento, 
+        Numero: Endereco.Numero, 
+      }
+      foundUser.CadastroFreteiro.EnderecoAtivo = EnderecoAtivo;
+      }
+    }
+    await foundUser.save();
+
+    const response = {
+      message: 'Endereço atualizado com sucesso!',
+      automovel: endereco
+    };
+    return response
+  }
+
+
+  async removerEndereco(id:string, idEndereco: string){
+    const foundUser = await this.UserModel.findById(id);
+    const enderecosSemAtualEndereco = foundUser.CadastroComum.Enderecos.filter((end) => end._id.toString() != idEndereco);
+    
+    if(foundUser.CadastroComum.Enderecos.length === enderecosSemAtualEndereco.length){
+      throw new UnauthorizedException("Endereço não encontrado!");
+    }
+
+    foundUser.CadastroComum.Enderecos = enderecosSemAtualEndereco;
+
+    if(foundUser.CadastroFreteiro?.EnderecoAtivo?.idEndereco?.toString() == idEndereco){
+      foundUser.CadastroFreteiro.EnderecoAtivo = undefined;
+    }
+
+    const maquinasAchadas = await this.findMaquinasRegistradas(id);
+    maquinasAchadas.filter( maq => maq.Endereco?.idEndereco == idEndereco)
+    maquinasAchadas.forEach(async maq => {
+      maq.Endereco = undefined;
+      await maq.save();
+    });
+
+    await foundUser.save();
+    const response = {
+      message: 'Endereço removido com sucesso!',
+    };
+
+   
+    return response
+  }
+
+
+  async createFotoPerfil(imagem: Express.Multer.File, id: string){
+    try {
+      let ImagemAtual = undefined;
+      const usuario = await this.UserModel.findById(id);
+
+      if (usuario.CadastroComum.Foto) {
+        ImagemAtual = {
+          Url: usuario.CadastroComum.Foto.Url,
+          NomeArquivo: usuario.CadastroComum.Foto.NomeArquivo,
+        };
+      }
+
+      const result = await this.imagemService.createImagem(
+        imagem,
+        UsuarioImagemConfigs,
+        UsuarioImagemLimites,
+        ImagemAtual
+      );
+
+      const ImagemPrincipal = {
+        ImagemPrincipal: {
+          Url: result.secure_url,
+          NomeArquivo: result.original_filename,
+        },
+      };
+
+      usuario.CadastroComum.Foto = ImagemPrincipal.ImagemPrincipal;
+      await usuario.save();
+      
+      return result.response;
+    } catch (e) {
+      return e;
+    }
   }
 
   async removerFotoPerfil(id: string){
-    //A IMPLEMENTAR
-    return "A implementar";
+    try {
+      const Maquina = new this.UserModel(
+        await this.UserModel.findById(id)
+      );
+
+      const ImagemAchada = Maquina.CadastroComum.Foto;
+
+      if (ImagemAchada === undefined) {
+        throw new BadRequestException('Algo de ruim ocorreu', {
+          cause: new Error(),
+          description: 'Essa imagem não existe',
+        });
+      }
+
+      const ImagemADeletar = {
+        Url: ImagemAchada.Url,
+        NomeArquivo: ImagemAchada.NomeArquivo,
+      };
+
+      const response = this.imagemService.deleteImagem(
+        UsuarioImagemConfigs.caminhoImagemPrincipalCloudinary,
+        ImagemADeletar
+      );
+
+      Maquina.CadastroComum.Foto = undefined;
+
+      await Maquina.save();
+
+      return response;
+    } catch (e) {
+      return e;
+    }
   }
 
-  async createImagemPrincipalVeiculo(imagem: Express.Multer.File, idMaquina: string){
-    //A IMPLEMENTAR
-    return "A implementar";
+  async createImagemPrincipalAutomovel(imagem: Express.Multer.File, id: string, idAutomovel:string){
+    try {
+      let ImagemAtual = undefined;
+      const usuario = await this.UserModel.findById(id);
+
+      const imagemAchada = usuario.CadastroFreteiro.Automovel.find((aut) => aut._id.toString() == idAutomovel).ImagemPrincipal;
+
+      if (imagemAchada) {
+        ImagemAtual = {
+          Url: imagemAchada.Url,
+          NomeArquivo: imagemAchada.NomeArquivo,
+        };
+      }
+
+      const result = await this.imagemService.createImagem(
+        imagem,
+        VeiculoImagemConfigs,
+        VeiculoImagemLimites,
+        ImagemAtual
+      );
+
+      const ImagemPrincipal = {
+        ImagemPrincipal: {
+          Url: result.secure_url,
+          NomeArquivo: result.original_filename,
+        },
+      };
+
+      const indiceAutomovel = usuario.CadastroFreteiro.Automovel.findIndex((aut) => aut._id.toString() == idAutomovel);
+      usuario.CadastroFreteiro.Automovel[indiceAutomovel].ImagemPrincipal = ImagemPrincipal.ImagemPrincipal;
+      await usuario.save();
+      
+      return result.response;
+    } catch (e) {
+      return e;
+    }
   }
 
-  async deleteImagemPrincipalVeiculo(id: string){
-    //A IMPLEMENTAR
-    return "A implementar";
+  async deleteImagemPrincipalAutomovel(id: string, idAutomovel:string){
+    try {
+      const Usuario = new this.UserModel(
+        await this.UserModel.findById(id)
+      );
+
+      const imagemAchada = Usuario.CadastroFreteiro.Automovel.find((aut) => aut._id.toString() == idAutomovel).ImagemPrincipal;
+
+      if (imagemAchada === undefined) {
+        throw new BadRequestException('Algo de ruim ocorreu', {
+          cause: new Error(),
+          description: 'Essa imagem não existe',
+        });
+      }
+
+      const ImagemADeletar = {
+        Url: imagemAchada.Url,
+        NomeArquivo: imagemAchada.NomeArquivo,
+      };
+
+      const response = this.imagemService.deleteImagem(
+        VeiculoImagemConfigs.caminhoImagemPrincipalCloudinary,
+        ImagemADeletar
+      );
+
+      const indiceAutomovel = Usuario.CadastroFreteiro.Automovel.findIndex((aut) => aut._id.toString() == idAutomovel);
+      Usuario.CadastroFreteiro.Automovel[indiceAutomovel].ImagemPrincipal = undefined;
+
+      await Usuario.save();
+
+      return response;
+    } catch (e) {
+      return e;
+    }
   }
 
-  async createImagemsSecundarias(imagens: Array<Express.Multer.File>, idMaquina: string){
-    //A IMPLEMENTAR
-    return "A implementar";
+  async createImagemsSecundarias(imagens: Array<Express.Multer.File>, id:string, idAutomovel: string){
+    try {
+      const result = await this.imagemService.createImagemsSecundarias(
+        imagens,
+        VeiculoImagemConfigs,
+        VeiculoImagemLimites
+      );
+
+      const usuario = await this.UserModel.findById(id);
+      const indiceAutomovel = usuario.CadastroFreteiro.Automovel.findIndex((aut) => aut._id.toString() == idAutomovel);
+      usuario.CadastroFreteiro.Automovel[indiceAutomovel].ImagensSecundarias.push(...result.imagensAdicionadas);
+      usuario.save();
+
+      return result.response;
+    } catch (e) {
+      return e;
+    }
   }
 
-  async deleteImagemSecundaria(filename: string, id: string){
-    //A IMPLEMENTAR
-    return "A implementar";
+  async deleteImagemSecundaria(id: string, idAutomovel: string, filename: string){
+    try {
+      const Usuario = new this.UserModel(
+        await this.UserModel.findById(id)
+      );
+      
+      const veiculo = Usuario.CadastroFreteiro.Automovel.find((aut) => aut._id.toString() == idAutomovel);
+      
+      const ImagemAchada = veiculo.ImagensSecundarias.find(
+        (ImagensSecundarias) => ImagensSecundarias.NomeArquivo === filename
+      );
+
+      if (ImagemAchada === undefined) {
+        throw new BadRequestException('Algo de ruim ocorreu', {
+          cause: new Error(),
+          description: 'Essa imagem não existe',
+        });
+      }
+
+      const ImagemADeletar = {
+        Url: ImagemAchada.Url,
+        NomeArquivo: ImagemAchada.NomeArquivo,
+      };
+
+      const indiceAutomovel = Usuario.CadastroFreteiro.Automovel.findIndex((aut) => aut._id.toString() == idAutomovel);
+      Usuario.CadastroFreteiro.Automovel[indiceAutomovel].ImagensSecundarias 
+      = Usuario.CadastroFreteiro.Automovel[indiceAutomovel].ImagensSecundarias.filter(
+        (ImagensSecundarias) =>
+          ImagensSecundarias.NomeArquivo != ImagemADeletar.NomeArquivo
+      );
+
+      await this.imagemService.deleteImagem(
+        VeiculoImagemConfigs.caminhoImagensSecundariasCloudinary,
+        ImagemADeletar
+      );
+
+      await Usuario.save();
+
+      const resposta = {
+        message: 'Foto removida com sucesso!',
+        FotoRemovida: { ...ImagemADeletar },
+      };
+
+      return resposta;
+    } catch (e) {
+      return e;
+    }
   }
 
   async findOneCredentials(email: string) {
@@ -208,9 +641,6 @@ async updateCadastro(id: string, cadastro: CadastroDto){
     }).select('Login _id');
     return foundCredentials;
   }
-
-
-
 
   async encryparSenha(senha: string) {
     const saltOrRounds = 10;

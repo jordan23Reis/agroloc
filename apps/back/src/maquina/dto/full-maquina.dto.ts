@@ -39,6 +39,12 @@ class Endereco {
 
     @IsNotEmpty()
     @IsString()
+    @MinLength(MaquinaSchemaDtoRestraints.tamMinEstado)
+    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxEstado)
+    Estado: string
+
+    @IsNotEmpty()
+    @IsString()
     @MinLength(MaquinaSchemaDtoRestraints.tamMinCidade)
     @MaxLength(MaquinaSchemaDtoRestraints.tamMaxCidade)
     Cidade: string

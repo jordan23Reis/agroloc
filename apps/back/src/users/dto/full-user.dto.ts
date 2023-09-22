@@ -19,7 +19,7 @@ import mongoose from 'mongoose';
 import { Type } from 'class-transformer';
 import { MaquinaUsuarioTipos, UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 
-import { IsEnum } from 'class-validator';
+import { IsBoolean, IsEnum } from 'class-validator';
 
 class Categoria {
   @IsNotEmpty()
@@ -105,7 +105,49 @@ class Automovel {
   Categoria: Categoria;
 }
 
+class EnderecoAtivo {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinCep)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCep)
+  Cep: string
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNomeCidade)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNomeCidade)
+  Cidade: string
+
+  @IsOptional()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNomeBairro)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNomeBairro)
+  Bairro: string
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinLogradouro)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxLogradouro)
+  Logradouro: string
+
+  @IsOptional()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinComplemento)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxComplemento)
+  Complemento: string
+
+  @IsOptional()
+  @IsNumber()
+  @Min(UsuarioSchemaDtoRestraints.tamMinNumero)
+  @Max(UsuarioSchemaDtoRestraints.tamMaxNumero)
+  Numero: number
+}
+
 export class CadastroFreteiro {
+  @IsNotEmpty()
+  @IsBoolean()
+  EstaAtivo: boolean;
+
   @IsNotEmpty()
   @IsString()
   @MinLength(UsuarioSchemaDtoRestraints.tamMinCnh)
@@ -117,6 +159,13 @@ export class CadastroFreteiro {
   @IsArray()
   @Type(() => Automovel)
   Automovel: Automovel[];
+
+  @IsOptional()
+  @ValidateNested()
+  @IsObject()
+  @Type(() => EnderecoAtivo)
+  EnderecoAtivo: EnderecoAtivo;
+
 }
 
 export class Enderecos {
@@ -125,6 +174,12 @@ export class Enderecos {
   @MinLength(UsuarioSchemaDtoRestraints.tamMinCep)
   @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCep)
   Cep: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNomeEstado)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNomeEstado)
+  Estado: string;
 
   @IsNotEmpty()
   @IsString()

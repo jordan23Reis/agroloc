@@ -29,6 +29,7 @@ import { JwtAuthGuard } from '../auth-user/guards/jwt.auth-user.guard';
 import { MaquinaExiste } from './guards/MaquinaExiste';
 import { UsuarioComumGuard } from '../users/guards/UsuarioComum';
 import { UsuarioDonoDaMaquina } from './guards/UsuarioDonoDaMaquina';
+import mongoose from 'mongoose';
 
 @Controller('maquina')
 export class MaquinaController {
@@ -47,7 +48,7 @@ export class MaquinaController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.maquinaService.findOne(id);
+    return this.maquinaService.findOneSafe(id);
   }
 
   @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
