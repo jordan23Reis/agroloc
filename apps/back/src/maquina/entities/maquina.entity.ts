@@ -59,6 +59,14 @@ class Endereco {
   @Prop({
     required: true, 
     type: String,
+    minlength: MaquinaSchemaDtoRestraints.tamMinEstado, 
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxEstado
+  })
+  Estado: string
+
+  @Prop({
+    required: true, 
+    type: String,
     minlength: MaquinaSchemaDtoRestraints.tamMinCidade, 
     maxlength: MaquinaSchemaDtoRestraints.tamMaxCidade
   })

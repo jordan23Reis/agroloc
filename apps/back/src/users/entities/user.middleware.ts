@@ -12,5 +12,9 @@ export async function UserMiddlewares() {
     //IMPLEMENTAR AQUI A ATUALIZACAO DE TUDO ATRELADO A MAQUINA QUE DEVE SER ATUALIZADO
   });
 
+  schema.virtual("NomeCompleto").get(function () {
+    return this.CadastroComum.Nome + " " + this.CadastroComum.Sobrenome;
+  });
+
   return schema;
 }

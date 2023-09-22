@@ -177,6 +177,12 @@ export class Enderecos {
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(UsuarioSchemaDtoRestraints.tamMinNomeEstado)
+  @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNomeEstado)
+  Estado: string;
+
+  @IsNotEmpty()
+  @IsString()
   @MinLength(UsuarioSchemaDtoRestraints.tamMinNomeCidade)
   @MaxLength(UsuarioSchemaDtoRestraints.tamMaxNomeCidade)
   Cidade: string;

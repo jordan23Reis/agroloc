@@ -38,6 +38,9 @@ enum UsuarioSchemaDtoRestraints {
   tamMinNomeCidade = 0,
   tamMaxNomeCidade = 100,
 
+  tamMinNomeEstado = 0,
+  tamMaxNomeEstado = 50,
+
   tamMinNomeBairro = 0,
   tamMaxNomeBairro = 100,
 

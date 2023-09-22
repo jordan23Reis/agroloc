@@ -124,6 +124,14 @@ class EnderecoComId {
   @Prop({
     required: true,
     type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNomeEstado,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeEstado,
+  })
+  Estado: string;
+
+  @Prop({
+    required: true,
+    type: String,
     minlength: UsuarioSchemaDtoRestraints.tamMinNomeCidade,
     maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeCidade,
   })
@@ -203,6 +211,14 @@ class Enderecos {
     maxlength: UsuarioSchemaDtoRestraints.tamMaxCep,
   })
   Cep: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNomeEstado,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeEstado,
+  })
+  Estado: string;
 
   @Prop({
     required: true,

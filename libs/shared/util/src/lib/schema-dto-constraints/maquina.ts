@@ -34,6 +34,9 @@ enum MaquinaSchemaDtoRestraints {
     tamMinIdEndereco=0,
     tamMaxIdEndereco=100,
 
+    tamMinEstado = 0,
+    tamMaxEstado = 50,
+
     tamMinCidade = 0,
     tamMaxCidade = 100,
 

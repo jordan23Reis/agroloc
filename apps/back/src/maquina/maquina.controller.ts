@@ -48,7 +48,7 @@ export class MaquinaController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.maquinaService.findOne(id);
+    return this.maquinaService.findOneSafe(id);
   }
 
   @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)

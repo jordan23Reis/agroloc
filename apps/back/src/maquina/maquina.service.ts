@@ -61,19 +61,18 @@ export class MaquinaService {
     }
   }
 
-  find(query) {
+  async find(query) {
     try {
       const resPerPage = Number(query.quantidadePorPagina) || 0;
       const currentPage = Number(query.page) || 1;
       const skip = resPerPage * (currentPage - 1);
-      const busca = query.busca
-        ? {
-            Nome: {
-              $regex: query.busca,
-              $options: 'i',
-            },
-          }
-        : {};
+      // const busca = query.busca
+      //   ? {
+      //       Nome: {
+      //         $regex: query.busca
+      //       },
+      //     }
+      //   : {};
 
       const categoria = query.categoria
         ? {
@@ -145,9 +144,9 @@ export class MaquinaService {
           ordenar = {};
       }
 
-      const maquinas = this.maquinaModel
+      let maquinas = await this.maquinaModel
         .find({
-          ...busca,
+          // ...busca,
           ...categoria,
           ...tipoPreco,
           ...precoMin,
@@ -156,8 +155,33 @@ export class MaquinaService {
         .limit(resPerPage)
         .skip(skip)
         .sort({ ...ordenar });
+
+        if(query.busca){
+          const regexPattern = new RegExp(
+            query.busca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+            .normalize("NFD") //desconsidera acentos
+            .replace(/[\u0300-\u036f]/g, "") //desconsidera acentos
+            , 'ui');
+          maquinas = maquinas.filter( (maq) => regexPattern.test(
+            maq.Nome
+            .normalize("NFD") //desconsidera acentos
+            .replace(/[\u0300-\u036f]/g, "") //desconsidera acentos
+            ))
+          }
+
       return maquinas;
     } catch (e) {
+      return e;
+    }
+  }
+  async findOneSafe(id: string){
+    try{
+      const select = {
+        Endereco: 0
+      }
+      const foundMaquina = await this.maquinaModel.findById(id).select(select);
+      return foundMaquina;
+    }catch(e){
       return e;
     }
   }
@@ -253,6 +277,7 @@ export class MaquinaService {
       const enderecoComId = {
         idEndereco,
         Cep: endereco.Cep, 
+        Estado: endereco.Estado,
         Cidade: endereco.Cidade, 
         Bairro: endereco.Bairro, 
         Logradouro: endereco.Logradouro,

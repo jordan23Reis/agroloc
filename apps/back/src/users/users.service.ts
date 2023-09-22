@@ -41,20 +41,32 @@ export class UsersService {
     return createdUser;
   }
 
-  findFreteiros(query) {
+  selectUsuario = {
+    Login: 0,
+    InformacoesBancarias: 0,
+    CadastroComum:{
+      Enderecos: 0
+    },
+    CadastroFreteiro:{
+      EnderecoAtivo: {
+            idEndereco: 0,
+            Cep: 0,
+            Bairro: 0,
+            Logradouro: 0,
+            Complemento: 0,
+            Numero: 0,
+            _id: 0
+          },
+    }
+  }
+
+
+  async findFreteiros(query) {
     const tipoFreteiro = {'Login.Tipo': MaquinaUsuarioTipos.Freteiro}
     const resPerPage = Number(query.quantidadePorPagina) || 0;
     const currentPage = Number(query.page) || 1;
     const skip = resPerPage * (currentPage - 1);
-    const busca = query.busca
-    ? {
-        "CadastroComum.Nome": {
-          $regex: query.busca,
-          $options: 'i',
-        },
-      }
-    : {};
-
+    
     let ordenar;
     switch (query.ordernarPor) {
       case 'MaisBemAvaliado':
@@ -76,24 +88,45 @@ export class UsersService {
         ordenar = {};
     }
 
-    const select = "-Login -InformacoesBancarias";
 
-    const listedUsers = this.UserModel.find({
+    let listedUsers = await this.UserModel.find({
       ...tipoFreteiro,
-      ...busca
+      // ...busca
       }) 
       .limit(resPerPage)
       .skip(skip)
       .sort(ordenar)
-      .select(select);
+      .select(this.selectUsuario);
 
-      return listedUsers;
+      if(query.busca){
+      const regexPattern = new RegExp(
+        query.busca.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        .normalize("NFD") //desconsidera acentos
+        .replace(/[\u0300-\u036f]/g, "") //desconsidera acentos
+        , 'ui');
+      listedUsers = listedUsers.filter( (user) =>{
+        
+        return regexPattern.test(
+          user["NomeCompleto"]
+          .normalize("NFD") //desconsidera acentos
+          .replace(/[\u0300-\u036f]/g, "") //desconsidera acentos
+          )}
+          )}
+        return listedUsers;
   }
 
   async findOne(id: string) {
     const foundUser = await this.UserModel.findById(id).select('-Login -InformacoesBancarias');
     return foundUser;
   }
+
+  async findOneSafe(id: string) {
+    const foundUser = await this.UserModel.findById(id)
+    //ADICIONAR NO SELECT OS FUTUROS CASOS QUANDO TIVER CATEGORIA, AVALIACAO, PROCESSOS ETC...
+    .select(this.selectUsuario)
+    return foundUser;
+  }
+
 
   async findCadastro(id: string){
     const cadastro = await this.UserModel.findById(id).select("+CadastroComum +CadastroFreteiro");
@@ -165,6 +198,7 @@ export class UsersService {
       const enderecoComId = {
         idEndereco,
         Cep: endereco.Cep, 
+        Estado: endereco.Estado,
         Cidade: endereco.Cidade, 
         Bairro: endereco.Bairro, 
         Logradouro: endereco.Logradouro,
@@ -324,12 +358,12 @@ export class UsersService {
     maquinasAchadas.forEach(async maq => {
       maq.Endereco.idEndereco = idEndereco;
       maq.Endereco.Cep = Endereco.Cep;
+      maq.Endereco.Estado = Endereco.Estado;
       maq.Endereco.Cidade = Endereco.Cidade;
       maq.Endereco.Bairro = Endereco.Bairro;
       maq.Endereco.Logradouro = Endereco.Logradouro;
       maq.Endereco.Complemento = Endereco.Complemento;
       maq.Endereco.Numero = Endereco.Numero;
-      console.log(endereco);
       await maq.save();
     });
 
@@ -338,6 +372,7 @@ export class UsersService {
       const EnderecoAtivo = {
         idEndereco: foundUser.CadastroFreteiro.EnderecoAtivo?.idEndereco,
         Cep: Endereco.Cep, 
+        Estado: Endereco.Estado,
         Cidade: Endereco.Cidade, 
         Bairro: Endereco.Bairro, 
         Logradouro: Endereco.Logradouro,

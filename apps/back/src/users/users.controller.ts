@@ -38,19 +38,8 @@ export class UsersController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     try {
-      console.log(createUserDto);
       const createdUser = this.usersService.create(createUserDto);
       return createdUser;
-    } catch (e) {
-      return e;
-    }
-  }
-
-  @UseGuards(UsuarioExisteGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    try {
-      return this.usersService.findMaquinasRegistradas(id);
     } catch (e) {
       return e;
     }
@@ -64,6 +53,20 @@ export class UsersController {
       return e;
     }
   }
+
+  @UseGuards(UsuarioExisteGuard)
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    try {
+      return this.usersService.findOneSafe(id);
+    } catch (e) {
+      return e;
+    }
+  }
+
+  
+
+
 
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
   @Get("cadastro/:id")
