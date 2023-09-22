@@ -30,44 +30,6 @@ class Preco {
     Tipo: Tipo;
 }
 
-class Endereco {
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(MaquinaSchemaDtoRestraints.tamMinCep)
-    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxCep)
-    Cep: string
-
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(MaquinaSchemaDtoRestraints.tamMinCidade)
-    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxCidade)
-    Cidade: string
-
-    @IsOptional()
-    @IsString()
-    @MinLength(MaquinaSchemaDtoRestraints.tamMinBairro)
-    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxBairro)
-    Bairro: string
-
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(MaquinaSchemaDtoRestraints.tamMinLogradouro)
-    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxLogradouro)
-    Logradouro: string
-
-    @IsOptional()
-    @IsString()
-    @MinLength(MaquinaSchemaDtoRestraints.tamMinComplemento)
-    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxComplemento)
-    Complemento: string
-
-    @IsOptional()
-    @IsNumber()
-    @Min(MaquinaSchemaDtoRestraints.numeroMin)
-    @Max(MaquinaSchemaDtoRestraints.numeroMax)
-    Numero: number
-}
-
 class Categoria{
     @IsNotEmpty()
     @IsString()
@@ -118,14 +80,17 @@ export class CreateUpdateMaquinaDto {
     Altura: number;
 
     @IsNotEmpty()
+    @IsBoolean()
+    EstaAtiva: boolean;
+
+    @IsNotEmpty()
     @ValidateNested()
     @Type(() => Categoria)
     Categoria: Categoria;
 
-    @IsNotEmpty()
-    @ValidateNested()
-    @Type(() => Endereco)
-    Endereco: Endereco;
+    @IsOptional()
+    @IsString()
+    IdEndereco: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty()
     @ValidateNested()

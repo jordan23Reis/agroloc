@@ -64,14 +64,6 @@ export class MaquinaController {
   }
 
   @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
-  @Put(':id/:idEndereco')
-  atualizarEndereco(@Param('id') id: string, @Param('idEndereco') idEndereco: mongoose.Schema.Types.ObjectId) {
-    return this.maquinaService.atualizarEndereco(id, idEndereco);
-  }
-
-
-
-  @UseGuards(JwtAuthGuard, UsuarioComumGuard, MaquinaExiste, UsuarioDonoDaMaquina)
   @Post('imagem/principal/:id')
   @UseInterceptors(
     FileInterceptor('Imagem', {

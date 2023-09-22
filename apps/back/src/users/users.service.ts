@@ -102,9 +102,10 @@ export class UsersService {
 
   async findMaquinasRegistradas(id: string){
     const userFound = await this.UserModel.findById(id);  
-    const maquinasRegistradas = await Promise.all(userFound.Maquinas.map( async maquina => {
+    let maquinasRegistradas = await Promise.all(userFound.Maquinas.map( async maquina => {
       return await this.maquinaService.findOne(maquina.toString());
     }))
+    maquinasRegistradas = maquinasRegistradas.filter( maquina => maquina !== null);
     return maquinasRegistradas;
   }
 
@@ -113,26 +114,103 @@ export class UsersService {
     if((userFound.CadastroComum.Nome !== cadastro.CadastroComum.Nome) || (userFound.CadastroComum.Sobrenome !== cadastro.CadastroComum.Sobrenome)){
       const maquinasAchadas = await this.findMaquinasRegistradas(id);
       maquinasAchadas.forEach(async maquina => {
-        maquina.DonoDaMaquina.Nome = cadastro.CadastroComum.Nome + " " + cadastro.CadastroComum.Sobrenome;
+        maquina.DonoDaMaquina.Nome = cadastro.CadastroComum?.Nome + " " + cadastro.CadastroComum?.Sobrenome;
         await maquina.save();
-      });
+      }); 
     }
-    const cadastroMongoose = new this.UserModel(cadastro);
+    let cadastroMongoose = new this.UserModel(cadastro);
 
     if (userFound.Login.Tipo !== "Freteiro"){
       cadastroMongoose.CadastroFreteiro = undefined;
     }else{
       userFound.CadastroFreteiro = cadastroMongoose.CadastroFreteiro;
+      if(cadastro.CadastroFreteiro.EstaAtivo == true && cadastro.CadastroFreteiro.IdEndereco == undefined){
+        throw new BadRequestException('Para ativar a maquina, é necessario informar o endereco');
+      }
     }
 
+    const enderecos = userFound.CadastroComum.Enderecos;
     userFound.CadastroComum = cadastroMongoose.CadastroComum;
+    userFound.CadastroComum.Enderecos = enderecos;
     await userFound.save();
+
+    if(userFound.Login.Tipo == "Freteiro"){
+      if(cadastro.CadastroFreteiro.IdEndereco == undefined && userFound.CadastroFreteiro.EnderecoAtivo != undefined){
+        await this.deleteEnderecoFreteiro(id);
+      }
+
+      if(cadastro.CadastroFreteiro.IdEndereco != undefined){
+        if(cadastro.CadastroFreteiro.IdEndereco.toString() != userFound.CadastroFreteiro.EnderecoAtivo?.idEndereco?.toString()){
+          cadastroMongoose = await this.atualizarEnderecoFreteiro(id, cadastro.CadastroFreteiro.IdEndereco);
+        }
+      }
+    }
 
     const response = {
       message: 'Cadastro atualizado com sucesso!',
       cadastro: cadastroMongoose
     };
     return response;
+  }
+
+  async atualizarEnderecoFreteiro(id:string, idEndereco: mongoose.Schema.Types.ObjectId){
+    try{
+      const usuario = await this.UserModel.findById(id);
+
+      const endereco = usuario.CadastroComum.Enderecos.find( (end) => end._id.toString() === idEndereco.toString());
+      if(endereco === undefined){
+        throw new BadRequestException('Esse endereco não existe');
+      }
+
+      const enderecoComId = {
+        idEndereco,
+        Cep: endereco.Cep, 
+        Cidade: endereco.Cidade, 
+        Bairro: endereco.Bairro, 
+        Logradouro: endereco.Logradouro,
+        Complemento: endereco.Complemento, 
+        Numero: endereco.Numero, 
+      };
+      
+      usuario.CadastroFreteiro.EnderecoAtivo = enderecoComId;
+      await usuario.save();
+
+      return usuario;
+    }catch(e){
+      return e;
+    }
+  }
+
+  async deleteEnderecoFreteiro(id:string){
+    try{
+      const usuarioFreteiro = await this.UserModel.findById(id);
+      const enderecoFreteiro = usuarioFreteiro.CadastroFreteiro.EnderecoAtivo;
+
+      if (enderecoFreteiro == undefined){
+        throw new BadRequestException('Esse freteiro não possui endereço!');
+      }
+
+      usuarioFreteiro.CadastroFreteiro.EnderecoAtivo = undefined;
+      let resposta;
+      if (usuarioFreteiro.CadastroFreteiro.EstaAtivo == true){
+        usuarioFreteiro.CadastroFreteiro.EstaAtivo = false
+        resposta = {
+          message: 'Endereco removido com sucesso! A maquina foi desativada pois precisa de um endereço pra estar ativa.',
+          enderecoMaquina: enderecoFreteiro
+        };
+      }else{
+        resposta = {
+          message: 'Endereco removido com sucesso!',
+          enderecoMaquina: enderecoFreteiro
+        };
+      }
+      await usuarioFreteiro.save();
+      return resposta;
+
+
+    }catch(e){
+      return e;
+    }
   }
 
   async updateSenha(id: string, senhaNova: Senha){
@@ -228,23 +306,56 @@ export class UsersService {
 
   async editarEndereco(id:string, idEndereco:string, endereco: Enderecos){
     const foundUser = await this.UserModel.findById(id);
-    const indexMaquina = foundUser.CadastroComum.Enderecos.findIndex( end => end._id.toString() == idEndereco);
+    const indexEndereco = foundUser.CadastroComum.Enderecos.findIndex( end => end._id.toString() == idEndereco);
     
-    if(indexMaquina === -1){
+    if(indexEndereco === -1){
       throw new UnauthorizedException("Endereço não encontrado!");
     }
     const Endereco = {
       ...endereco, 
-      _id: foundUser.CadastroComum.Enderecos[indexMaquina]._id
+      _id: foundUser.CadastroComum.Enderecos[indexEndereco]._id
     };
-    foundUser.CadastroComum.Enderecos[indexMaquina] = Endereco;
+    foundUser.CadastroComum.Enderecos[indexEndereco] = Endereco;
+
+    const maquinasAchadas = await this.findMaquinasRegistradas(id);
+
+    maquinasAchadas.filter( maq => maq.Endereco?.idEndereco == idEndereco)
+
+    maquinasAchadas.forEach(async maq => {
+      maq.Endereco.idEndereco = idEndereco;
+      maq.Endereco.Cep = Endereco.Cep;
+      maq.Endereco.Cidade = Endereco.Cidade;
+      maq.Endereco.Bairro = Endereco.Bairro;
+      maq.Endereco.Logradouro = Endereco.Logradouro;
+      maq.Endereco.Complemento = Endereco.Complemento;
+      maq.Endereco.Numero = Endereco.Numero;
+      console.log(endereco);
+      await maq.save();
+    });
+
+    if(foundUser.Login.Tipo == "Freteiro"){
+      if(foundUser.CadastroFreteiro.EnderecoAtivo.idEndereco.toString() == idEndereco){
+      const EnderecoAtivo = {
+        idEndereco: foundUser.CadastroFreteiro.EnderecoAtivo?.idEndereco,
+        Cep: Endereco.Cep, 
+        Cidade: Endereco.Cidade, 
+        Bairro: Endereco.Bairro, 
+        Logradouro: Endereco.Logradouro,
+        Complemento: Endereco.Complemento, 
+        Numero: Endereco.Numero, 
+      }
+      foundUser.CadastroFreteiro.EnderecoAtivo = EnderecoAtivo;
+      }
+    }
     await foundUser.save();
+
     const response = {
       message: 'Endereço atualizado com sucesso!',
       automovel: endereco
     };
     return response
   }
+
 
   async removerEndereco(id:string, idEndereco: string){
     const foundUser = await this.UserModel.findById(id);
@@ -253,12 +364,26 @@ export class UsersService {
     if(foundUser.CadastroComum.Enderecos.length === enderecosSemAtualEndereco.length){
       throw new UnauthorizedException("Endereço não encontrado!");
     }
+
     foundUser.CadastroComum.Enderecos = enderecosSemAtualEndereco;
+
+    if(foundUser.CadastroFreteiro?.EnderecoAtivo?.idEndereco?.toString() == idEndereco){
+      foundUser.CadastroFreteiro.EnderecoAtivo = undefined;
+    }
+
+    const maquinasAchadas = await this.findMaquinasRegistradas(id);
+    maquinasAchadas.filter( maq => maq.Endereco?.idEndereco == idEndereco)
+    maquinasAchadas.forEach(async maq => {
+      maq.Endereco = undefined;
+      await maq.save();
+    });
+
     await foundUser.save();
     const response = {
       message: 'Endereço removido com sucesso!',
     };
 
+   
     return response
   }
 

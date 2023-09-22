@@ -101,9 +101,64 @@ class Automovel {
 
   @Prop({ type: Categoria })
   Categoria: Categoria;
-  
-  
 }
+
+@Schema()
+class EnderecoComId {
+  @Prop({
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    minlength: UsuarioSchemaDtoRestraints.tamMinIdEndereco, 
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxIdEndereco
+  })
+  idEndereco: mongoose.Schema.Types.ObjectId
+
+  @Prop({
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinCep,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxCep,
+  })
+  Cep: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNomeCidade,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeCidade,
+  })
+  Cidade: string;
+
+  @Prop({
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNomeBairro,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNomeBairro,
+  })
+  Bairro: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinLogradouro,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxLogradouro,
+  })
+  Logradouro: string;
+
+  @Prop({
+    type: String,
+    minlength: UsuarioSchemaDtoRestraints.tamMinComplemento,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxComplemento,
+  })
+  Complemento: string;
+
+  @Prop({
+    type: Number,
+    minlength: UsuarioSchemaDtoRestraints.tamMinNumero,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxNumero,
+  })
+  Numero: number;
+}
+
 
 //depois que crio a classe e insiro os atributos eu preciso chamar a @Prop({ type: + nome da classe})
 // se for um array preciso coloca-lo dentro de [] ex: depois na linha posterior
@@ -113,6 +168,12 @@ class Automovel {
 @Schema()
 class CadastroFreteiro {
   @Prop({
+    required: true,
+    default: false,
+    type: Boolean,
+  })
+  EstaAtivo: boolean;
+  @Prop({
     type: String,
     required: true,
     minlength: UsuarioSchemaDtoRestraints.tamMinCnh,
@@ -121,7 +182,14 @@ class CadastroFreteiro {
   CNH: string;
   @Prop([{ type: Automovel }]) // aqui o type faz referência ao padrão do nest
   Automovel: Automovel[];
+  
+  @Prop({type: EnderecoComId})
+  EnderecoAtivo: EnderecoComId
+
 }
+
+
+
 
 @Schema()
 class Enderecos {

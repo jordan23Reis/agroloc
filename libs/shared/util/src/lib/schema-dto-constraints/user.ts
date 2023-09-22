@@ -11,6 +11,9 @@ enum UsuarioSchemaDtoRestraints {
   tamMinUrlImagem = 1,
   tamMaxUrlImagem = 1000,
 
+  tamMinIdEndereco = 0,
+  tamMaxIdEndereco = 100,
+
   tamMinArquivoImagem = 1,
   tamMaxArquivoImagem = 1000,
 

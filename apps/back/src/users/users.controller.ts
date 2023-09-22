@@ -29,6 +29,7 @@ import { UsuarioImagemConfigs, UsuarioImagemLimites, VeiculoImagemConfigs, Veicu
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import { AutomovelExisteGuard } from './guards/AutomovelExisteGuard';
+import mongoose from 'mongoose';
 
 @Controller('usuario')
 export class UsersController {
@@ -79,6 +80,26 @@ export class UsersController {
   updateCadastroUsuario(@Param("id") id: string, @Body() cadastro: CadastroDto) {
     try {
       return this.usersService.updateCadastro(id, cadastro);
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard)
+  @Put("enderecofreteiro/:id/:idEndereco")
+  updateEnderecoFreteiro(@Param("id") id: string, @Param("idEndereco") idEndereco: mongoose.Schema.Types.ObjectId) {
+    try {
+      return this.usersService.atualizarEnderecoFreteiro(id, idEndereco);
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard)
+  @Delete("enderecofreteiro/:id")
+  deleteEnderecoFreteiro(@Param("id") id: string) {
+    try {
+      return this.usersService.deleteEnderecoFreteiro(id);
     } catch (e) {
       return e;
     }

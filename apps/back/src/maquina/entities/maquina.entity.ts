@@ -44,7 +44,7 @@ class Endereco {
     required: true,
     type: mongoose.Schema.Types.ObjectId,
     minlength: MaquinaSchemaDtoRestraints.tamMinIdEndereco, 
-    maxlength: MaquinaSchemaDtoRestraints.tamMaxEndereco
+    maxlength: MaquinaSchemaDtoRestraints.tamMaxIdEndereco
   })
   idEndereco: mongoose.Schema.Types.ObjectId
 
@@ -238,7 +238,7 @@ export class Maquina {
 
   @Prop({
     type: Endereco, 
-    required: true
+    required: false
   })
   Endereco: Endereco;
 

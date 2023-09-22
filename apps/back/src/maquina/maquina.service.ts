@@ -28,6 +28,19 @@ export class MaquinaService {
     try{
     const idUsuario = request.user.IdUsuario
     const usuarioDono = await this.usersService.findOne(idUsuario);
+
+    if(createMaquinaDto.EstaAtiva == true && createMaquinaDto.IdEndereco == undefined){
+        throw new BadRequestException('Para ativar a maquina, é necessario informar o endereco');
+    }
+
+    if(createMaquinaDto.IdEndereco != undefined){
+      const usuario = await this.usersService.findCadastro(idUsuario.toString());
+      const endereco = usuario.CadastroComum.Enderecos.find( (end) => end._id.toString() === createMaquinaDto.IdEndereco.toString());
+      if(endereco === undefined){
+        throw new BadRequestException('Esse endereco não existe');
+      }
+    }
+
     const maquinaDtoComIdUsuario = {
       ...createMaquinaDto, 
       DonoDaMaquina: {
@@ -35,10 +48,13 @@ export class MaquinaService {
         Nome: usuarioDono.CadastroComum.Nome + " " + usuarioDono.CadastroComum.Sobrenome,
         Foto: usuarioDono.CadastroComum.Foto
       }};
+      
       //QUANDO PRECO E CATEGORIA ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI
       const createdMaquina = await this.maquinaModel.create(maquinaDtoComIdUsuario);
       usuarioDono.Maquinas.push(createdMaquina.id);
       await usuarioDono.save();
+      await this.atualizarEndereco(createdMaquina.id, createMaquinaDto.IdEndereco);
+
       return createdMaquina;
     }catch(e){
       return e;
@@ -158,13 +174,38 @@ export class MaquinaService {
 
   async update(id: string, updateMaquinaDto: CreateUpdateMaquinaDto) {
     try{
-      //QUANDO PRECO E CATEGORIA ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI
-      const updatedMaquina = this.maquinaModel.findByIdAndUpdate(
-        id,
-        updateMaquinaDto,
-        { new: true }
-      );
-      return updatedMaquina;
+      //QUANDO PRECO E CATEGORIA E AVALIACOES ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI
+
+      if(updateMaquinaDto.EstaAtiva == true && updateMaquinaDto.IdEndereco == undefined){
+        throw new BadRequestException('Para ativar a maquina, é necessario informar o endereco');
+      }
+
+      const maquina = await this.maquinaModel.findById(id);
+      maquina.Nome =  updateMaquinaDto.Nome, 
+      maquina.Descricao = updateMaquinaDto.Descricao, 
+      maquina.Peso = updateMaquinaDto.Peso,
+      maquina.Comprimento = updateMaquinaDto.Comprimento,
+      maquina.Largura = updateMaquinaDto.Largura,
+      maquina.Altura = updateMaquinaDto.Altura,
+      maquina.EstaAtiva = updateMaquinaDto.EstaAtiva,
+      maquina.Categoria = updateMaquinaDto.Categoria,
+      maquina.Preco = updateMaquinaDto.Preco,
+
+      await maquina.save();
+
+      if(updateMaquinaDto.IdEndereco == undefined && maquina.Endereco != undefined){
+        await this.excluirEndereco(id);
+      }
+
+
+      if(updateMaquinaDto.IdEndereco != undefined){
+
+      if(updateMaquinaDto.IdEndereco.toString() != maquina.Endereco?.idEndereco?.toString()){
+        await this.atualizarEndereco(id, updateMaquinaDto.IdEndereco);
+      }
+      }
+
+      return maquina;
     }catch(e){
       return e;
     }
@@ -201,13 +242,24 @@ export class MaquinaService {
     try{
       const maquina = await this.maquinaModel.findById(id);
       const usuario = await this.usersService.findCadastro(maquina.DonoDaMaquina.idDono.toString());
+
       const endereco = usuario.CadastroComum.Enderecos.find( (end) => end._id.toString() === idEndereco.toString());
       if(endereco === undefined){
         throw new BadRequestException('Esse endereco não existe');
       }
-      const enderecoComId = { ...endereco, idEndereco};
+      delete endereco._id;
+      
 
-      enderecoComId._id = undefined;
+      const enderecoComId = {
+        idEndereco,
+        Cep: endereco.Cep, 
+        Cidade: endereco.Cidade, 
+        Bairro: endereco.Bairro, 
+        Logradouro: endereco.Logradouro,
+        Complemento: endereco.Complemento, 
+        Numero: endereco.Numero, 
+      };
+      
       maquina.Endereco = enderecoComId;
 
       await maquina.save();
@@ -217,6 +269,35 @@ export class MaquinaService {
     }
   }
 
+  async excluirEndereco(id:string){
+    try{
+      const maquina = await this.maquinaModel.findById(id);
+      const enderecoMaquina = maquina.Endereco;
+      if (maquina.Endereco == undefined){
+        throw new BadRequestException('Essa maquina não possui endereço!');
+      }
+      maquina.Endereco = undefined;
+      let resposta;
+      if (maquina.EstaAtiva == true){
+        maquina.EstaAtiva = false
+        resposta = {
+          message: 'Endereco removido com sucesso! A maquina foi desativada pois precisa de um endereço pra estar ativa.',
+          enderecoMaquina
+        };
+      }else{
+        resposta = {
+          message: 'Endereco removido com sucesso!',
+          enderecoMaquina
+        };
+      }
+      await maquina.save();
+      return resposta;
+
+
+    }catch(e){
+      return e;
+    }
+  }
 
   async createImagemPrincipal(imagem: Express.Multer.File, idMaquina: string) {
     try {

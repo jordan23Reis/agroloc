@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsArray, IsDateString, IsNotEmpty, IsObject, IsOptional, IsString, MaxLength, MinLength, ValidateNested } from "class-validator";
+import { IsArray, IsBoolean, IsDateString, IsNotEmpty, IsObject, IsOptional, IsString, MaxLength, MinLength, ValidateNested } from "class-validator";
 import { UsuarioSchemaDtoRestraints } from "@agroloc/shared/util";
 import mongoose from "mongoose";
 import { Enderecos } from "./full-user.dto";
@@ -60,10 +60,18 @@ class CadastroComum {
 
 class CadastroFreteiro {
     @IsNotEmpty()
+    @IsBoolean()
+    EstaAtivo: boolean;
+    
+    @IsNotEmpty()
     @IsString()
     @MinLength(UsuarioSchemaDtoRestraints.tamMinCnh)
     @MaxLength(UsuarioSchemaDtoRestraints.tamMinCnh)
     CNH: string;
+
+    @IsOptional()
+    @IsString()
+    IdEndereco: mongoose.Schema.Types.ObjectId;
 }
 
 
