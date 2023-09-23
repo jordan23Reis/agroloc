@@ -15,7 +15,6 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "strictPropertyInitialization": false,
     "paths": {
       "@agroloc/account/api": ["libs/account/api/src/index.ts"],
       "@agroloc/account/data-acess": ["libs/account/data-acess/src/index.ts"],
