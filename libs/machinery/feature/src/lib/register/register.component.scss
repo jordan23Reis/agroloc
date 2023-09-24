@@ -3,5 +3,191 @@
   }
 
   .webForm {
+    height: 100%;
+    .container {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      flex-direction: row-reverse;
+      background-color: #d9d9d9;
+      .forms {
+        background-color: #ffffff;
+        height: auto;
+        width: 60%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        margin: 60px 20px;
+        form {
+          height: auto;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          margin: 20px;
+          #Titulo {
+            margin-top: 20px;
+          }
+          #Descricao {
+            textarea {
+              height: 100%;
+            }
+          }
+          button {
+            width: 170px;
+            height: 60px;
+            font-size: 22px;
+            border-radius: 10px;
+            align-self: self-end;
+          }
+        }
+      }
+      .images {
+        background-color: #d9d9d9;
+        height: auto;
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+        align-items: center;
+        justify-content: center;
+        #imagemPrincipal {
+          margin: 10px;
+          .custum-file-upload {
+            height: 200px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: space-between;
+            gap: 20px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #cacaca;
+            background-color: rgba(255, 255, 255, 1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+          }
+
+          .custum-file-upload .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .custum-file-upload .icon svg {
+            height: 80px;
+            fill: rgba(75, 85, 99, 1);
+          }
+
+          .preview {
+            width: 350px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+            img {
+              max-width: 350px;
+              max-height: 250px;
+              width: 100%;
+              height: 100%;
+              border-radius: 10px;
+              box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+            }
+            input {
+              display: none;
+              max-width: 350px;
+              max-height: 250px;
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          .custum-file-upload .text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .custum-file-upload .text span {
+            font-weight: 400;
+            color: rgba(75, 85, 99, 1);
+          }
+
+          .custum-file-upload input {
+            display: none;
+          }
+        }
+
+        #imagemSecundarias {
+          margin: 10px;
+          .custum-file-upload {
+            height: 50px;
+            width: 75px;
+            display: flex;
+            flex-direction: column;
+            align-items: space-between;
+            gap: 10px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #cacaca;
+            background-color: rgba(255, 255, 255, 1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+          }
+
+          .arquivos {
+            width: 100%; /* Defina a largura desejada aqui */
+            max-width: 100%; /* Certifique-se de que a largura máxima não ultrapasse a largura da div pai */
+            overflow-x: auto; /* Habilitar rolagem horizontal quando necessário */
+            white-space: nowrap; /* Impedir que as imagens quebrem em várias linhas */
+            display: flex; /* Alinhar imagens horizontalmente */
+            .preview {
+              max-width: 100%;
+              height: 100px;
+              width: 125px;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              justify-content: center;
+              margin-right: 10px;
+              border-radius: 10px;
+              box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+            }
+          }
+          .custum-file-upload .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .custum-file-upload .icon svg {
+            height: 40px;
+            fill: rgba(75, 85, 99, 1);
+          }
+
+          .custum-file-upload .text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .custum-file-upload .text span {
+            font-weight: 400;
+            color: rgba(75, 85, 99, 1);
+          }
+
+          .custum-file-upload input {
+            display: none;
+          }
+        }
+      }
+    }
   }
 }

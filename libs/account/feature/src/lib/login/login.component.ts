@@ -1,5 +1,4 @@
 import { AuthService, AuthStorage, Login } from '@agroloc/account/data-acess';
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { Platform } from '@angular/cdk/platform';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
@@ -13,7 +12,6 @@ import { Router } from '@angular/router';
 })
 export class AccountLoginComponent {
   _formBuilder = inject(FormBuilder);
-  breakpointObserver = inject(BreakpointObserver);
   http = inject(HttpClient);
   platform = inject(Platform);
   router = inject(Router);

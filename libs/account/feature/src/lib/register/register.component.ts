@@ -8,7 +8,7 @@ import { Platform } from '@angular/cdk/platform';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'agroloc-register',
+  selector: 'agroloc-users-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
