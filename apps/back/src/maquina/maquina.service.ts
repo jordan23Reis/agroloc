@@ -14,6 +14,7 @@ import {
 } from '@agroloc/shared/util';
 import { ImagemService } from '../imagem/imagem.service';
 import { UsersService } from '../users/users.service';
+import { FavoritoService } from '../favorito/favorito.service';
 
 @Injectable()
 export class MaquinaService {
@@ -21,7 +22,10 @@ export class MaquinaService {
     @InjectModel(Maquina.name) private maquinaModel: Model<Maquina>,
     private imagemService: ImagemService,
     @Inject(forwardRef(() => UsersService))
-    private usersService: UsersService
+    private usersService: UsersService,
+
+    @Inject(forwardRef(() => FavoritoService))
+    private favoritoService: FavoritoService
   ) {}
 
   async create(createMaquinaDto: CreateUpdateMaquinaDto, request) {
@@ -205,6 +209,18 @@ export class MaquinaService {
       }
 
       const maquina = await this.maquinaModel.findById(id);
+
+      if(maquina.Nome != updateMaquinaDto.Nome){
+        const usuarioMaquina = await this.usersService.findOne(maquina.DonoDaMaquina.idDono.toString());
+        await usuarioMaquina.populate("MaquinasFavoritas");
+        usuarioMaquina.MaquinasFavoritas = usuarioMaquina.MaquinasFavoritas.filter((fav) => fav.ItemFavorito.idItemFavorito.toString() == id.toString());
+        usuarioMaquina.MaquinasFavoritas.forEach( async (fav) => {
+          const favorito = await this.favoritoService.findFavoritoPorIdItemFavorito(fav.ItemFavorito.idItemFavorito.toString());
+          favorito.ItemFavorito.Nome = updateMaquinaDto.Nome;
+          await favorito.save();
+        });
+      }
+
       maquina.Nome =  updateMaquinaDto.Nome, 
       maquina.Descricao = updateMaquinaDto.Descricao, 
       maquina.Peso = updateMaquinaDto.Peso,

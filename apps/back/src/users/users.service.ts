@@ -116,7 +116,7 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const foundUser = await this.UserModel.findById(id).select('-Login -InformacoesBancarias');
+    const foundUser = await this.UserModel.findById(id).select('-Login -InformacoesBancarias')
     return foundUser;
   }
 
@@ -639,6 +639,11 @@ export class UsersService {
     const foundCredentials = await this.UserModel.findOne({
       'Login.Email': email,
     }).select('Login _id');
+    return foundCredentials;
+  }
+
+  async findLoginTipo(id: string){
+    const foundCredentials = await this.UserModel.findById(id).select('Login.Tipo');
     return foundCredentials;
   }
 

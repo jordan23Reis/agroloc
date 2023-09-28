@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from './configs/config';
 import { UsersModule } from '../users/users.module';
 import { AuthUserModule } from '../auth-user/auth-user.module';
+import { FavoritoModule } from '../favorito/favorito.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthUserModule } from '../auth-user/auth-user.module';
     AuthUserModule,
     MaquinaModule,
     UsersModule,
+    FavoritoModule
   ],
   controllers: [AppController],
   providers: [AppService],
