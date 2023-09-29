@@ -7,6 +7,7 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { ImagemModule } from '../imagem/imagem.module';
 import { MaquinaService } from './maquina.service';
 import { UsersModule } from '../users/users.module';
+import { FavoritoModule } from '../favorito/favorito.module';
 
 const modelMaquina = MongooseModule.forFeatureAsync([
   {
@@ -16,7 +17,7 @@ const modelMaquina = MongooseModule.forFeatureAsync([
 ]);
 
 @Module({
-  imports: [modelMaquina, CloudinaryModule, ImagemModule, forwardRef(() => UsersModule)],
+  imports: [modelMaquina, CloudinaryModule, ImagemModule, forwardRef(() => UsersModule), forwardRef(() => FavoritoModule)],
   controllers: [MaquinaController],
   providers: [MaquinaService],
   exports: [MaquinaService],

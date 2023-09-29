@@ -2,6 +2,7 @@ import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Date, HydratedDocument } from 'mongoose';
 import { Maquina } from '../../maquina/entities/maquina.entity';
+import { Favorito } from '../../favorito/entities/favorito.entity';
 
 export type UsuarioDocument = HydratedDocument<Usuario>;
 
@@ -403,15 +404,14 @@ export class Usuario {
   @Prop({ type: CadastroFreteiro })
   CadastroFreteiro: CadastroFreteiro;
 
-
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Maquina' }] })
   Maquinas: Maquina[];
 
-  //====================================
-  //A IMPLEMENTAR
-  //====================================
-  // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Favorito' }] })
-  // Favoritos: Favorito[];
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Favorito' }] })
+  MaquinasFavoritas: Favorito[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Favorito' }] })
+  FreteirosFavoritos: Favorito[];
 
   //====================================
   //A IMPLEMENTAR

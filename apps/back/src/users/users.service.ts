@@ -11,11 +11,13 @@ import { Automovel } from './dto/automovel.dto';
 import { Senha } from './dto/senha.dto';
 import { MaquinaService } from '../maquina/maquina.service';
 import { ImagemService } from '../imagem/imagem.service';
+import { FavoritoService } from '../favorito/favorito.service';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(Usuario.name) private UserModel: Model<Usuario>, 
   @Inject(forwardRef(() => MaquinaService)) private readonly maquinaService: MaquinaService,
+  @Inject(forwardRef(() => FavoritoService)) private readonly favoritoService: FavoritoService,
   private imagemService: ImagemService) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -116,7 +118,7 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const foundUser = await this.UserModel.findById(id).select('-Login -InformacoesBancarias');
+    const foundUser = await this.UserModel.findById(id).select('-Login -InformacoesBancarias')
     return foundUser;
   }
 
@@ -150,6 +152,14 @@ export class UsersService {
         maquina.DonoDaMaquina.Nome = cadastro.CadastroComum?.Nome + " " + cadastro.CadastroComum?.Sobrenome;
         await maquina.save();
       }); 
+      if(userFound.Login.Tipo == "Freteiro"){
+        const freteirosFavoritos = await this.acharFavoritosAtreladosAoFreteiro(id);
+        freteirosFavoritos.forEach( async (fav) => {
+          fav.ItemFavorito.Nome = cadastro.CadastroComum?.Nome + " " + cadastro.CadastroComum?.Sobrenome;
+          await fav.save();
+        });
+        //
+      }
     }
     let cadastroMongoose = new this.UserModel(cadastro);
 
@@ -184,6 +194,11 @@ export class UsersService {
       cadastro: cadastroMongoose
     };
     return response;
+  }
+
+  async acharFavoritosAtreladosAoFreteiro(idFreteiro: string){
+    const favoritosAchados = await this.favoritoService.findFavoritosPorIdItemFavorito(idFreteiro);
+    return favoritosAchados;
   }
 
   async atualizarEnderecoFreteiro(id:string, idEndereco: mongoose.Schema.Types.ObjectId){
@@ -451,6 +466,17 @@ export class UsersService {
 
       usuario.CadastroComum.Foto = ImagemPrincipal.ImagemPrincipal;
       await usuario.save();
+
+      if(usuario.Login.Tipo == "Freteiro"){
+        const freteirosFavoritos = await this.acharFavoritosAtreladosAoFreteiro(id);
+        freteirosFavoritos.forEach( async (fav) => {
+          fav.ItemFavorito.ImagemPrincipal = {
+            Url: ImagemPrincipal.ImagemPrincipal?.Url,
+            NomeArquivo:ImagemPrincipal.ImagemPrincipal?.NomeArquivo
+          }
+          await fav.save();
+        });
+      }
       
       return result.response;
     } catch (e) {
@@ -486,6 +512,13 @@ export class UsersService {
       Maquina.CadastroComum.Foto = undefined;
 
       await Maquina.save();
+
+      const freteirosFavoritos = await this.acharFavoritosAtreladosAoFreteiro(id);
+      freteirosFavoritos.forEach( async (fav) => {
+        fav.ItemFavorito.ImagemPrincipal = undefined;
+        await fav.save();
+      });
+
 
       return response;
     } catch (e) {
@@ -639,6 +672,11 @@ export class UsersService {
     const foundCredentials = await this.UserModel.findOne({
       'Login.Email': email,
     }).select('Login _id');
+    return foundCredentials;
+  }
+
+  async findLoginTipo(id: string){
+    const foundCredentials = await this.UserModel.findById(id).select('Login.Tipo');
     return foundCredentials;
   }
 

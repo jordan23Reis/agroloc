@@ -14,6 +14,7 @@ import {
 } from '@agroloc/shared/util';
 import { ImagemService } from '../imagem/imagem.service';
 import { UsersService } from '../users/users.service';
+import { FavoritoService } from '../favorito/favorito.service';
 
 @Injectable()
 export class MaquinaService {
@@ -21,7 +22,10 @@ export class MaquinaService {
     @InjectModel(Maquina.name) private maquinaModel: Model<Maquina>,
     private imagemService: ImagemService,
     @Inject(forwardRef(() => UsersService))
-    private usersService: UsersService
+    private usersService: UsersService,
+
+    @Inject(forwardRef(() => FavoritoService))
+    private favoritoService: FavoritoService
   ) {}
 
   async create(createMaquinaDto: CreateUpdateMaquinaDto, request) {
@@ -205,6 +209,15 @@ export class MaquinaService {
       }
 
       const maquina = await this.maquinaModel.findById(id);
+
+      if(maquina.Nome != updateMaquinaDto.Nome){
+       const maquinasFavoritas = await this.acharFavoritosAtreladosAMaquina(id);
+        maquinasFavoritas.forEach( async (fav) => {
+          fav.ItemFavorito.Nome = updateMaquinaDto.Nome;
+          await fav.save();
+        });
+      }
+
       maquina.Nome =  updateMaquinaDto.Nome, 
       maquina.Descricao = updateMaquinaDto.Descricao, 
       maquina.Peso = updateMaquinaDto.Peso,
@@ -260,6 +273,11 @@ export class MaquinaService {
         return 'Ok';
       })
     );
+  }
+
+  async acharFavoritosAtreladosAMaquina(idMaquina: string){
+    const favoritosAchados = await this.favoritoService.findFavoritosPorIdItemFavorito(idMaquina);
+    return favoritosAchados;
   }
 
   async atualizarEndereco(id:string, idEndereco: mongoose.Schema.Types.ObjectId){
@@ -354,6 +372,15 @@ export class MaquinaService {
         { $set: ImagemPrincipal }
       );
 
+      const maquinasFavoritas = await this.acharFavoritosAtreladosAMaquina(idMaquina);
+      maquinasFavoritas.forEach( async (fav) => {
+        fav.ItemFavorito.ImagemPrincipal = {
+          Url: ImagemPrincipal.ImagemPrincipal?.Url,
+          NomeArquivo:ImagemPrincipal.ImagemPrincipal?.NomeArquivo
+        }
+        await fav.save();
+      });
+
       return result.response;
     } catch (e) {
       return e;
@@ -388,6 +415,14 @@ export class MaquinaService {
       Maquina.ImagemPrincipal = undefined;
 
       await Maquina.save();
+
+
+      const maquinasFavoritas = await this.acharFavoritosAtreladosAMaquina(id);
+      maquinasFavoritas.forEach( async (fav) => {
+        fav.ItemFavorito.ImagemPrincipal = undefined;
+        await fav.save();
+      });
+
 
       return response;
     } catch (e) {
