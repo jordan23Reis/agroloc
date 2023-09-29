@@ -5,17 +5,17 @@ import { Type } from 'class-transformer';
 
 
 
-class Tipo {
-    @IsNotEmpty()
-    @IsString()
-    idTipo: mongoose.Schema.Types.ObjectId;   
+// class Tipo {
+//     @IsNotEmpty()
+//     @IsString()
+//     idTipo: mongoose.Schema.Types.ObjectId;   
 
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(MaquinaSchemaDtoRestraints.tamMinTipo)
-    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxTipo)
-    Nome: string
-}
+//     @IsNotEmpty()
+//     @IsString()
+//     @MinLength(MaquinaSchemaDtoRestraints.tamMinTipo)
+//     @MaxLength(MaquinaSchemaDtoRestraints.tamMaxTipo)
+//     Nome: string
+// }
 
 class Preco {
     @IsNotEmpty()
@@ -24,10 +24,9 @@ class Preco {
     @Max(MaquinaSchemaDtoRestraints.ValorPorTipoMax)
     ValorPorTipo: number
 
-    @IsOptional()
-    @ValidateNested()
-    @Type(() => Tipo)
-    Tipo: Tipo;
+    @IsNotEmpty()
+    @IsString()
+    idTipo: mongoose.Schema.Types.ObjectId;   
 }
 
 class Categoria{

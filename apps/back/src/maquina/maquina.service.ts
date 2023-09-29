@@ -15,6 +15,7 @@ import {
 import { ImagemService } from '../imagem/imagem.service';
 import { UsersService } from '../users/users.service';
 import { FavoritoService } from '../favorito/favorito.service';
+import { TipoPrecoService } from '../tipo-preco/tipo-preco.service';
 
 @Injectable()
 export class MaquinaService {
@@ -23,9 +24,11 @@ export class MaquinaService {
     private imagemService: ImagemService,
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
-
     @Inject(forwardRef(() => FavoritoService))
-    private favoritoService: FavoritoService
+    private favoritoService: FavoritoService,
+    @Inject(forwardRef(() => TipoPrecoService))
+    private tipoPreco: TipoPrecoService
+
   ) {}
 
   async create(createMaquinaDto: CreateUpdateMaquinaDto, request) {
@@ -47,14 +50,31 @@ export class MaquinaService {
 
     const maquinaDtoComIdUsuario = {
       ...createMaquinaDto, 
+      Preco: {
+        ValorPorTipo: createMaquinaDto.Preco.ValorPorTipo,
+        Tipo:{
+          idTipo: createMaquinaDto.Preco.idTipo,
+          Nome: undefined
+        }
+      },
       DonoDaMaquina: {
         idDono: idUsuario,
         Nome: usuarioDono.CadastroComum.Nome + " " + usuarioDono.CadastroComum.Sobrenome,
         Foto: usuarioDono.CadastroComum.Foto
       }};
+
       
-      //QUANDO PRECO E CATEGORIA ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI
+      const tipoPreco = await this.tipoPreco.findOne(createMaquinaDto.Preco.idTipo.toString());
+      if(tipoPreco){
+        maquinaDtoComIdUsuario.Preco.Tipo.Nome = tipoPreco.Nome;
+        maquinaDtoComIdUsuario.Preco.Tipo.idTipo = tipoPreco.id;
+      }else{
+        throw new BadRequestException('Tipo de preço não existe!');
+      }
+
+      //QUANDO CATEGORIA ESTIVER CRIADO, VALIDAR ESSES DADOS AQUI
       const createdMaquina = await this.maquinaModel.create(maquinaDtoComIdUsuario);
+      
       usuarioDono.Maquinas.push(createdMaquina.id);
       await usuarioDono.save();
       await this.atualizarEndereco(createdMaquina.id, createMaquinaDto.IdEndereco);
@@ -200,13 +220,13 @@ export class MaquinaService {
 
   }
 
-  async findMaquinasPorIdCategoria(id: string){
-    const foundMaquina = await this.maquinaModel.find({'Categoria._id': id});
+  async findMaquinasPorIdPreco(id: string){
+    const foundMaquina = await this.maquinaModel.find({'Preco.Tipo.idTipo': id});
     return foundMaquina;
   }
 
   async update(id: string, updateMaquinaDto: CreateUpdateMaquinaDto) {
-    try{
+    // try{
       //QUANDO PRECO E CATEGORIA E AVALIACOES ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI
 
       if(updateMaquinaDto.EstaAtiva == true && updateMaquinaDto.IdEndereco == undefined){
@@ -223,15 +243,28 @@ export class MaquinaService {
         });
       }
 
-      maquina.Nome =  updateMaquinaDto.Nome, 
-      maquina.Descricao = updateMaquinaDto.Descricao, 
-      maquina.Peso = updateMaquinaDto.Peso,
-      maquina.Comprimento = updateMaquinaDto.Comprimento,
-      maquina.Largura = updateMaquinaDto.Largura,
-      maquina.Altura = updateMaquinaDto.Altura,
-      maquina.EstaAtiva = updateMaquinaDto.EstaAtiva,
-      maquina.Categoria = updateMaquinaDto.Categoria,
-      maquina.Preco = updateMaquinaDto.Preco,
+      maquina.Nome =  updateMaquinaDto.Nome;
+      maquina.Descricao = updateMaquinaDto.Descricao;
+      maquina.Peso = updateMaquinaDto.Peso;
+      maquina.Comprimento = updateMaquinaDto.Comprimento;
+      maquina.Largura = updateMaquinaDto.Largura;
+      maquina.Altura = updateMaquinaDto.Altura;
+      maquina.EstaAtiva = updateMaquinaDto.EstaAtiva;
+      maquina.Categoria = updateMaquinaDto.Categoria;
+
+      const tipoPreco = await this.tipoPreco.findOne(updateMaquinaDto.Preco.idTipo.toString());
+
+      if(tipoPreco){
+        const tipoPrecoFormatado = {idTipo: tipoPreco.id, Nome: tipoPreco.Nome}
+        maquina.Preco.ValorPorTipo = updateMaquinaDto.Preco.ValorPorTipo;
+        maquina.Preco.Tipo = tipoPrecoFormatado;
+      }else{
+        throw new BadRequestException('Tipo de preço não existe!');
+      }
+
+      if(maquina.EstaAtiva == true && maquina.Preco.Tipo == undefined){
+        throw new BadRequestException('A maquina deve ter um preço para estar ativa!');
+      }
 
       await maquina.save();
 
@@ -248,9 +281,9 @@ export class MaquinaService {
       }
 
       return maquina;
-    }catch(e){
-      return e;
-    }
+    // }catch(e){
+    //   return e;
+    // }
   }
 
   async remove(id: string, request) {

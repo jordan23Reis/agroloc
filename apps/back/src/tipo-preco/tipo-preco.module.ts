@@ -17,5 +17,6 @@ const modelTipoPreco = MongooseModule.forFeatureAsync([
   imports: [modelTipoPreco, forwardRef(() => MaquinaModule)],
   controllers: [TipoPrecoController],
   providers: [TipoPrecoService],
+  exports: [TipoPrecoService]
 })
 export class TipoPrecoModule {}

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { TipoPrecoService } from './tipo-preco.service';
 import { FullTipoPrecoDto } from './dto/full.tipo-preco.dto';
@@ -24,7 +25,7 @@ export class TipoPrecoController {
   }
 
   @UseGuards(JwtAuthGuard, UsuarioAdministradorGuard)
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateTipoPrecoDto: FullTipoPrecoDto
