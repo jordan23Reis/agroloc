@@ -200,6 +200,11 @@ export class MaquinaService {
 
   }
 
+  async findMaquinasPorIdCategoria(id: string){
+    const foundMaquina = await this.maquinaModel.find({'Categoria._id': id});
+    return foundMaquina;
+  }
+
   async update(id: string, updateMaquinaDto: CreateUpdateMaquinaDto) {
     try{
       //QUANDO PRECO E CATEGORIA E AVALIACOES ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI

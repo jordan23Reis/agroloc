@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MaquinaModule } from '../maquina/maquina.module';
 import { ImagemModule } from '../imagem/imagem.module';
 import { FavoritoModule } from '../favorito/favorito.module';
+import { TipoPrecoModule } from '../tipo-preco/tipo-preco.module';
 
 const modelUsuario = MongooseModule.forFeatureAsync([
   {
@@ -17,7 +18,7 @@ const modelUsuario = MongooseModule.forFeatureAsync([
 ]);
 
 @Module({
-  imports: [modelUsuario, ConfigModule, forwardRef(() => MaquinaModule),forwardRef(() => FavoritoModule), ImagemModule],
+  imports: [modelUsuario, ConfigModule, forwardRef(() => MaquinaModule),forwardRef(() => FavoritoModule), forwardRef(() => TipoPrecoModule), ImagemModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],
