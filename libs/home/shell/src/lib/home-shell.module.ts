@@ -12,6 +12,8 @@ import { MobLoginComponent } from './mob-login/mob-login.component';
 import { Error404Component } from './error404/error404.component';
 import { AccountFeatureModule } from '@agroloc/account/feature';
 import { MachineryFeatureModule } from '@agroloc/machinery/feature';
+import { WebMainComponent } from './web-main/web-main.component';
+import { MobMainComponent } from './mob-main/mob-main.component';
 
 @NgModule({
   imports: [
@@ -29,6 +31,8 @@ import { MachineryFeatureModule } from '@agroloc/machinery/feature';
     WebLoginComponent,
     MobLoginComponent,
     Error404Component,
+    WebMainComponent,
+    MobMainComponent,
   ],
 })
 export class HomeShellModule {}

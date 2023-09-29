@@ -17,6 +17,7 @@ export class AccountLoginComponent {
   router = inject(Router);
   authService = inject(AuthService);
   authStorage = inject(AuthStorage);
+
   accountError = false;
   date: Login;
 
@@ -34,8 +35,8 @@ export class AccountLoginComponent {
 
   SingIn() {
     this.date = {
-      email: this.account.value.email,
-      password: this.account.value.password,
+      Email: this.account.value.email,
+      Senha: this.account.value.password,
     };
     this.authService.SingIn(this.date);
     if (this.authStorage.getAcessToken()) {
