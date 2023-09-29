@@ -16,7 +16,7 @@ const modelFavorito = MongooseModule.forFeatureAsync([
 ]);
 
 @Module({
-  imports: [modelFavorito, UsersModule, forwardRef(() => MaquinaModule) ],
+  imports: [modelFavorito, forwardRef(() => UsersModule), forwardRef(() => MaquinaModule) ],
   controllers: [FavoritoController],
   providers: [FavoritoService],
   exports: [FavoritoService]

@@ -9,6 +9,7 @@ import { MaquinaService } from '../maquina/maquina.service';
 export class FavoritoService {
   constructor(
     @InjectModel(Favorito.name) private favoritoModel: Model<Favorito>,
+    @Inject(forwardRef(() => UsersService))
     private userService: UsersService,
     @Inject(forwardRef(() => MaquinaService))
     private maquinaService: MaquinaService
@@ -22,7 +23,7 @@ export class FavoritoService {
     const Favorito = {
       ItemFavorito:{
         idItemFavorito: usuarioFreteiroFavoritado.id,
-        Nome: usuarioFreteiroFavoritado.CadastroComum.Nome + usuarioFreteiroFavoritado.CadastroComum.Sobrenome,
+        Nome: usuarioFreteiroFavoritado.CadastroComum.Nome + " " + usuarioFreteiroFavoritado.CadastroComum.Sobrenome,
         Tipo: "Freteiro",
         ImagemPrincipal: undefined
       }
@@ -91,8 +92,8 @@ export class FavoritoService {
     return favoritoRemovido;
   }
 
-  async findFavoritoPorIdItemFavorito(idItemFavorito:string){
-    const usuarioAchado = await this.favoritoModel.findOne({"ItemFavorito.idItemFavorito": idItemFavorito});
+  async findFavoritosPorIdItemFavorito(idItemFavorito:string){
+    const usuarioAchado = await this.favoritoModel.find({"ItemFavorito.idItemFavorito": idItemFavorito});
     return usuarioAchado;
   }
 

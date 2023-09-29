@@ -211,13 +211,10 @@ export class MaquinaService {
       const maquina = await this.maquinaModel.findById(id);
 
       if(maquina.Nome != updateMaquinaDto.Nome){
-        const usuarioMaquina = await this.usersService.findOne(maquina.DonoDaMaquina.idDono.toString());
-        await usuarioMaquina.populate("MaquinasFavoritas");
-        usuarioMaquina.MaquinasFavoritas = usuarioMaquina.MaquinasFavoritas.filter((fav) => fav.ItemFavorito.idItemFavorito.toString() == id.toString());
-        usuarioMaquina.MaquinasFavoritas.forEach( async (fav) => {
-          const favorito = await this.favoritoService.findFavoritoPorIdItemFavorito(fav.ItemFavorito.idItemFavorito.toString());
-          favorito.ItemFavorito.Nome = updateMaquinaDto.Nome;
-          await favorito.save();
+       const maquinasFavoritas = await this.acharFavoritosAtreladosAMaquina(id);
+        maquinasFavoritas.forEach( async (fav) => {
+          fav.ItemFavorito.Nome = updateMaquinaDto.Nome;
+          await fav.save();
         });
       }
 
@@ -276,6 +273,11 @@ export class MaquinaService {
         return 'Ok';
       })
     );
+  }
+
+  async acharFavoritosAtreladosAMaquina(idMaquina: string){
+    const favoritosAchados = await this.favoritoService.findFavoritosPorIdItemFavorito(idMaquina);
+    return favoritosAchados;
   }
 
   async atualizarEndereco(id:string, idEndereco: mongoose.Schema.Types.ObjectId){
@@ -370,6 +372,15 @@ export class MaquinaService {
         { $set: ImagemPrincipal }
       );
 
+      const maquinasFavoritas = await this.acharFavoritosAtreladosAMaquina(idMaquina);
+      maquinasFavoritas.forEach( async (fav) => {
+        fav.ItemFavorito.ImagemPrincipal = {
+          Url: ImagemPrincipal.ImagemPrincipal?.Url,
+          NomeArquivo:ImagemPrincipal.ImagemPrincipal?.NomeArquivo
+        }
+        await fav.save();
+      });
+
       return result.response;
     } catch (e) {
       return e;
@@ -404,6 +415,14 @@ export class MaquinaService {
       Maquina.ImagemPrincipal = undefined;
 
       await Maquina.save();
+
+
+      const maquinasFavoritas = await this.acharFavoritosAtreladosAMaquina(id);
+      maquinasFavoritas.forEach( async (fav) => {
+        fav.ItemFavorito.ImagemPrincipal = undefined;
+        await fav.save();
+      });
+
 
       return response;
     } catch (e) {
