@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Usuario } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { MaquinaUsuarioTipos, UsuarioImagemConfigs, UsuarioImagemLimites, VeiculoImagemConfigs, VeiculoImagemLimites } from '@agroloc/shared/util';
+import { CategoriaTipos, MaquinaUsuarioTipos, UsuarioImagemConfigs, UsuarioImagemLimites, VeiculoImagemConfigs, VeiculoImagemLimites } from '@agroloc/shared/util';
 import { CadastroDto } from './dto/cadastro-user.dto';
 import { Enderecos, InformacoesBancarias } from './dto/full-user.dto';
 import { Automovel } from './dto/automovel.dto';
@@ -12,12 +12,15 @@ import { Senha } from './dto/senha.dto';
 import { MaquinaService } from '../maquina/maquina.service';
 import { ImagemService } from '../imagem/imagem.service';
 import { FavoritoService } from '../favorito/favorito.service';
+import { CategoriaService } from '../categoria/categoria.service';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(Usuario.name) private UserModel: Model<Usuario>, 
   @Inject(forwardRef(() => MaquinaService)) private readonly maquinaService: MaquinaService,
   @Inject(forwardRef(() => FavoritoService)) private readonly favoritoService: FavoritoService,
+  @Inject(forwardRef(() => CategoriaService)) private readonly categoriaService: CategoriaService,
+
   private imagemService: ImagemService) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -143,6 +146,17 @@ export class UsersService {
     maquinasRegistradas = maquinasRegistradas.filter( maquina => maquina !== null);
     return maquinasRegistradas;
   }
+
+  async findUsersPorIdCategoriaAutomovel(idCategoria: string){
+    const usersPorIdCategoriaAutomovel = await this.UserModel.find({
+      "CadastroFreteiro.Automovel": {
+        $elemMatch: {
+          "Categoria.idCategoria": idCategoria
+        }
+      }
+    });
+    return usersPorIdCategoriaAutomovel;
+  } 
 
   async updateCadastro(id: string, cadastro: CadastroDto){
     const userFound = await this.UserModel.findById(id);
@@ -297,7 +311,35 @@ export class UsersService {
 
 
   async adicionarAutomovel(id:string, automovel: Automovel){
-    const Automovel = {...automovel, ImagensSecundarias: [], ImagemPrincipal: undefined, _id: new mongoose.Types.ObjectId()};
+    const Automovel = {
+      ...automovel, 
+      Categoria:{
+        idCategoria: undefined,
+        Nome: undefined
+      },
+      ImagensSecundarias: [], 
+      ImagemPrincipal: undefined, 
+      _id: new mongoose.Types.ObjectId()
+    };
+
+    if(automovel.idCategoria){
+      const categoriaAchada = await this.categoriaService.findOne(automovel.idCategoria.toString());
+      if(categoriaAchada.Tipo != CategoriaTipos.Automovel){
+        throw new BadRequestException('Categoria não é de Automovel!');
+      }
+      if(categoriaAchada){
+        Automovel.Categoria = {
+          idCategoria: categoriaAchada._id,
+          Nome: categoriaAchada.Nome
+        }
+      }else{
+        throw new BadRequestException('Categoria não encontrada!');
+      }
+    }else{
+      Automovel.Categoria = undefined;
+    }
+
+
     const usuario = new this.UserModel(await this.UserModel.findById(id));
     usuario.CadastroFreteiro.Automovel.push(Automovel);
 
@@ -316,10 +358,34 @@ export class UsersService {
     }
     const Automovel = {
       ...automovel, 
+      Categoria:{
+        idCategoria: undefined,
+        Nome: undefined
+      },
       ImagensSecundarias: foundUser.CadastroFreteiro.Automovel[indexAutomovel].ImagensSecundarias, 
       ImagemPrincipal: foundUser.CadastroFreteiro.Automovel[indexAutomovel].ImagemPrincipal, 
       _id: foundUser.CadastroFreteiro.Automovel[indexAutomovel]._id
     };
+
+
+    if(automovel.idCategoria){
+      const categoriaAchada = await this.categoriaService.findOne(automovel.idCategoria.toString());
+      if(categoriaAchada.Tipo != CategoriaTipos.Automovel){
+        throw new BadRequestException('Categoria não é de Automovel!');
+      }
+      if(categoriaAchada){
+        Automovel.Categoria = {
+          idCategoria: categoriaAchada._id,
+          Nome: categoriaAchada.Nome
+        }
+      }else{
+        throw new BadRequestException('Categoria não encontrada!');
+      }
+    }else{
+      Automovel.Categoria = undefined;
+    }
+
+
     foundUser.CadastroFreteiro.Automovel[indexAutomovel] = Automovel;
     await foundUser.save();
     const response = {

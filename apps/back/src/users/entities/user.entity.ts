@@ -3,6 +3,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Date, HydratedDocument } from 'mongoose';
 import { Maquina } from '../../maquina/entities/maquina.entity';
 import { Favorito } from '../../favorito/entities/favorito.entity';
+import { Categoria as catEntity } from '../../categoria/entities/categoria.entity';
+
 
 export type UsuarioDocument = HydratedDocument<Usuario>;
 
@@ -11,13 +13,13 @@ class Categoria {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Categoria'
-  //   minlength: UsuarioSchemaDtoRestraints.tamMinIdCategoria,
-  //   maxlength: UsuarioSchemaDtoRestraints.tamMaxIdCategoria,
-  // })
-  // idCategoria: Categoria
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Categoria',
+    minlength: UsuarioSchemaDtoRestraints.tamMinIdCategoria,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxIdCategoria,
+  })
+  idCategoria: catEntity
   @Prop({
     type: String,
     minlength: UsuarioSchemaDtoRestraints.tamMinCategoria,

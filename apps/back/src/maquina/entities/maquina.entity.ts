@@ -3,6 +3,7 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import {MaquinaSchemaDtoRestraints } from "@agroloc/shared/util"
 import { Usuario } from '../../users/entities/user.entity';
 import { TipoPreco } from '../../tipo-preco/entities/tipo-preco.entity';
+import { Categoria as catEntity } from '../../categoria/entities/categoria.entity';
 
 export type MaquinaDocument = HydratedDocument<Maquina>;
 
@@ -105,10 +106,11 @@ class Categoria {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({ 
-  // required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' 
-  // })
-  // idCategoria: Categoria
+  @Prop({ 
+  required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' 
+  })
+  idCategoria: catEntity
+
   @Prop({
     required: true,
     type: String,  

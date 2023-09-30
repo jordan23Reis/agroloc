@@ -9,6 +9,7 @@ import { Maquina } from './entities/maquina.entity';
 import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import {
+  CategoriaTipos,
   MaquinaImagemConfigs,
   MaquinaImagemLimites,
 } from '@agroloc/shared/util';
@@ -16,6 +17,7 @@ import { ImagemService } from '../imagem/imagem.service';
 import { UsersService } from '../users/users.service';
 import { FavoritoService } from '../favorito/favorito.service';
 import { TipoPrecoService } from '../tipo-preco/tipo-preco.service';
+import { CategoriaService } from '../categoria/categoria.service';
 
 @Injectable()
 export class MaquinaService {
@@ -27,7 +29,9 @@ export class MaquinaService {
     @Inject(forwardRef(() => FavoritoService))
     private favoritoService: FavoritoService,
     @Inject(forwardRef(() => TipoPrecoService))
-    private tipoPreco: TipoPrecoService
+    private tipoPreco: TipoPrecoService,
+    @Inject(forwardRef(() => CategoriaService))
+    private categoriaService: CategoriaService
 
   ) {}
 
@@ -49,7 +53,11 @@ export class MaquinaService {
     }
 
     const maquinaDtoComIdUsuario = {
-      ...createMaquinaDto, 
+      ...createMaquinaDto,
+      Categoria:{
+        idCategoria: createMaquinaDto.idCategoria,
+        Nome: undefined
+      },
       Preco: {
         ValorPorTipo: createMaquinaDto.Preco.ValorPorTipo,
         Tipo:{
@@ -63,6 +71,21 @@ export class MaquinaService {
         Foto: usuarioDono.CadastroComum.Foto
       }};
 
+      if(createMaquinaDto.idCategoria){
+      const categoria = await this.categoriaService.findOne(createMaquinaDto.idCategoria.toString());
+      if(categoria){
+        if(categoria.Tipo == CategoriaTipos.Maquina){
+          const categoriaFormadata = {idCategoria: categoria.id, Nome: categoria.Nome}
+          maquinaDtoComIdUsuario.Categoria =categoriaFormadata;
+        }else{
+          throw new BadRequestException('Essa categoria não é do tipo maquina!');
+        }
+      }else{
+        throw new BadRequestException('Categoria não existe!');
+      }
+      }else{
+        maquinaDtoComIdUsuario.Categoria = undefined;
+      }
       
       const tipoPreco = await this.tipoPreco.findOne(createMaquinaDto.Preco.idTipo.toString());
       if(tipoPreco){
@@ -72,7 +95,6 @@ export class MaquinaService {
         throw new BadRequestException('Tipo de preço não existe!');
       }
 
-      //QUANDO CATEGORIA ESTIVER CRIADO, VALIDAR ESSES DADOS AQUI
       const createdMaquina = await this.maquinaModel.create(maquinaDtoComIdUsuario);
       
       usuarioDono.Maquinas.push(createdMaquina.id);
@@ -225,6 +247,11 @@ export class MaquinaService {
     return foundMaquina;
   }
 
+  async findMaquinasPorIdCategoria(id: string){
+    const foundMaquinas = await this.maquinaModel.find({'Categoria.idCategoria': id});
+    return foundMaquinas;
+  }
+
   async update(id: string, updateMaquinaDto: CreateUpdateMaquinaDto) {
     // try{
       //QUANDO PRECO E CATEGORIA E AVALIACOES ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI
@@ -250,10 +277,25 @@ export class MaquinaService {
       maquina.Largura = updateMaquinaDto.Largura;
       maquina.Altura = updateMaquinaDto.Altura;
       maquina.EstaAtiva = updateMaquinaDto.EstaAtiva;
-      maquina.Categoria = updateMaquinaDto.Categoria;
+
+      if(updateMaquinaDto.idCategoria){
+        const categoria = await this.categoriaService.findOne(updateMaquinaDto.idCategoria.toString());
+        if(categoria){
+          if(categoria.Tipo == CategoriaTipos.Maquina){
+            const categoriaFormadata = {idCategoria: categoria.id, Nome: categoria.Nome}
+            maquina.Categoria = categoriaFormadata;
+          }else{
+            throw new BadRequestException('Essa categoria não é do tipo maquina!');
+          }
+        }else{
+          throw new BadRequestException('Categoria não existe!');
+        }
+      }
+      else{
+        maquina.Categoria = undefined;
+      }
 
       const tipoPreco = await this.tipoPreco.findOne(updateMaquinaDto.Preco.idTipo.toString());
-
       if(tipoPreco){
         const tipoPrecoFormatado = {idTipo: tipoPreco.id, Nome: tipoPreco.Nome}
         maquina.Preco.ValorPorTipo = updateMaquinaDto.Preco.ValorPorTipo;
