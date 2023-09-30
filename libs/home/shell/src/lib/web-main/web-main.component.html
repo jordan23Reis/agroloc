@@ -1,1 +1,150 @@
-<p>web-main works!</p>
+<mat-drawer-container class="example-container" autosize>
+  <mat-drawer #drawer class="example-sidenav" mode="over">
+    <p>Auto-resizing sidenav</p>
+    <p *ngIf="showFiller">Lorem, ipsum dolor sit amet consectetur.</p>
+    <button (click)="showFiller = !showFiller" mat-raised-button>
+      Toggle extra text
+    </button>
+  </mat-drawer>
+
+  <div class="example-sidenav-content">
+    <mat-toolbar>
+      <mat-toolbar-row>
+        <span class="example-spacer"></span>
+
+        <div class="logo">Agroloc</div>
+        <!-- <img class="logo" src="/assets/logo_deitado.png" /> -->
+
+        <span class="example-spacer"></span>
+
+        <mat-form-field class="example-form-field">
+          <mat-label>Search</mat-label>
+          <input matInput type="text" [(ngModel)]="value" />
+          <mat-icon matPrefix>search</mat-icon>
+          <button
+            *ngIf="value"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="value = ''"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <span class="example-spacer"></span>
+
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="notifications"
+          class="example-icon"
+          aria-label="Example icon-button with notifications icon"
+        >
+          <mat-icon>notifications</mat-icon>
+        </button>
+
+        <mat-menu #notifications="matMenu" xPosition="before">
+          <button mat-menu-item>
+            <mat-icon>dialpad</mat-icon>
+            <span>favorito</span>
+          </button>
+          <button mat-menu-item disabled>
+            <mat-icon>voicemail</mat-icon>
+            <span>Check voice mail</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>notifications_off</mat-icon>
+            <span>Disable alerts</span>
+          </button>
+        </mat-menu>
+
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="favorite"
+          class="example-icon"
+          aria-label="Example icon-button with favorite icon"
+        >
+          <mat-icon>favorite</mat-icon>
+        </button>
+
+        <mat-menu #favorite="matMenu" xPosition="before">
+          <button mat-menu-item>
+            <mat-icon>dialpad</mat-icon>
+            <span>favorito</span>
+          </button>
+          <button mat-menu-item disabled>
+            <mat-icon>voicemail</mat-icon>
+            <span>Check voice mail</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>notifications_off</mat-icon>
+            <span>Disable alerts</span>
+          </button>
+        </mat-menu>
+
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="person"
+          class="example-icon"
+          aria-label="Example icon-button with person icon"
+        >
+          <mat-icon>person</mat-icon>
+        </button>
+
+        <mat-menu class="my-class" #person="matMenu" xPosition="before">
+          <button mat-menu-item>
+            <span>
+              <h3>JORDAN BORGES DOS REIS</h3>
+              <p>jordan.reis@alunos.unicesumar.edu.br</p>
+            </span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon matPrefix>account_circle</mat-icon>
+            <span>Gereciar sua Conta</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item>
+            <mat-icon>switch_account</mat-icon>
+            <span>Trocar de Conta</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>logout</mat-icon>
+            <span>Sair</span>
+          </button>
+        </mat-menu>
+
+        <span class="example-spacer"></span>
+      </mat-toolbar-row>
+
+      <mat-toolbar-row>
+        <!-- <button
+          mat-icon-button
+          (click)="drawer.toggle()"
+          class="example-icon"
+          aria-label="Example icon-button with menu icon"
+        >
+          <mat-icon>menu</mat-icon>
+        </button> -->
+
+        <span class="example-spacer"></span>
+
+        <mat-tab-group (selectedTabChange)="moveUrl($event)">
+          <mat-tab *ngFor="let link of links">
+            <ng-template mat-tab-label>
+              <a [routerLink]="link.url">
+                <span>{{ link.nome }}</span>
+              </a>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+
+        <span class="example-spacer"></span>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <div id="content">
+      <mat-tab-nav-panel #tabPanel>
+        <router-outlet></router-outlet>
+      </mat-tab-nav-panel>
+    </div>
+  </div>
+</mat-drawer-container>

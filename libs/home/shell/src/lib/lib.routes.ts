@@ -9,60 +9,59 @@ import { WebRegisterComponent } from './web-register/web-register.component';
 import { MachineryRegisterComponent } from '@agroloc/machinery/feature';
 import { WebMainComponent } from './web-main/web-main.component';
 import { MobMainComponent } from './mob-main/mob-main.component';
+import { HomeComponent } from '@agroloc/home/feature';
 
 export const homeShellRoutes: Route[] = [
   {
     path: 'web',
-    pathMatch: 'prefix',
     component: WebComponent,
     children: [
       {
         path: 'login',
-        pathMatch: 'prefix',
+
         component: WebLoginComponent,
         children: [],
       },
       {
         path: 'register',
-        pathMatch: 'prefix',
         component: WebRegisterComponent,
         children: [],
       },
       {
-        path: 'home',
-        pathMatch: 'prefix',
+        path: 'main',
         component: WebMainComponent,
-        children: [],
-      },
-      {
-        path: 'machinery',
-        pathMatch: 'prefix',
-        component: MachineryRegisterComponent,
-        children: [],
+        children: [
+          {
+            path: 'home',
+            component: HomeComponent,
+            children: [],
+          },
+          {
+            path: 'machinery',
+            component: MachineryRegisterComponent,
+            children: [],
+          },
+        ],
       },
     ],
   },
 
   {
     path: 'mob',
-    pathMatch: 'prefix',
     component: MobComponent,
     children: [
       {
         path: 'login',
-        pathMatch: 'prefix',
         component: MobLoginComponent,
         children: [],
       },
       {
         path: 'register',
-        pathMatch: 'prefix',
         component: MobRegisterComponent,
         children: [],
       },
       {
         path: 'home',
-        pathMatch: 'prefix',
         component: MobMainComponent,
         children: [],
       },

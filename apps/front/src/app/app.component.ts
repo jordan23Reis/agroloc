@@ -17,11 +17,12 @@ export class AppComponent implements OnInit {
   filterUrl = this.prefixRemove(this.currentUrl);
 
   ngOnInit() {
+    console.log(this.filterUrl);
     if (this.filterUrl !== '') {
       if (this.isMobile) {
-        this.router.navigate(['mob', this.filterUrl]);
+        this.router.navigateByUrl(`/mob/${this.filterUrl}`);
       } else {
-        this.router.navigate(['web', this.filterUrl]);
+        this.router.navigateByUrl(`/web/${this.filterUrl}`);
       }
     } else {
       if (this.isMobile) {
