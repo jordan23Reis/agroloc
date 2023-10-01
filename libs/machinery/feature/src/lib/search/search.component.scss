@@ -5,6 +5,8 @@
   .webForm {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    height: auto;
     mat-chip-listbox {
       margin-top: 20px;
     }
@@ -13,6 +15,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      width: 80%;
+      height: auto;
     }
     .chips {
       display: flex;

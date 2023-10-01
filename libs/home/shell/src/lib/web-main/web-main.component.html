@@ -69,24 +69,24 @@
 
         <mat-menu class="my-class" #favorite="matMenu" xPosition="before">
           <agroloc-favorite></agroloc-favorite>
-          <!-- <button mat-menu-item>
-            <mat-icon>dialpad</mat-icon>
-            <span>favorito</span>
-          </button> -->
         </mat-menu>
 
         <button
           mat-icon-button
           [matMenuTriggerFor]="person"
-          class="example-icon"
+          class="example-icon account-button"
           aria-label="Example icon-button with person icon"
         >
-          <mat-icon>person</mat-icon>
+          <img class="account-img" src="assets/gato-meow.jpg" />
         </button>
 
         <mat-menu class="my-class" #person="matMenu" xPosition="before">
           <button mat-menu-item>
             <span>
+              <!-- <img
+                style="height: 36px; width: 36px; border-radius: 100%"
+                src="assets/gato-meow.jpg"
+              /> -->
               <h3>JORDAN BORGES DOS REIS</h3>
               <p>jordan.reis@alunos.unicesumar.edu.br</p>
             </span>

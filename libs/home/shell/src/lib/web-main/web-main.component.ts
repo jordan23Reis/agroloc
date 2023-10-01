@@ -22,8 +22,9 @@ export class WebMainComponent {
 
   links = [
     { nome: 'Home', url: 'home' },
-    { nome: 'Maquinarios', url: 'machinery' },
+    { nome: 'Cadastrar', url: 'machinery' },
     { nome: 'Pesquisa', url: 'search' },
+    { nome: 'Detalhes', url: 'details' },
   ];
 
   moveUrl(event: MatTabChangeEvent) {
