@@ -53,3 +53,9 @@ body {
 .mat-menu-panel.my-class {
   width: 400px;
 }
+
+.cdk-overlay-pane {
+  div.mat-mdc-menu-panel {
+    max-width: none;
+  }
+}

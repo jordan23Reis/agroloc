@@ -1,0 +1,45 @@
+<div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
+  <mat-divider></mat-divider>
+  <div class="list">
+    <mat-divider></mat-divider>
+    <div class="head">
+      <mat-divider [vertical]="true"></mat-divider>
+      <span class="example-spacer"></span>
+      <h3>Lista de Favoritos</h3>
+      <span class="example-spacer"></span>
+      <mat-divider [vertical]="true"></mat-divider>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="item" *ngFor="let item of favoriteList">
+      <mat-divider [vertical]="true"></mat-divider>
+      <div class="foto">
+        <mat-divider></mat-divider>
+        <span class="example-spacer"></span>
+        <img
+          src="https://http2.mlstatic.com/D_NQ_NP_768125-MLA71783090116_092023-F.webp"
+        />
+        <span class="example-spacer"></span>
+        <mat-divider></mat-divider>
+      </div>
+      <div class="dividerInfo">
+        <mat-divider></mat-divider>
+        <div class="informacoes">
+          <h4>{{ item.titulo }}</h4>
+          <span class="example-spacer"></span>
+          <button
+            mat-icon-button
+            class="example-icon"
+            aria-label="Example icon-button with delete border icon"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          <mat-divider [vertical]="true"></mat-divider>
+        </div>
+        <mat-divider></mat-divider>
+      </div>
+      <mat-divider [vertical]="true"></mat-divider>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
+  <mat-divider></mat-divider>
+</div>

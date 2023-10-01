@@ -82,11 +82,11 @@
     color: #568b3f;
   }
 
-  ::ng-deep {
-    .cdk-overlay-pane {
-      div.mat-mdc-menu-panel {
-        max-width: none;
-      }
-    }
-  }
+  //   ::ng-deep {
+  //     .cdk-overlay-pane {
+  //       div.mat-mdc-menu-panel {
+  //         max-width: none;
+  //       }
+  //     }
+  //   }
 }

@@ -43,7 +43,7 @@
           <mat-icon>notifications</mat-icon>
         </button>
 
-        <mat-menu #notifications="matMenu" xPosition="before">
+        <mat-menu class="my-class" #notifications="matMenu" xPosition="before">
           <button mat-menu-item>
             <mat-icon>dialpad</mat-icon>
             <span>favorito</span>
@@ -67,19 +67,12 @@
           <mat-icon>favorite</mat-icon>
         </button>
 
-        <mat-menu #favorite="matMenu" xPosition="before">
-          <button mat-menu-item>
+        <mat-menu class="my-class" #favorite="matMenu" xPosition="before">
+          <agroloc-favorite></agroloc-favorite>
+          <!-- <button mat-menu-item>
             <mat-icon>dialpad</mat-icon>
             <span>favorito</span>
-          </button>
-          <button mat-menu-item disabled>
-            <mat-icon>voicemail</mat-icon>
-            <span>Check voice mail</span>
-          </button>
-          <button mat-menu-item>
-            <mat-icon>notifications_off</mat-icon>
-            <span>Disable alerts</span>
-          </button>
+          </button> -->
         </mat-menu>
 
         <button
@@ -141,6 +134,8 @@
         <span class="example-spacer"></span>
       </mat-toolbar-row>
     </mat-toolbar>
+    <mat-divider></mat-divider>
+
     <div id="content">
       <mat-tab-nav-panel #tabPanel>
         <router-outlet></router-outlet>

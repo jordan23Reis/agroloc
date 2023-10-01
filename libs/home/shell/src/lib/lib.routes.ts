@@ -6,10 +6,14 @@ import { MobLoginComponent } from './mob-login/mob-login.component';
 import { Error404Component } from './error404/error404.component';
 import { MobRegisterComponent } from './mob-register/mob-register.component';
 import { WebRegisterComponent } from './web-register/web-register.component';
-import { MachineryRegisterComponent } from '@agroloc/machinery/feature';
+import {
+  MachineryRegisterComponent,
+  SearchComponent,
+} from '@agroloc/machinery/feature';
 import { WebMainComponent } from './web-main/web-main.component';
 import { MobMainComponent } from './mob-main/mob-main.component';
 import { HomeComponent } from '@agroloc/home/feature';
+import { DetailsComponent } from '@agroloc/machinery/feature';
 
 export const homeShellRoutes: Route[] = [
   {
@@ -39,6 +43,16 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'machinery',
             component: MachineryRegisterComponent,
+            children: [],
+          },
+          {
+            path: 'search',
+            component: SearchComponent,
+            children: [],
+          },
+          {
+            path: 'details',
+            component: DetailsComponent,
             children: [],
           },
         ],

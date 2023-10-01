@@ -14,6 +14,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AccountDataAcessModule } from '@agroloc/account/data-acess';
+import { FavoriteComponent } from './favorite/favorite.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   imports: [
@@ -30,8 +32,13 @@ import { AccountDataAcessModule } from '@agroloc/account/data-acess';
     MatDatepickerModule,
     MatIconModule,
     AccountDataAcessModule,
+    MatDividerModule,
   ],
-  declarations: [AccountRegisterComponent, AccountLoginComponent],
-  exports: [AccountRegisterComponent, AccountLoginComponent],
+  declarations: [
+    AccountRegisterComponent,
+    AccountLoginComponent,
+    FavoriteComponent,
+  ],
+  exports: [AccountRegisterComponent, AccountLoginComponent, FavoriteComponent],
 })
 export class AccountFeatureModule {}

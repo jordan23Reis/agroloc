@@ -1,0 +1,71 @@
+:host {
+  .mobForm {
+  }
+
+  .webForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    max-height: 600px;
+    overflow-y: scroll;
+    height: 100%;
+    width: 100%;
+
+    .example-spacer {
+      flex: 1 1 auto;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+    }
+
+    .head {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: auto;
+    }
+
+    .item {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 140px;
+    }
+
+    .foto {
+      display: flex;
+      flex-direction: column;
+      width: 20%;
+      height: 100%;
+      margin-left: 15px;
+      img {
+        width: 75%;
+        height: 75%;
+        align-self: center;
+        justify-self: center;
+      }
+    }
+    .dividerInfo {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+    .informacoes {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      align-self: center;
+      justify-self: center;
+      justify-content: center;
+      width: 80%;
+      height: 100%;
+    }
+  }
+}
