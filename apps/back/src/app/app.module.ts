@@ -9,6 +9,7 @@ import { UsersModule } from '../users/users.module';
 import { AuthUserModule } from '../auth-user/auth-user.module';
 import { FavoritoModule } from '../favorito/favorito.module';
 import { CategoriaModule } from '../categoria/categoria.module';
+import { AvaliacaoModule } from '../avaliacao/avaliacao.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { CategoriaModule } from '../categoria/categoria.module';
     MaquinaModule,
     UsersModule,
     FavoritoModule,
-    CategoriaModule
+    CategoriaModule,
+    AvaliacaoModule
   ],
   controllers: [AppController],
   providers: [AppService],

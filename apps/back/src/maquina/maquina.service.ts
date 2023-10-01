@@ -32,7 +32,6 @@ export class MaquinaService {
     private tipoPreco: TipoPrecoService,
     @Inject(forwardRef(() => CategoriaService))
     private categoriaService: CategoriaService
-
   ) {}
 
   async create(createMaquinaDto: CreateUpdateMaquinaDto, request) {
@@ -242,6 +241,11 @@ export class MaquinaService {
 
   }
 
+  async findOneCustom(customQuery){
+    const foundCustom = await this.maquinaModel.findOne(customQuery);
+    return foundCustom;
+  }
+
   async findMaquinasPorIdPreco(id: string){
     const foundMaquina = await this.maquinaModel.find({'Preco.Tipo.idTipo': id});
     return foundMaquina;
@@ -254,7 +258,6 @@ export class MaquinaService {
 
   async update(id: string, updateMaquinaDto: CreateUpdateMaquinaDto) {
     // try{
-      //QUANDO PRECO E CATEGORIA E AVALIACOES ESTIVEREM CRIADOS, VALIDAR ESSES DADOS AQUI
 
       if(updateMaquinaDto.EstaAtiva == true && updateMaquinaDto.IdEndereco == undefined){
         throw new BadRequestException('Para ativar a maquina, é necessario informar o endereco');
