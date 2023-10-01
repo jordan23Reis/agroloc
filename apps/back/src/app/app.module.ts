@@ -8,6 +8,8 @@ import { config } from './configs/config';
 import { UsersModule } from '../users/users.module';
 import { AuthUserModule } from '../auth-user/auth-user.module';
 import { FavoritoModule } from '../favorito/favorito.module';
+import { CategoriaModule } from '../categoria/categoria.module';
+import { AvaliacaoModule } from '../avaliacao/avaliacao.module';
 
 @Module({
   imports: [
@@ -26,7 +28,9 @@ import { FavoritoModule } from '../favorito/favorito.module';
     AuthUserModule,
     MaquinaModule,
     UsersModule,
-    FavoritoModule
+    FavoritoModule,
+    CategoriaModule,
+    AvaliacaoModule
   ],
   controllers: [AppController],
   providers: [AppService],

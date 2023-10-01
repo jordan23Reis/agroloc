@@ -18,6 +18,14 @@ import { UsuarioAdministradorGuard } from '../users/guards/UsuarioAdministrador'
 export class TipoPrecoController {
   constructor(private readonly tipoPrecoService: TipoPrecoService) {}
 
+
+  @Get()
+  findAll() {
+    return this.tipoPrecoService.findAll();
+  }
+
+
+
   @UseGuards(JwtAuthGuard, UsuarioAdministradorGuard)
   @Post()
   create(@Body() createTipoPrecoDto: FullTipoPrecoDto) {

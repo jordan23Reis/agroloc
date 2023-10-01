@@ -29,17 +29,17 @@ class Preco {
     idTipo: mongoose.Schema.Types.ObjectId;   
 }
 
-class Categoria{
-    @IsNotEmpty()
-    @IsString()
-    idCategoria: mongoose.Schema.Types.ObjectId;
+// class Categoria{
+//     @IsNotEmpty()
+//     @IsString()
+//     idCategoria: mongoose.Schema.Types.ObjectId;
 
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(MaquinaSchemaDtoRestraints.tamMinCategoria)
-    @MaxLength(MaquinaSchemaDtoRestraints.tamMaxCategoria)
-    Nome: string
-}
+//     @IsNotEmpty()
+//     @IsString()
+//     @MinLength(MaquinaSchemaDtoRestraints.tamMinCategoria)
+//     @MaxLength(MaquinaSchemaDtoRestraints.tamMaxCategoria)
+//     Nome: string
+// }
 
 export class CreateUpdateMaquinaDto {
     @IsNotEmpty()
@@ -82,10 +82,9 @@ export class CreateUpdateMaquinaDto {
     @IsBoolean()
     EstaAtiva: boolean;
 
-    @IsNotEmpty()
-    @ValidateNested()
-    @Type(() => Categoria)
-    Categoria: Categoria;
+    @IsOptional()
+    @IsString()
+    idCategoria: mongoose.Schema.Types.ObjectId;
 
     @IsOptional()
     @IsString()

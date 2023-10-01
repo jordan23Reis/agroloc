@@ -3,6 +3,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Date, HydratedDocument } from 'mongoose';
 import { Maquina } from '../../maquina/entities/maquina.entity';
 import { Favorito } from '../../favorito/entities/favorito.entity';
+import { Categoria as catEntity } from '../../categoria/entities/categoria.entity';
+import { Avaliacao } from '../../avaliacao/entities/avaliacao.entity';
+
 
 export type UsuarioDocument = HydratedDocument<Usuario>;
 
@@ -11,13 +14,13 @@ class Categoria {
   //====================================
   //A IMPLEMENTAR
   //====================================
-  // @Prop({
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Categoria'
-  //   minlength: UsuarioSchemaDtoRestraints.tamMinIdCategoria,
-  //   maxlength: UsuarioSchemaDtoRestraints.tamMaxIdCategoria,
-  // })
-  // idCategoria: Categoria
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Categoria',
+    minlength: UsuarioSchemaDtoRestraints.tamMinIdCategoria,
+    maxlength: UsuarioSchemaDtoRestraints.tamMaxIdCategoria,
+  })
+  idCategoria: catEntity
   @Prop({
     type: String,
     minlength: UsuarioSchemaDtoRestraints.tamMinCategoria,
@@ -194,6 +197,11 @@ class CadastroFreteiro {
   
   @Prop({type: EnderecoComId})
   EnderecoAtivo: EnderecoComId
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Avaliacao' }]
+   })
+   Avaliacoes: Avaliacao[]
 
 }
 

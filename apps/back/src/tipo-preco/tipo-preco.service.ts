@@ -19,6 +19,11 @@ constructor(
     return foundTipoPreco;
   }
 
+  async findAll(){
+    const foundTipoPrecos = await this.tipoPrecoModel.find();
+    return foundTipoPrecos;
+  }
+
 
   async create(createTipoPrecoDto: FullTipoPrecoDto) {
     const createdTipoPreco = await this.tipoPrecoModel.create(createTipoPrecoDto);

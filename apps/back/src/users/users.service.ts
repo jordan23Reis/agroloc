@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Usuario } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { MaquinaUsuarioTipos, UsuarioImagemConfigs, UsuarioImagemLimites, VeiculoImagemConfigs, VeiculoImagemLimites } from '@agroloc/shared/util';
+import { CategoriaTipos, MaquinaUsuarioTipos, UsuarioImagemConfigs, UsuarioImagemLimites, VeiculoImagemConfigs, VeiculoImagemLimites } from '@agroloc/shared/util';
 import { CadastroDto } from './dto/cadastro-user.dto';
 import { Enderecos, InformacoesBancarias } from './dto/full-user.dto';
 import { Automovel } from './dto/automovel.dto';
@@ -12,12 +12,17 @@ import { Senha } from './dto/senha.dto';
 import { MaquinaService } from '../maquina/maquina.service';
 import { ImagemService } from '../imagem/imagem.service';
 import { FavoritoService } from '../favorito/favorito.service';
+import { CategoriaService } from '../categoria/categoria.service';
+import { AvaliacaoService } from '../avaliacao/avaliacao.service';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(Usuario.name) private UserModel: Model<Usuario>, 
   @Inject(forwardRef(() => MaquinaService)) private readonly maquinaService: MaquinaService,
   @Inject(forwardRef(() => FavoritoService)) private readonly favoritoService: FavoritoService,
+  @Inject(forwardRef(() => CategoriaService)) private readonly categoriaService: CategoriaService,
+  @Inject(forwardRef(() => AvaliacaoService)) private readonly avaliacaoService: AvaliacaoService,
+
   private imagemService: ImagemService) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -135,6 +140,11 @@ export class UsersService {
     return cadastro;
   }
 
+  async findOneCustom(customQuery){
+    const foundCustom = await this.UserModel.findOne(customQuery);
+    return foundCustom;
+  }
+
   async findMaquinasRegistradas(id: string){
     const userFound = await this.UserModel.findById(id);  
     let maquinasRegistradas = await Promise.all(userFound.Maquinas.map( async maquina => {
@@ -144,6 +154,24 @@ export class UsersService {
     return maquinasRegistradas;
   }
 
+  async findAvaliacoesRegistradas(id: string){
+    const avaliacoes = await this.avaliacaoService.find({"UsuarioAvaliador.idUsuarioAvaliador": id});
+    return avaliacoes;
+  }
+
+
+
+  async findUsersPorIdCategoriaAutomovel(idCategoria: string){
+    const usersPorIdCategoriaAutomovel = await this.UserModel.find({
+      "CadastroFreteiro.Automovel": {
+        $elemMatch: {
+          "Categoria.idCategoria": idCategoria
+        }
+      }
+    });
+    return usersPorIdCategoriaAutomovel;
+  } 
+
   async updateCadastro(id: string, cadastro: CadastroDto){
     const userFound = await this.UserModel.findById(id);
     if((userFound.CadastroComum.Nome !== cadastro.CadastroComum.Nome) || (userFound.CadastroComum.Sobrenome !== cadastro.CadastroComum.Sobrenome)){
@@ -152,6 +180,12 @@ export class UsersService {
         maquina.DonoDaMaquina.Nome = cadastro.CadastroComum?.Nome + " " + cadastro.CadastroComum?.Sobrenome;
         await maquina.save();
       }); 
+      const avaliacoesAchadas = await this.findAvaliacoesRegistradas(id);
+      avaliacoesAchadas.forEach( async ava => {
+        ava.UsuarioAvaliador.Nome = cadastro.CadastroComum?.Nome + " " + cadastro.CadastroComum?.Sobrenome;
+        await ava.save();
+      })
+
       if(userFound.Login.Tipo == "Freteiro"){
         const freteirosFavoritos = await this.acharFavoritosAtreladosAoFreteiro(id);
         freteirosFavoritos.forEach( async (fav) => {
@@ -297,7 +331,35 @@ export class UsersService {
 
 
   async adicionarAutomovel(id:string, automovel: Automovel){
-    const Automovel = {...automovel, ImagensSecundarias: [], ImagemPrincipal: undefined, _id: new mongoose.Types.ObjectId()};
+    const Automovel = {
+      ...automovel, 
+      Categoria:{
+        idCategoria: undefined,
+        Nome: undefined
+      },
+      ImagensSecundarias: [], 
+      ImagemPrincipal: undefined, 
+      _id: new mongoose.Types.ObjectId()
+    };
+
+    if(automovel.idCategoria){
+      const categoriaAchada = await this.categoriaService.findOne(automovel.idCategoria.toString());
+      if(categoriaAchada.Tipo != CategoriaTipos.Automovel){
+        throw new BadRequestException('Categoria não é de Automovel!');
+      }
+      if(categoriaAchada){
+        Automovel.Categoria = {
+          idCategoria: categoriaAchada._id,
+          Nome: categoriaAchada.Nome
+        }
+      }else{
+        throw new BadRequestException('Categoria não encontrada!');
+      }
+    }else{
+      Automovel.Categoria = undefined;
+    }
+
+
     const usuario = new this.UserModel(await this.UserModel.findById(id));
     usuario.CadastroFreteiro.Automovel.push(Automovel);
 
@@ -316,10 +378,34 @@ export class UsersService {
     }
     const Automovel = {
       ...automovel, 
+      Categoria:{
+        idCategoria: undefined,
+        Nome: undefined
+      },
       ImagensSecundarias: foundUser.CadastroFreteiro.Automovel[indexAutomovel].ImagensSecundarias, 
       ImagemPrincipal: foundUser.CadastroFreteiro.Automovel[indexAutomovel].ImagemPrincipal, 
       _id: foundUser.CadastroFreteiro.Automovel[indexAutomovel]._id
     };
+
+
+    if(automovel.idCategoria){
+      const categoriaAchada = await this.categoriaService.findOne(automovel.idCategoria.toString());
+      if(categoriaAchada.Tipo != CategoriaTipos.Automovel){
+        throw new BadRequestException('Categoria não é de Automovel!');
+      }
+      if(categoriaAchada){
+        Automovel.Categoria = {
+          idCategoria: categoriaAchada._id,
+          Nome: categoriaAchada.Nome
+        }
+      }else{
+        throw new BadRequestException('Categoria não encontrada!');
+      }
+    }else{
+      Automovel.Categoria = undefined;
+    }
+
+
     foundUser.CadastroFreteiro.Automovel[indexAutomovel] = Automovel;
     await foundUser.save();
     const response = {
@@ -477,6 +563,18 @@ export class UsersService {
           await fav.save();
         });
       }
+
+      if(usuario.Login.Tipo == "Comum"){
+        const avaliacoesAchadas = await this.findAvaliacoesRegistradas(id);
+        avaliacoesAchadas.forEach( async ava => {
+          ava.UsuarioAvaliador.Foto = {
+            Url: ImagemPrincipal.ImagemPrincipal?.Url,
+            NomeArquivo: ImagemPrincipal.ImagemPrincipal?.NomeArquivo
+          }
+         await ava.save();
+        })
+      }
+
       
       return result.response;
     } catch (e) {
@@ -519,6 +617,11 @@ export class UsersService {
         await fav.save();
       });
 
+      const avaliacoesAchadas = await this.findAvaliacoesRegistradas(id);
+      avaliacoesAchadas.forEach( async ava => {
+        ava.UsuarioAvaliador.Foto = undefined;
+        await ava.save();
+      })
 
       return response;
     } catch (e) {

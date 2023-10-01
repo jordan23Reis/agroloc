@@ -9,6 +9,7 @@ import { MaquinaService } from './maquina.service';
 import { UsersModule } from '../users/users.module';
 import { FavoritoModule } from '../favorito/favorito.module';
 import { TipoPrecoModule } from '../tipo-preco/tipo-preco.module';
+import { CategoriaModule } from '../categoria/categoria.module';
 
 const modelMaquina = MongooseModule.forFeatureAsync([
   {
@@ -24,7 +25,8 @@ const modelMaquina = MongooseModule.forFeatureAsync([
     ImagemModule, 
     forwardRef(() => UsersModule), 
     forwardRef(() => FavoritoModule),
-    forwardRef(() => TipoPrecoModule)
+    forwardRef(() => TipoPrecoModule),
+    forwardRef(() => CategoriaModule)
   ],
   controllers: [MaquinaController],
   providers: [MaquinaService],
