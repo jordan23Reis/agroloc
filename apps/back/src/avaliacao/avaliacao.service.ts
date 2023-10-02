@@ -20,6 +20,42 @@ export class AvaliacaoService {
     ){}
 
 
+  async criarNotaGeralMaquina(idMaquina: string){
+    let maquina = await this.maquinaService.findOne(idMaquina);
+    maquina = await maquina.populate('Avaliacoes');
+
+    let somaNotas = 0;
+    if(maquina.Avaliacoes.length != 0){
+      maquina.Avaliacoes.forEach(avaliacao => {
+        somaNotas += avaliacao.Nivel;
+      });
+      const notaGeral = somaNotas / maquina.Avaliacoes.length;
+      maquina.NotaGeral = notaGeral;
+      await maquina.save();
+    }else{
+      maquina.NotaGeral = undefined;
+      await maquina.save();
+    }
+  }
+
+  async criarNotaGeralFreteiro(idFreteiro: string){
+    let freteiro = await this.userService.findOne(idFreteiro);
+    freteiro = await freteiro.populate('CadastroFreteiro.Avaliacoes');
+
+    let somaNotas = 0;
+    if(freteiro.CadastroFreteiro.Avaliacoes.length != 0){
+      freteiro.CadastroFreteiro.Avaliacoes.forEach(avaliacao => {
+        somaNotas += avaliacao.Nivel;
+      });
+      const notaGeral = somaNotas / freteiro.CadastroFreteiro.Avaliacoes.length;
+      freteiro.CadastroFreteiro.NotaGeral = notaGeral;
+      await freteiro.save();
+    }else{
+      freteiro.CadastroFreteiro.NotaGeral = undefined;
+      await freteiro.save();
+    }
+  }
+
 
   async criarAvaliacaoMaquina(idUsuario: string, idMaquina: string, createAvaliacaoDto: CreateAvaliacaoDto){
     const usuarioAvaliador = await this.userService.findOne(idUsuario);
@@ -51,6 +87,7 @@ export class AvaliacaoService {
       const maquinaAvaliada = await this.maquinaService.findOne(idMaquina);
       maquinaAvaliada.Avaliacoes.push(createdAvaliacao._id);
       await maquinaAvaliada.save();
+      await this.criarNotaGeralMaquina(idMaquina);
       return createdAvaliacao;
     }
 
@@ -61,7 +98,14 @@ export class AvaliacaoService {
     foundAvaliacao.Nivel = updateAvaliacaoDto.Nivel;
     foundAvaliacao.Comentario = updateAvaliacaoDto.Comentario;
     await foundAvaliacao.save();
-
+    const maquinaAvaliada = await this.maquinaService.findOneCustom({
+      Avaliacoes: {
+        $elemMatch: {
+          $eq: idAvaliacao
+        }
+      }
+    })
+    await this.criarNotaGeralMaquina(maquinaAvaliada.id);
     return foundAvaliacao;
   }
 
@@ -76,7 +120,7 @@ export class AvaliacaoService {
     })
     maquinaAvaliada.Avaliacoes = maquinaAvaliada.Avaliacoes.filter(avaliacao => avaliacao != idAvaliacao);
     await maquinaAvaliada.save();
-
+    await this.criarNotaGeralMaquina(maquinaAvaliada.id);
     return avaliacaoDeletada;
   }
 
@@ -112,6 +156,7 @@ export class AvaliacaoService {
       const freteiroAvaliado = await this.userService.findOne(idFreteiro);
       freteiroAvaliado.CadastroFreteiro.Avaliacoes.push(createdAvaliacao);
       await freteiroAvaliado.save();
+      await this.criarNotaGeralFreteiro(idFreteiro)
       return createdAvaliacao;
   }
 
@@ -120,7 +165,14 @@ export class AvaliacaoService {
     foundAvaliacao.Nivel = updateAvaliacaoDto.Nivel;
     foundAvaliacao.Comentario = updateAvaliacaoDto.Comentario;
     await foundAvaliacao.save();
-
+    const freteiroAvaliado = await this.userService.findOneCustom({
+      "CadastroFreteiro.Avaliacoes": {
+        $elemMatch: {
+          $eq: idAvaliacao
+        }
+      }
+    })
+    await this.criarNotaGeralFreteiro(freteiroAvaliado.id)
     return foundAvaliacao;
   }
 
@@ -134,9 +186,8 @@ export class AvaliacaoService {
       }
     })
     freteiroAvaliado.CadastroFreteiro.Avaliacoes = freteiroAvaliado.CadastroFreteiro.Avaliacoes.filter(avaliacao => avaliacao != idAvaliacao);
-      console.log(freteiroAvaliado);
     await freteiroAvaliado.save();
-
+    await this.criarNotaGeralFreteiro(freteiroAvaliado.id)
     return avaliacaoDeletada;
   }
 

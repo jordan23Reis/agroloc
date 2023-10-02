@@ -78,7 +78,7 @@ export class UsersService {
     switch (query.ordernarPor) {
       case 'MaisBemAvaliado':
         ordenar = {
-          //A IMPLEMENTAR QUANDO AVALIACOES TIVER IMPLEMENTADA
+          "CadastroFreteiro.NotaGeral": 'desc',
         };
         break;
       case 'OrdemAlfabetica':

@@ -1,4 +1,4 @@
-import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
+import { AvaliacaoSchemaDtoRestraints, UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Date, HydratedDocument } from 'mongoose';
 import { Maquina } from '../../maquina/entities/maquina.entity';
@@ -11,9 +11,6 @@ export type UsuarioDocument = HydratedDocument<Usuario>;
 
 @Schema()
 class Categoria {
-  //====================================
-  //A IMPLEMENTAR
-  //====================================
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Categoria',
@@ -192,6 +189,14 @@ class CadastroFreteiro {
     maxlength: UsuarioSchemaDtoRestraints.tamMaxCnh,
   })
   CNH: string;
+
+  @Prop({
+    type: Number, 
+    min:AvaliacaoSchemaDtoRestraints.minNivelAvaliacao, 
+    max:AvaliacaoSchemaDtoRestraints.maxNivelAvaliacao
+  })
+  NotaGeral: number;
+
   @Prop([{ type: Automovel }]) // aqui o type faz referência ao padrão do nest
   Automovel: Automovel[];
   
