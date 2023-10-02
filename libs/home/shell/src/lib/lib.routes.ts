@@ -14,6 +14,7 @@ import { WebMainComponent } from './web-main/web-main.component';
 import { MobMainComponent } from './mob-main/mob-main.component';
 import { HomeComponent } from '@agroloc/home/feature';
 import { DetailsComponent } from '@agroloc/machinery/feature';
+import { ManagementComponent } from '@agroloc/account/feature';
 
 export const homeShellRoutes: Route[] = [
   {
@@ -53,6 +54,11 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'details',
             component: DetailsComponent,
+            children: [],
+          },
+          {
+            path: 'management',
+            component: ManagementComponent,
             children: [],
           },
         ],

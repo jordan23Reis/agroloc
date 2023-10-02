@@ -1,0 +1,81 @@
+<div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
+  <mat-tab-group>
+    <mat-tab label="Inicio">
+      <div class="inicio">
+        <img src="assets/gato-meow.jpg" />
+        <h2>Ola, JORDAN BORGES DOS REIS</h2>
+        <h3>Seja Bem-Vindo!</h3>
+        <p>
+          Aprimore a gestão de suas informações, privacidade e segurança, de
+          modo a atender de forma eficaz às suas necessidades.
+        </p>
+      </div>
+    </mat-tab>
+    <mat-tab label="Informações Pessoais">
+      <div class="informacoes">
+        <div class="titulo">
+          <h3>Informações Pessoais</h3>
+          <p>Informações sobre você e suas Preferências</p>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Pagamentos">
+      <div class="pagamentos">
+        <div class="titulo">
+          <h3>Informações de Pagamentos</h3>
+          <p>
+            Informações de pagamento, transações, pagamentos recorrentes e
+            reservas
+          </p>
+          <div class="painel">
+            <mat-accordion>
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-description>
+                    <h3>Formas de pagamento</h3>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <p>
+                  As formas de pagamento são salvas na sua Conta para que você
+                  possa usá-las em todos os nossos serviços.
+                </p>
+              </mat-expansion-panel>
+
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-description>
+                    <h3>Informações sobre pagamentos</h3>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <p>Formas de pagamento e transações feitas na conta.</p>
+              </mat-expansion-panel>
+
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-description>
+                    <h3>Compras</h3>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <p>
+                  Suas compras, incluindo entregas e outros pedidos on-line,
+                  feitas com a Pesquisa.
+                </p>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<mat-divider></mat-divider>
+<span class="example-spacer"></span>

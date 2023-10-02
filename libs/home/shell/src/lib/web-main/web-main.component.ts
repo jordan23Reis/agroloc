@@ -25,6 +25,7 @@ export class WebMainComponent {
     { nome: 'Cadastrar', url: 'machinery' },
     { nome: 'Pesquisa', url: 'search' },
     { nome: 'Detalhes', url: 'details' },
+    { nome: 'Gerenciar Conta', url: 'management' },
   ];
 
   moveUrl(event: MatTabChangeEvent) {

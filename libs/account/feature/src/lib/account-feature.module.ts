@@ -16,6 +16,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AccountDataAcessModule } from '@agroloc/account/data-acess';
 import { FavoriteComponent } from './favorite/favorite.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { ManagementComponent } from './management/management.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   imports: [
@@ -33,12 +39,23 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
     AccountDataAcessModule,
     MatDividerModule,
+    MatMenuModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatTabsModule,
+    MatExpansionModule,
   ],
   declarations: [
     AccountRegisterComponent,
     AccountLoginComponent,
     FavoriteComponent,
+    ManagementComponent,
   ],
-  exports: [AccountRegisterComponent, AccountLoginComponent, FavoriteComponent],
+  exports: [
+    AccountRegisterComponent,
+    AccountLoginComponent,
+    FavoriteComponent,
+    ManagementComponent,
+  ],
 })
 export class AccountFeatureModule {}
