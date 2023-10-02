@@ -119,9 +119,15 @@ export class MaquinaService {
       //     }
       //   : {};
 
+      if(query.categoria){
+        query.categoria = query.categoria.split(',');
+      }
+
       const categoria = query.categoria
         ? {
-            'Categoria.Nome': query.categoria,
+            'Categoria.Nome': {
+              $in: [...query.categoria]
+            },
           }
         : {};
 
@@ -152,7 +158,7 @@ export class MaquinaService {
       switch (query.ordernarPor) {
         case 'MaisBemAvaliado':
           ordenar = {
-            //A IMPLEMENTAR QUANDO AVALIACOES TIVER IMPLEMENTADA
+            "NotaGeral": 'desc',
           };
           break;
         case 'OrdemAlfabetica':

@@ -67,7 +67,7 @@ export class AvaliacaoController {
     @Param('idAvaliacao') idAvaliacao: string,
     @Body() updateAvaliacaoDto: UpdateAvaliacaoDto
   ) {
-    return this.avaliacaoService.editarAvaliacaoMaquina(idAvaliacao, updateAvaliacaoDto);
+    return this.avaliacaoService.editarAvaliacaoFreteiro(idAvaliacao, updateAvaliacaoDto);
   }
 
 

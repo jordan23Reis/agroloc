@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import {MaquinaSchemaDtoRestraints } from "@agroloc/shared/util"
+import {AvaliacaoSchemaDtoRestraints, MaquinaSchemaDtoRestraints } from "@agroloc/shared/util"
 import { Usuario } from '../../users/entities/user.entity';
 import { TipoPreco } from '../../tipo-preco/entities/tipo-preco.entity';
 import { Categoria as catEntity } from '../../categoria/entities/categoria.entity';
@@ -104,9 +104,6 @@ class Endereco {
 
 @Schema()
 class Categoria {
-  //====================================
-  //A IMPLEMENTAR
-  //====================================
   @Prop({ 
   required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Categoria' 
   })
@@ -123,9 +120,6 @@ class Categoria {
 
 @Schema()
 class DonoDaMaquina {
-  //====================================
-  //A IMPLEMENTAR
-  //====================================
   @Prop({ 
   required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' 
   })
@@ -226,13 +220,17 @@ export class Maquina {
   })
   EstaAtiva: boolean;
 
-  //====================================
-  //A IMPLEMENTAR
-  //====================================
   @Prop({
    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Avaliacao' }]
   })
   Avaliacoes: Avaliacao[]
+
+  @Prop({
+    type: Number, 
+    min:AvaliacaoSchemaDtoRestraints.minNivelAvaliacao, 
+    max:AvaliacaoSchemaDtoRestraints.maxNivelAvaliacao
+  })
+  NotaGeral: number;
 
   @Prop({
     type: DonoDaMaquina, 
