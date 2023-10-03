@@ -1,0 +1,71 @@
+<div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
+  <span class="example-spacer"></span>
+  <div class="search">
+    <div class="chips">
+      <span class="example-spacer"></span>
+      <mat-chip-listbox
+        aria-label="Fish selection"
+        *ngFor="let item of categories"
+      >
+        <mat-chip-option>{{ item }}</mat-chip-option>
+      </mat-chip-listbox>
+      <span class="example-spacer"></span>
+    </div>
+    <div class="content">
+      <mat-divider></mat-divider>
+      <div class="item" *ngFor="let item of packages">
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="foto">
+          <mat-divider></mat-divider>
+          <span class="example-spacer"></span>
+          <img
+            src="https://http2.mlstatic.com/D_NQ_NP_768125-MLA71783090116_092023-F.webp"
+          />
+          <span class="example-spacer"></span>
+          <mat-divider></mat-divider>
+        </div>
+        <div class="informacoes">
+          <mat-divider></mat-divider>
+          <div class="head">
+            <h3>{{ item.titulo }}</h3>
+            <span class="example-spacer"></span>
+            <button
+              mat-icon-button
+              class="example-icon"
+              aria-label="Example icon-button with favorite border icon"
+            >
+              <mat-icon>favorite_border</mat-icon>
+            </button>
+          </div>
+          <div class="section">
+            <h2>{{ item.preco }}</h2>
+            <span class="example-spacer"></span>
+          </div>
+          <div class="footer">
+            <p>{{ item.locatario }}</p>
+            <span class="example-spacer"></span>
+            <h3>{{ item.avaliacao }}</h3>
+            <button
+              mat-icon-button
+              class="example-icon"
+              aria-label="Example icon-button with star rate icon"
+            >
+              <mat-icon>star</mat-icon>
+            </button>
+          </div>
+          <mat-divider></mat-divider>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+      </div>
+      <mat-divider></mat-divider>
+    </div>
+    <mat-paginator
+      [length]="100"
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page"
+    >
+    </mat-paginator>
+  </div>
+  <span class="example-spacer"></span>
+</div>

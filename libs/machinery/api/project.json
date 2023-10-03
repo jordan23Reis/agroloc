@@ -1,0 +1,20 @@
+{
+  "name": "machinery-api",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/machinery/api/src",
+  "prefix": "agroloc",
+  "tags": ["type:api", "scope:machinery"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/machinery/api/**/*.ts",
+          "libs/machinery/api/**/*.html"
+        ]
+      }
+    }
+  }
+}

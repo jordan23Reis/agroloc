@@ -8,11 +8,11 @@ import { Platform } from '@angular/cdk/platform';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'agroloc-register',
+  selector: 'agroloc-users-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent {
+export class AccountRegisterComponent {
   _formBuilder = inject(FormBuilder);
   breakpointObserver = inject(BreakpointObserver);
   http = inject(HttpClient);

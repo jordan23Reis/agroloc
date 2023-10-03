@@ -6,43 +6,83 @@ import { MobLoginComponent } from './mob-login/mob-login.component';
 import { Error404Component } from './error404/error404.component';
 import { MobRegisterComponent } from './mob-register/mob-register.component';
 import { WebRegisterComponent } from './web-register/web-register.component';
+import {
+  MachineryRegisterComponent,
+  SearchComponent,
+} from '@agroloc/machinery/feature';
+import { WebMainComponent } from './web-main/web-main.component';
+import { MobMainComponent } from './mob-main/mob-main.component';
+import { HomeComponent } from '@agroloc/home/feature';
+import { DetailsComponent } from '@agroloc/machinery/feature';
+import { ManagementComponent } from '@agroloc/account/feature';
 
 export const homeShellRoutes: Route[] = [
   {
     path: 'web',
-    pathMatch: 'prefix',
     component: WebComponent,
     children: [
       {
         path: 'login',
-        pathMatch: 'prefix',
+
         component: WebLoginComponent,
         children: [],
       },
       {
         path: 'register',
-        pathMatch: 'prefix',
         component: WebRegisterComponent,
         children: [],
+      },
+      {
+        path: 'main',
+        component: WebMainComponent,
+        children: [
+          {
+            path: 'home',
+            component: HomeComponent,
+            children: [],
+          },
+          {
+            path: 'machinery',
+            component: MachineryRegisterComponent,
+            children: [],
+          },
+          {
+            path: 'search',
+            component: SearchComponent,
+            children: [],
+          },
+          {
+            path: 'details',
+            component: DetailsComponent,
+            children: [],
+          },
+          {
+            path: 'management',
+            component: ManagementComponent,
+            children: [],
+          },
+        ],
       },
     ],
   },
 
   {
     path: 'mob',
-    pathMatch: 'prefix',
     component: MobComponent,
     children: [
       {
         path: 'login',
-        pathMatch: 'prefix',
         component: MobLoginComponent,
         children: [],
       },
       {
         path: 'register',
-        pathMatch: 'prefix',
         component: MobRegisterComponent,
+        children: [],
+      },
+      {
+        path: 'home',
+        component: MobMainComponent,
         children: [],
       },
     ],
@@ -58,6 +98,13 @@ export const homeShellRoutes: Route[] = [
     redirectTo: '404',
   },
 
+  // {
+  //   path: 'machinery-feature',
+  //   loadChildren: () =>
+  //     import('@agroloc/machinery/feature').then(
+  //       (m) => m.MachineryFeatureModule
+  //     ),
+  // },
   // {
   //   path: 'home-feature',
   //   loadChildren: () =>

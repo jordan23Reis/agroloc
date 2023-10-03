@@ -12,13 +12,24 @@ export class AuthService {
   authStorage = inject(AuthStorage);
   http = inject(HttpClient);
   router = inject(Router);
+
   SingIn(account: Login) {
-    this.http.post<Token>('api/auth/login', account).subscribe((token) => {
-      this.authStorage.setAcessToken(token.access_token);
-    });
+    this.http
+      .post<Token>('/api/auth-user/login', account)
+      .subscribe((token) => {
+        this.authStorage.setAcessToken(token.access_token);
+      });
   }
+
   SingOut() {
     this.authStorage.removeAcessToken();
     this.router.navigate([]);
+  }
+
+  IsLogged() {
+    if (this.authStorage.getAcessToken()) {
+      return true;
+    }
+    return false;
   }
 }

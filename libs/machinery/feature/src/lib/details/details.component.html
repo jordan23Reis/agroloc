@@ -1,0 +1,92 @@
+<div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
+  <span class="example-spacer"></span>
+
+  <div class="content">
+    <div class="head">
+      <div class="fotos">
+        <span class="example-spacer"></span>
+
+        <div class="outrasFotos">
+          <div class="arquivos" *ngFor="let item of arquivos">
+            <img [src]="item" />
+          </div>
+        </div>
+
+        <div class="fotoPrincipal">
+          <img
+            src="https://http2.mlstatic.com/D_NQ_NP_768125-MLA71783090116_092023-F.webp"
+          />
+        </div>
+      </div>
+
+      <mat-divider [vertical]="true"></mat-divider>
+      <div class="inforAluguel">
+        <mat-divider></mat-divider>
+        <span class="example-spacer"></span>
+        <div class="titulo">
+          <h3>{{ product.titulo }}</h3>
+          <span class="example-spacer"></span>
+          <button
+            mat-icon-button
+            class="example-icon"
+            aria-label="Example icon-button with favorite border icon"
+          >
+            <mat-icon>favorite_border</mat-icon>
+          </button>
+        </div>
+
+        <div class="preco">
+          <h2>{{ product.preco }}</h2>
+          <span class="example-spacer"></span>
+        </div>
+
+        <div class="person">
+          <p>{{ product.locatario }}</p>
+          <span class="example-spacer"></span>
+          <h3>{{ product.avaliacao }}</h3>
+          <button
+            mat-icon-button
+            class="example-icon"
+            aria-label="Example icon-button with star rate icon"
+          >
+            <mat-icon>star</mat-icon>
+          </button>
+        </div>
+
+        <div class="compra">
+          <button class="negociar" mat-raised-button color="primary">
+            Negociar
+          </button>
+          <span class="example-spacer"></span>
+          <button
+            mat-icon-button
+            class="example-icon"
+            aria-label="Example icon-button with chat rate icon"
+          >
+            <mat-icon>chat</mat-icon>
+          </button>
+        </div>
+        <span class="example-spacer"></span>
+        <mat-divider></mat-divider>
+      </div>
+      <mat-divider [vertical]="true"></mat-divider>
+
+      <span class="example-spacer"></span>
+    </div>
+
+    <div class="section">
+      <mat-divider></mat-divider>
+
+      <h2>Descrição</h2>
+      <p>{{ product.descricao }}</p>
+    </div>
+
+    <div class="footer">
+      <mat-divider></mat-divider>
+
+      <h2>Comentarios</h2>
+      <p>{{ product.descricao }}</p>
+    </div>
+  </div>
+  <span class="example-spacer"></span>
+</div>

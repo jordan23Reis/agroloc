@@ -1,5 +1,4 @@
 import { AuthService, AuthStorage, Login } from '@agroloc/account/data-acess';
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { Platform } from '@angular/cdk/platform';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
@@ -11,14 +10,14 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class AccountLoginComponent {
   _formBuilder = inject(FormBuilder);
-  breakpointObserver = inject(BreakpointObserver);
   http = inject(HttpClient);
   platform = inject(Platform);
   router = inject(Router);
   authService = inject(AuthService);
   authStorage = inject(AuthStorage);
+
   accountError = false;
   date: Login;
 
@@ -36,8 +35,8 @@ export class LoginComponent {
 
   SingIn() {
     this.date = {
-      email: this.account.value.email,
-      password: this.account.value.password,
+      Email: this.account.value.email,
+      Senha: this.account.value.password,
     };
     this.authService.SingIn(this.date);
     if (this.authStorage.getAcessToken()) {
