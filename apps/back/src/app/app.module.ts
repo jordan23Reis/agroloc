@@ -10,6 +10,7 @@ import { AuthUserModule } from '../auth-user/auth-user.module';
 import { FavoritoModule } from '../favorito/favorito.module';
 import { CategoriaModule } from '../categoria/categoria.module';
 import { AvaliacaoModule } from '../avaliacao/avaliacao.module';
+import { AsaasModule } from '../asaas/asaas.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { AvaliacaoModule } from '../avaliacao/avaliacao.module';
     UsersModule,
     FavoritoModule,
     CategoriaModule,
-    AvaliacaoModule
+    AvaliacaoModule,
+    AsaasModule
   ],
   controllers: [AppController],
   providers: [AppService],
