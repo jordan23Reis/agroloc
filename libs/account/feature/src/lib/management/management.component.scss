@@ -60,6 +60,7 @@
       flex-direction: column;
       width: 100%;
       height: auto;
+      margin-top: 30px;
     }
 
     .titulo {
@@ -69,8 +70,15 @@
       justify-content: center;
     }
 
+    mat-accordion {
+    }
     mat-expansion-panel {
       margin-bottom: 15px;
+    }
+
+    .conteudo {
+      display: flex;
+      flex-direction: row;
     }
   }
 }

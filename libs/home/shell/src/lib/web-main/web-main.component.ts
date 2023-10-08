@@ -17,6 +17,8 @@ export class WebMainComponent {
 
   isMobile = this.platform.ANDROID || this.platform.IOS;
   showFiller = false;
+  isDarkMode = false;
+  darkMode = false;
   value = '';
   activeLink = '';
 
@@ -37,6 +39,18 @@ export class WebMainComponent {
       } else {
         this.router.navigateByUrl(`web/main/${link.url}`);
       }
+    }
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    this.darkMode = this.isDarkMode;
+    if (this.isDarkMode) {
+      localStorage.setItem('prefers-color-scheme', 'dark');
+      document.body.classList.add('darkMode');
+    } else {
+      localStorage.setItem('prefers-color-scheme', 'light');
+      document.body.classList.remove('darkMode');
     }
   }
 }

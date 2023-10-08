@@ -75,14 +75,19 @@
     border-radius: 100%;
   }
 
+  .accountIcon {
+    width: auto;
+    height: auto;
+  }
+
   a:link {
     text-decoration: none;
-    color: black;
+    color: inherit;
   }
 
   a:visited {
     text-decoration: none;
-    color: black;
+    color: inherit;
   }
 
   a:hover {
@@ -102,4 +107,17 @@
   //       }
   //     }
   //   }
+}
+
+.imgAccount {
+  height: 36px;
+  width: 36px;
+  border-radius: 100%;
+  align-self: center;
+  justify-self: center;
+}
+
+mat-icon {
+  width: auto;
+  height: auto;
 }
