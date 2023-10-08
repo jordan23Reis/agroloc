@@ -54,16 +54,8 @@
 
         <mat-menu #notifications="matMenu" xPosition="before">
           <button mat-menu-item>
-            <mat-icon>dialpad</mat-icon>
-            <span>favorito</span>
-          </button>
-          <button mat-menu-item disabled>
-            <mat-icon>voicemail</mat-icon>
-            <span>Check voice mail</span>
-          </button>
-          <button mat-menu-item>
-            <mat-icon>notifications_off</mat-icon>
-            <span>Disable alerts</span>
+            <mat-icon>notifications</mat-icon>
+            <span>notifications</span>
           </button>
         </mat-menu>
 
@@ -77,7 +69,9 @@
         </button>
 
         <mat-menu #favorite="matMenu" xPosition="before">
-          <agroloc-favorite></agroloc-favorite>
+          <div class="contentMenu" mat-menu-item>
+            <agroloc-favorite></agroloc-favorite>
+          </div>
         </mat-menu>
 
         <button

@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
   platform = inject(Platform);
   router = inject(Router);
   location = inject(Location);
+
   isMobile = this.platform.ANDROID || this.platform.IOS;
   currentUrl = this.location.path() ?? '';
   filterUrl = this.prefixRemove(this.currentUrl);

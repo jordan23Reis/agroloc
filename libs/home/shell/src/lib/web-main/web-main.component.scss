@@ -80,6 +80,13 @@
     height: auto;
   }
 
+  .contentMenu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 600px;
+  }
+
   a:link {
     text-decoration: none;
     color: inherit;
