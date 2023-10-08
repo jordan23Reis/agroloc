@@ -16,6 +16,45 @@
         <div class="titulo">
           <h3>Informações Pessoais</h3>
           <p>Informações sobre você e suas Preferências</p>
+          <div class="painel">
+            <mat-accordion>
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <mat-icon>payment</mat-icon>
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    <h3>Informações Basicas</h3>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <span class="example-spacer"></span>
+                <div class="conteudo">
+                  <p>Informações de identidade visíveis para outras.</p>
+                </div>
+                <span class="example-spacer"></span>
+              </mat-expansion-panel>
+              <mat-divider></mat-divider>
+
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <mat-icon>monetization_on</mat-icon>
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    <h3>Informações sobre pagamentos</h3>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <p>Formas de pagamento e transações feitas na conta.</p>
+              </mat-expansion-panel>
+              <mat-divider></mat-divider>
+            </mat-accordion>
+          </div>
         </div>
       </div>
     </mat-tab>
@@ -61,25 +100,6 @@
                   </mat-panel-description>
                 </mat-expansion-panel-header>
                 <p>Formas de pagamento e transações feitas na conta.</p>
-              </mat-expansion-panel>
-              <mat-divider></mat-divider>
-
-              <mat-expansion-panel
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
-              >
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <mat-icon>shopping_cart</mat-icon>
-                  </mat-panel-title>
-                  <mat-panel-description>
-                    <h3>Compras</h3>
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                <p>
-                  Suas compras, incluindo entregas e outros pedidos on-line,
-                  feitas com a Pesquisa.
-                </p>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
             </mat-accordion>

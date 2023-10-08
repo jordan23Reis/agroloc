@@ -20,7 +20,17 @@ $front-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$front-theme: mat.define-light-theme(
+$front-theme-light: mat.define-light-theme(
+  (
+    color: (
+      primary: $front-primary,
+      accent: $front-accent,
+      warn: $front-warn,
+    ),
+  )
+);
+
+$front-theme-dark: mat.define-dark-theme(
   (
     color: (
       primary: $front-primary,
@@ -33,7 +43,13 @@ $front-theme: mat.define-light-theme(
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($front-theme);
+@include mat.all-component-themes($front-theme-light);
+
+.darkMode {
+  // Use the `-color` mixins to only apply color styles without reapplying the same
+  // typography and density styles.
+  @include mat.all-component-colors($front-theme-dark);
+}
 
 /* You can add global styles to this file, and also import other style files */
 
@@ -48,10 +64,6 @@ body {
 .root {
   height: 100%;
   display: block;
-}
-
-.mat-menu-panel.my-class {
-  width: 400px;
 }
 
 .cdk-overlay-pane {
