@@ -1,37 +1,93 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAsaaDto } from './dto/create-asaa.dto';
-import { UpdateAsaaDto } from './dto/update-asaa.dto';
-import { ConfigService } from '@nestjs/config';
-import axios, { AxiosInstance } from 'axios';
+import { AxiosError } from 'axios';
+import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom } from 'rxjs';
+import { Cliente } from './dto/create-cliente.dto';
+import { Cobranca } from './dto/create-cobranca.dto';
 
 @Injectable()
 export class AsaasService {
-  urlBase: string;
-  axiosInstance: AxiosInstance;
-  versao: string
 
-  constructor(private configService: ConfigService){
-    this.versao = this.configService.get('asaasVersao');
-    this.urlBase = this.configService.get('asaasUrlBase');
-    this.axiosInstance = axios.create({
-      baseURL: this.urlBase + this.versao + "/",
-      headers: {
-        accept: 'application/json',
-        'content-type': 'application/json',
-        access_token: this.configService.get('asaasToken')
-      } 
-    });
+
+  constructor(private httpService: HttpService){
   }
 
-  async createCliente(){
-    console.log(this.urlBase + this.versao + "/")
-    console.log(this.configService.get('asaasToken'))
-    const createdCliente = await this.axiosInstance.post('customers', {
-      "name": "Lucas",
-      "cpfCnpj": "23423123212"
-  },{});
-
-  return createdCliente;
+  async createCliente(createCliente: Cliente){
+    const { data } = await firstValueFrom(
+      this.httpService.post('/customers', 
+      createCliente
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data;
   }
+
+  async recuperarCliente(id: string){
+    const { data } = await firstValueFrom(
+      this.httpService.get('/customers/'+id
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data;
+  }
+
+  async recuperarClientes(){
+    const { data } = await firstValueFrom(
+      this.httpService.get('/customers'
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data.data;
+  }
+
+  async editarCliente(createCliente: Cliente, id: string){
+    const { data } = await firstValueFrom(
+      this.httpService.put('/customers/'+id, createCliente
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data;
+  }
+
+  async deletarCliente(id: string){
+    const { data } = await firstValueFrom(
+      this.httpService.delete('/customers/'+id
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data;
+  }
+
+  async criarCobranca(createCobranca: Cobranca){
+    const { data } = await firstValueFrom(
+      this.httpService.post('/payments', 
+      createCobranca
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data;
+  }
+
+
+
+  
 
 }
