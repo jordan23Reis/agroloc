@@ -1,8 +1,9 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Platform } from '@angular/cdk/platform';
+import { StepperOrientation } from '@angular/cdk/stepper';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 
 @Component({
   selector: 'agroloc-machinery-register',
@@ -14,6 +15,7 @@ export class MachineryRegisterComponent {
   breakpointObserver = inject(BreakpointObserver);
   formBuilder = inject(FormBuilder);
 
+  isOptional = false;
   isMobile = this.platform.ANDROID || this.platform.IOS;
 
   #imagensSecundarias = new BehaviorSubject<string[]>([]);
@@ -37,6 +39,30 @@ export class MachineryRegisterComponent {
     ImagemSecundarias: [this.ImagemSecundariasType, Validators.required],
   });
 
+  firstFormGroup = this.formBuilder.group({
+    Nome: ['', Validators.required],
+    Descricao: ['', Validators.required],
+    ImagemPrincipal: [this.ImagemPrincipalType, Validators.required],
+  });
+  secondFormGroup = this.formBuilder.group({
+    Peso: ['', Validators.required],
+    Comprimento: ['', Validators.required],
+    Largura: ['', Validators.required],
+    Altura: ['', Validators.required],
+  });
+  thirdFormGroup = this.formBuilder.group({
+    ImagemSecundarias: [this.ImagemSecundariasType, Validators.required],
+  });
+
+  stepperOrientation: Observable<StepperOrientation>;
+
+
+  constructor(breakpointObserver: BreakpointObserver) {
+    this.stepperOrientation = breakpointObserver
+      .observe('(min-width: 950px)')
+      .pipe(map(({matches}) => (matches ? 'horizontal' : 'vertical')));
+  }
+
   onImagemPrincipalSelected(event: any) {
     const file = event.target.files[0] as File;
 
@@ -55,4 +81,5 @@ export class MachineryRegisterComponent {
       this.#imagensSecundarias.next(files.map(URL.createObjectURL));
     }
   }
+
 }

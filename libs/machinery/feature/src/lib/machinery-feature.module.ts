@@ -15,6 +15,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { DetailsComponent } from './details/details.component';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { MatTableModule } from '@angular/material/table';
     MatDividerModule,
     MatListModule,
     MatTableModule,
+    MatStepperModule,
   ],
   declarations: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
   exports: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
