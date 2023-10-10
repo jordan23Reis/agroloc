@@ -1,6 +1,13 @@
 import { Platform } from '@angular/cdk/platform';
 import { Component, inject } from '@angular/core';
 
+const ELEMENT_DATA: any[] = [
+  { informacao: 'Peso', valor: 10.5 },
+  { informacao: 'Comprimento', valor: 8.6 },
+  { informacao: 'Largura', valor: 9.5 },
+  { informacao: 'Altura', valor: 25.9 },
+];
+
 @Component({
   selector: 'agroloc-details',
   templateUrl: './details.component.html',
@@ -10,6 +17,10 @@ export class DetailsComponent {
   platform = inject(Platform);
 
   isMobile = this.platform.ANDROID || this.platform.IOS;
+  displayedColumns: string[] = ['informacao', 'valor'];
+  dataSource = ELEMENT_DATA;
+  clickedRows = new Set<any>();
+
   arquivos = [
     'https://th.bing.com/th/id/OIP.q2eACHR4I3LNquamNg3u4wHaEP?w=314&h=180&c=7&r=0&o=5&pid=1.7',
     'https://th.bing.com/th/id/OIP.CqVN7Yix_uV5atK919oc0AHaD9?w=308&h=180&c=7&r=0&o=5&pid=1.7',
@@ -37,4 +48,30 @@ export class DetailsComponent {
     locatario: 'Loja oficial Apple',
     like: 'like aqui',
   };
+
+  folders: any[] = [
+    {
+      name: 'Photos',
+      updated: new Date('1/1/16'),
+    },
+    {
+      name: 'Recipes',
+      updated: new Date('1/17/16'),
+    },
+    {
+      name: 'Work',
+      updated: new Date('1/28/16'),
+    },
+  ];
+
+  notes: any[] = [
+    {
+      name: 'Vacation Itinerary',
+      updated: new Date('2/20/16'),
+    },
+    {
+      name: 'Kitchen Remodel',
+      updated: new Date('1/18/16'),
+    },
+  ];
 }

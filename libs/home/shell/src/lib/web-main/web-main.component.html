@@ -84,20 +84,16 @@
         </button>
 
         <mat-menu #person="matMenu" xPosition="before">
-          <button mat-menu-item>
-            <mat-icon class="accountIcon" matPrefix>
-              <img class="imgAccount" src="assets/gato-meow.jpg"
-            /></mat-icon>
-            <span>
-              <h3>JORDAN BORGES DOS REIS</h3>
-              <p>jordan.reis@alunos.unicesumar.edu.br</p>
-            </span>
-          </button>
+          <div class="menuAccount" mat-menu-item>
+            <p>jordan.reis@alunos.unicesumar.edu.br</p>
+            <img class="imgAccount" src="assets/gato-meow.jpg" />
+            <h3>JORDAN BORGES DOS REIS</h3>
+          </div>
+          <mat-divider></mat-divider>
           <button mat-menu-item>
             <mat-icon matPrefix>account_circle</mat-icon>
             <span>Gereciar sua Conta</span>
           </button>
-          <mat-divider></mat-divider>
           <button mat-menu-item>
             <mat-icon>switch_account</mat-icon>
             <span>Trocar de Conta</span>
