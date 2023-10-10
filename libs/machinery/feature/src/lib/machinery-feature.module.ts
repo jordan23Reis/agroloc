@@ -13,6 +13,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { DetailsComponent } from './details/details.component';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { DetailsComponent } from './details/details.component';
     MatPaginatorModule,
     MatIconModule,
     MatDividerModule,
+    MatStepperModule,
   ],
   declarations: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
   exports: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
