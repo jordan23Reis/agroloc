@@ -7,9 +7,15 @@
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>Informações Basicas</ng-template>
           <div class="content">
-            <h4>Adicione a Foto do Anúncio, Titulo e Descrição</h4>
 
-            <p>Nesta etapa, você está prestes a dar vida ao seu anúncio!</p>
+
+            <div class="headFicha">
+
+              <h4>Adicione a Foto do Anúncio, Titulo e Descrição</h4>
+
+              <p>Nesta etapa, você está prestes a dar vida ao seu anúncio!</p>
+
+            </div>
 
             <div class="formImgMain">
               <p>
@@ -124,9 +130,11 @@
 
           </div>
 
+
+
           <div class="menuButtons">
-            <button mat-button matStepperPrevious>Voltar</button>
             <span class="example-spacer"></span>
+            <button mat-button matStepperPrevious>Voltar</button>
             <button class="nextButton" mat-raised-button color="primary" matStepperNext>Proximo</button>
           </div>
         </form>
