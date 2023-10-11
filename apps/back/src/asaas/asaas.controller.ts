@@ -10,12 +10,13 @@ import {
 } from '@nestjs/common';
 import { AsaasService } from './asaas.service';
 import { Cliente } from './dto/create-cliente.dto';
+import { CobrancaUnica } from './dto/create-cobranca-unica.dto';
 
 @Controller('asaas')
 export class AsaasController {
   constructor(private readonly asaasService: AsaasService) {}
 
-  @Post()
+  @Post("cliente")
   createCliente(@Body() createCliente: Cliente) {
     try{
     return this.asaasService.createCliente(createCliente)
@@ -24,7 +25,7 @@ export class AsaasController {
     }
   }
 
-  @Get(":id")
+  @Get("cliente/:id")
   findCliente(@Param('id') id: string) {
     try{
     return this.asaasService.recuperarCliente(id);
@@ -33,7 +34,7 @@ export class AsaasController {
     }
   }
 
-  @Get()
+  @Get("cliente")
   findClientes(){
     try{
     return this.asaasService.recuperarClientes();
@@ -42,7 +43,7 @@ export class AsaasController {
     }
   }
 
-  @Put(":id")
+  @Put("cliente/:id")
   editCliente(@Body() createCliente: Cliente, @Param('id') id: string) {
     try{
     return this.asaasService.editarCliente(createCliente,id);
@@ -51,10 +52,19 @@ export class AsaasController {
     }
   }
 
-  @Delete(":id")
+  @Delete("cliente/:id")
   deleteCliente(@Param('id') id: string){
     try{
     return this.asaasService.deletarCliente(id);
+    }catch(e){
+      return e;
+    }
+  }
+
+  @Post("cobranca/unica")
+  createCobrancaUnica(@Body() createCobranca: CobrancaUnica) {
+    try{
+    return this.asaasService.criarCobrancaPagamentoUnico(createCobranca)
     }catch(e){
       return e;
     }

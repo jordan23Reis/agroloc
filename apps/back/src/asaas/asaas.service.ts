@@ -3,7 +3,8 @@ import { AxiosError } from 'axios';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Cliente } from './dto/create-cliente.dto';
-import { Cobranca } from './dto/create-cobranca.dto';
+import { CobrancaUnica } from './dto/create-cobranca-unica.dto';
+import { CobrancaSchemaDtoRestraints, addDays, formataData } from '@agroloc/shared/util';
 
 @Injectable()
 export class AsaasService {
@@ -73,16 +74,31 @@ export class AsaasService {
     return data;
   }
 
-  async criarCobranca(createCobranca: Cobranca){
+  async criarCobrancaPagamentoUnico(createCobranca: CobrancaUnica){
+    const dueDate = 
+    formataData(
+      addDays(
+        new Date(), 
+        CobrancaSchemaDtoRestraints.diasExpiracaoPagamento
+    ));
+    const cobranca = {
+      ...createCobranca,
+      dueDate,
+      billingType: "UNDEFINED"
+    }
+    console.log(cobranca);
+
+
     const { data } = await firstValueFrom(
       this.httpService.post('/payments', 
-      createCobranca
+      cobranca
       ).pipe(
         catchError((error: AxiosError) => {
           throw error;
         }),
       ),
     );
+    console.log(data);
     return data;
   }
 
