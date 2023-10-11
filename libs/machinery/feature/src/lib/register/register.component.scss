@@ -97,7 +97,10 @@
 
     #Descricao {
       width: 70%;
-      height: auto;
+      height: 150px;
+      textarea {
+        height: 90px;
+      }
     }
 
     .custum-file-upload {
