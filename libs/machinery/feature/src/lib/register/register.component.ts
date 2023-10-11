@@ -28,17 +28,6 @@ export class MachineryRegisterComponent {
   ImagemPrincipalType: File | null | undefined = null;
   ImagemSecundariasType: File[] = [];
 
-  formMachinery = this.formBuilder.group({
-    Nome: ['', Validators.required],
-    Descricao: ['', Validators.required],
-    Peso: ['', Validators.required],
-    Comprimento: ['', Validators.required],
-    Largura: ['', Validators.required],
-    Altura: ['', Validators.required],
-    ImagemPrincipal: [this.ImagemPrincipalType, Validators.required],
-    ImagemSecundarias: [this.ImagemSecundariasType, Validators.required],
-  });
-
   firstFormGroup = this.formBuilder.group({
     Nome: ['', Validators.required],
     Descricao: ['', Validators.required],
@@ -67,7 +56,7 @@ export class MachineryRegisterComponent {
     const file = event.target.files[0] as File;
 
     if (file) {
-      this.formMachinery.patchValue({ ImagemPrincipal: file });
+      this.firstFormGroup.patchValue({ ImagemPrincipal: file });
       this.imagemPrincipalPreview = URL.createObjectURL(file);
     }
   }
@@ -77,7 +66,7 @@ export class MachineryRegisterComponent {
     const files: File[] = Array.from(fileList);
 
     if (files.length > 0) {
-      this.formMachinery.patchValue({ ImagemSecundarias: files });
+      this.thirdFormGroup.patchValue({ ImagemSecundarias: files });
       this.#imagensSecundarias.next(files.map(URL.createObjectURL));
     }
   }
