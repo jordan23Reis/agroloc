@@ -72,7 +72,8 @@
               <mat-form-field id="Titulo" required>
                 <mat-label>Categoria</mat-label>
                 <mat-select formControlName="Categoria">
-                  <mat-option *ngFor="let category of categoryList" [value]="category.value">{{category.name}}</mat-option>
+                  <mat-option *ngFor="let category of categoryList"
+                    [value]="category.value">{{category.name}}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
@@ -208,10 +209,27 @@
 
       <mat-step>
         <ng-template matStepLabel>Finalizar Cadastro</ng-template>
-        <p>You are now done.</p>
-        <div>
-          <button mat-button matStepperPrevious>Back</button>
-          <button mat-button (click)="stepper.reset()">Reset</button>
+        <div class="headFicha">
+          <h4>
+            Parabéns, você esta preste a concluir o seu cadastro!
+          </h4>
+          <p>
+            Revise todas as informações cuidadosamente para garantir que tudo esteja perfeito
+          </p>
+          <p>
+            Depois de confirmar, seu anúncio estará pronto para ser publicado e alcançar compradores interessados em seu
+            maquinário
+          </p>
+          <p>
+            Boa sorte com o seu anúncio e estamos ansioso para ajudá-lo a encontrar o comprador perfeito!
+          </p>
+        </div>
+
+        <div class="menuButtons">
+          <button mat-button (click)="stepper.reset()">Resetar</button>
+          <span class="example-spacer"></span>
+          <button mat-button matStepperPrevious>Voltar</button>
+          <button class="nextButton" mat-raised-button color="primary" matStepperNext>Confirmar</button>
         </div>
       </mat-step>
     </mat-stepper>

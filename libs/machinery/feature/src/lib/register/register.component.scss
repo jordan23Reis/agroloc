@@ -161,7 +161,8 @@
     .arquivos {
       display: flex;
       flex-direction: row;
-      overflow-y: scroll;
+      overflow-y: hidden;
+      overflow-x: scroll;
       max-width: 80%;
       img {
         margin-right: 15px;
