@@ -11,6 +11,7 @@ import {
 import { AsaasService } from './asaas.service';
 import { Cliente } from './dto/create-cliente.dto';
 import { CobrancaUnica } from './dto/create-cobranca-unica.dto';
+import { CobrancaParcelada } from './dto/create-cobranca-parcelada.dto';
 
 @Controller('asaas')
 export class AsaasController {
@@ -69,5 +70,41 @@ export class AsaasController {
       return e;
     }
   }
+  @Post("cobranca/parcelada")
+  createCobrancaParcelada(@Body() createCobranca: CobrancaParcelada) {
+    try{
+    return this.asaasService.criarCobrancaPagamentoParcelado(createCobranca)
+    }catch(e){
+      return e;
+    }
+  }
+
+  @Get("cobranca")
+  findCobrancas(){
+    try{
+    return this.asaasService.recuperarCobrancas();
+    }catch(e){
+      return e;
+    }
+  }
+
+  @Get("cobranca/:id")
+  findCobranca(@Param('id') id: string) {
+    try{
+    return this.asaasService.recuperarCobranca(id);
+    }catch(e){
+      return e;
+    }
+  }
+
+  @Delete("cobranca/:id")
+  deleteCobranca(@Param('id') id: string){
+    try{
+    return this.asaasService.deletarCobranca(id);
+    }catch(e){
+      return e;
+    }
+  }
+  
 
 }

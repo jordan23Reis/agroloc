@@ -4,7 +4,8 @@ import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Cliente } from './dto/create-cliente.dto';
 import { CobrancaUnica } from './dto/create-cobranca-unica.dto';
-import { CobrancaSchemaDtoRestraints, addDays, formataData } from '@agroloc/shared/util';
+import { CobrancaSchemaDtoRestraints, addDays, aumentaPrecoParcela, formataData } from '@agroloc/shared/util';
+import { CobrancaParcelada } from './dto/create-cobranca-parcelada.dto';
 
 @Injectable()
 export class AsaasService {
@@ -12,6 +13,8 @@ export class AsaasService {
 
   constructor(private httpService: HttpService){
   }
+
+  //=======CLIENTES=======//
 
   async createCliente(createCliente: Cliente){
     const { data } = await firstValueFrom(
@@ -73,7 +76,9 @@ export class AsaasService {
     );
     return data;
   }
+  //=======FIM CLIENTES=======//
 
+  //=======COBRANCAS=======//
   async criarCobrancaPagamentoUnico(createCobranca: CobrancaUnica){
     const dueDate = 
     formataData(
@@ -102,7 +107,70 @@ export class AsaasService {
     return data;
   }
 
+  async criarCobrancaPagamentoParcelado(createCobranca: CobrancaParcelada){
+    const dueDate = 
+    formataData(
+      addDays(
+        new Date(), 
+        CobrancaSchemaDtoRestraints.diasExpiracaoPagamento
+    ));
+    const cobranca = {
+      ...createCobranca,
+      dueDate,
+      billingType: "UNDEFINED"
+    }
+    cobranca.installmentValue = aumentaPrecoParcela(cobranca.installmentValue);
+    console.log(cobranca);
 
+
+    const { data } = await firstValueFrom(
+      this.httpService.post('/payments', 
+      cobranca
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    console.log(data);
+    return data;
+  }
+
+  async recuperarCobrancas(){
+    const { data } = await firstValueFrom(
+      this.httpService.get('/payments'
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data.data;
+  }
+
+  async recuperarCobranca(id: string){
+    const { data } = await firstValueFrom(
+      this.httpService.get('/payments/'+id
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data;
+  }
+
+  async deletarCobranca(id: string){
+    const { data } = await firstValueFrom(
+      this.httpService.delete('/payments/'+id
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data;
+  }
 
   
 
