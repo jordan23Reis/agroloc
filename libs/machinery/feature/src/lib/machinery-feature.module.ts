@@ -16,6 +16,7 @@ import { DetailsComponent } from './details/details.component';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   imports: [
@@ -32,8 +33,9 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatListModule,
     MatTableModule,
     MatStepperModule,
+    MatSelectModule,
   ],
   declarations: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
   exports: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
 })
-export class MachineryFeatureModule {}
+export class MachineryFeatureModule { }

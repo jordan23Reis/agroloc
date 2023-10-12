@@ -24,12 +24,29 @@ export class MachineryRegisterComponent {
 
   imageUrl: string | ArrayBuffer | null | undefined = null;
   listImageUrl: string[] | null | undefined = null;
+  categoryList = [{
+    value: 'Categoria 1',
+    name: 'Categoria 1'
+  },
+  {
+    value: 'Categoria 1',
+    name: 'Categoria 1'
+  },
+  {
+    value: 'Categoria 1',
+    name: 'Categoria 1'
+  },
+  {
+    value: 'Categoria 1',
+    name: 'Categoria 1'
+  },]
 
   ImagemPrincipalType: File | null | undefined = null;
   ImagemSecundariasType: File[] = [];
 
   firstFormGroup = this.formBuilder.group({
     Nome: ['', Validators.required],
+    Categoria: ['', Validators.required],
     Descricao: ['', Validators.required],
     ImagemPrincipal: [this.ImagemPrincipalType, Validators.required],
   });
