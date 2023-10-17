@@ -12,6 +12,7 @@ import { AsaasService } from './asaas.service';
 import { Cliente } from './dto/create-cliente.dto';
 import { CobrancaUnica } from './dto/create-cobranca-unica.dto';
 import { CobrancaParcelada } from './dto/create-cobranca-parcelada.dto';
+import { TransferenciaConta } from './dto/create-transferencia-conta.dto';
 
 @Controller('asaas')
 export class AsaasController {
@@ -105,6 +106,27 @@ export class AsaasController {
       return e;
     }
   }
+
+  @Post("transferencia/conta")
+  createTransferenciaParaConta(@Body() transferenciaConta: TransferenciaConta) {
+    try{
+    return this.asaasService.criarTransferenciaConta(transferenciaConta)
+    }catch(e){
+      return e;
+    }
+  }
+
+  
+  @Post("transferencia/pix")
+  createTransferenciaParaPix(@Body() transferenciaConta: TransferenciaConta) {
+    try{
+    return this.asaasService.criarTransferenciaPix(transferenciaConta)
+    }catch(e){
+      return e;
+    }
+  }
+
+
   
 
 }

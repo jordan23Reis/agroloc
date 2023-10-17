@@ -6,6 +6,7 @@ import { Cliente } from './dto/create-cliente.dto';
 import { CobrancaUnica } from './dto/create-cobranca-unica.dto';
 import { CobrancaSchemaDtoRestraints, addDays, aumentaPrecoParcela, formataData } from '@agroloc/shared/util';
 import { CobrancaParcelada } from './dto/create-cobranca-parcelada.dto';
+import { TransferenciaConta } from './dto/create-transferencia-conta.dto';
 
 @Injectable()
 export class AsaasService {
@@ -170,6 +171,44 @@ export class AsaasService {
       ),
     );
     return data;
+  }
+
+
+  async criarTransferenciaConta(createTransferenciaConta: TransferenciaConta){
+    try{
+    const { data } = await firstValueFrom(
+      this.httpService.post('/transfers', 
+      createTransferenciaConta
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    console.log(data);
+    return data;
+    }catch(e){
+      return e;
+    }
+  }
+
+  // a fazer
+  async criarTransferenciaPix(createTransferenciaConta: TransferenciaConta){
+    try{
+    const { data } = await firstValueFrom(
+      this.httpService.post('/transfers', 
+      createTransferenciaConta
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    console.log(data);
+    return data;
+    }catch(e){
+      return e;
+    }
   }
 
   
