@@ -4,7 +4,6 @@ import { Account } from '../entities/account.interface';
 import { Observable } from 'rxjs';
 import {
   AccountData,
-  Address,
   Automovel,
   EditAutomovel,
   EditarEndereco,
@@ -12,7 +11,6 @@ import {
   ImagemPrincipal,
   ImagensSecundarias,
   InformacoesBancarias,
-  Machine,
   NovoEndereco,
   UpdatePassword,
 } from '../entities/account-paths.interface';
@@ -205,18 +203,4 @@ export class AccountService {
   removeMaquinaFavorita(accountId: string, maquinaId: string): Observable<any> {
     return this.http.delete(`/api/favorito/maquina/${accountId}/${maquinaId}`);
   }
-
-  addAddress(address: Address): Observable<any> {
-    return this.http.post(`/api/users/address`, address);
-  }
-
-  addAutomobile(automobile: Automovel): Observable<any> {
-    return this.http.post(`/api/users/automobile`, automobile);
-  }
-
-  addMachine(machine: Machine): Observable<any> {
-    return this.http.post(`/api/users/machine`, machine);
-  }
-
-  // Adicione outras funções para gerenciar informações adicionais da conta, como bancos, favoritos, maquinários alugados, etc.
 }

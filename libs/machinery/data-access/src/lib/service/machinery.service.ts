@@ -7,6 +7,7 @@ import { Injectable, inject } from '@angular/core';
 export class MachineryService {
   http = inject(HttpClient);
 
+  //metodo para registrar maquinario
   register(data) {
     this.http.post('/api/machinery', data);
   }

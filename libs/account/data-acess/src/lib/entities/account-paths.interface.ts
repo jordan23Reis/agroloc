@@ -10,12 +10,12 @@ export interface Account {
   Login: Login;
   CadastroComum: CadastroComum;
   CadastroFreteiro: CadastroFreteiro;
-  Maquinas: Machine[];
-  Favoritos: Favorito[];
-  MaquinasAlugadas: Machine[];
-  MaquinasLocadas: Machine[];
-  FretesRealizados: Frete[];
-  FretesSolicitados: Frete[];
+  Maquinas: string[];
+  Favoritos: string[];
+  MaquinasAlugadas: string[];
+  MaquinasLocadas: string[];
+  FretesRealizados: string[];
+  FretesSolicitados: string[];
   InformacoesBancarias: InformacoesBancarias;
 }
 
@@ -73,18 +73,6 @@ export interface Categoria {
   Nome: string;
 }
 
-// Representa os dados de favoritos
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Favorito {
-  // Adicione os campos apropriados para favoritos, se necessário
-}
-
-// Representa os dados de máquina
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Machine {
-  // Adicione os campos apropriados para máquinas, se necessário
-}
-
 // Representa os dados de informações bancárias
 export interface InformacoesBancarias {
   ContaBancaria: ContaBancaria;
@@ -102,14 +90,6 @@ export interface Pix {
   Chave: string;
   Tipo: string;
 }
-
-// Representa os dados de um frete
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Frete {
-  // Adicione os campos apropriados para fretes, se necessário
-}
-
-// aaaaaaaaaa
 
 // Interface para os dados da conta Comum
 export interface CadastroComum {
@@ -140,7 +120,7 @@ export interface UpdatePassword {
 }
 
 export interface Imagem {
-  Imagem: File; // Nome do arquivo deve ser "Imagem"
+  Imagem: File;
 }
 
 export interface InformacoesBancarias {
@@ -179,7 +159,7 @@ export interface EditAutomovel {
 }
 
 export interface ImagemPrincipal {
-  Imagem: File; // Nome do arquivo deve ser "Imagem"
+  Imagem: File;
 }
 
 export interface ImagensSecundarias {
