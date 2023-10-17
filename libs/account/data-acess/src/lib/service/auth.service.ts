@@ -19,11 +19,7 @@ export class AuthService {
   userProfile$ = this.userProfile.asObservable();
 
   SingIn(account: Login) {
-    this.http
-      .post<Token>('/api/auth-user/login', account)
-      .subscribe((token) => {
-        this.authStorage.setAcessToken(token.access_token);
-      });
+    return this.http.post<Token>('/api/auth-user/login', account);
   }
 
   SingOut() {
@@ -39,9 +35,12 @@ export class AuthService {
   }
 
   GetProfile() {
-    this.http.get('/api/auth-user/payload').subscribe((profile: Profile) => {
-      this.userProfile.next(profile);
-    });
+    this.http.get('/api/auth-user/payload').subscribe(
+      (profile: Profile) => {
+        this.userProfile.next(profile);
+      },
+      (error) => {}
+    );
   }
 
   hasRequiredRoles(user: Profile, requiredRoles: string[]): boolean {

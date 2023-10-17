@@ -6,6 +6,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
 import { Platform } from '@angular/cdk/platform';
 import { Router } from '@angular/router';
+import { Account, AccountService } from '@agroloc/account/data-acess';
 
 @Component({
   selector: 'agroloc-users-register',
@@ -18,6 +19,7 @@ export class AccountRegisterComponent {
   http = inject(HttpClient);
   platform = inject(Platform);
   router = inject(Router);
+  accountService = inject(AccountService);
 
   firstFormGroup = this._formBuilder.group({
     Nome: ['', Validators.required],
@@ -85,7 +87,91 @@ export class AccountRegisterComponent {
   }
 
   register() {
-    this.http.post('/api/users', this.firstFormGroup.value);
-    this.login();
+    if (this.firstFormGroup.valid) {
+      const userData: Account = {
+        Login: {
+          Email: '12345@gmail.com',
+          Senha: '123',
+          Tipo: 'Freteiro',
+        },
+        CadastroComum: {
+          Nome: 'FFFFFFFFFFFFFFFF',
+          Sobrenome: '232',
+          DataDeNascimento: '1990-01-01',
+          Sexo: '2323',
+          Telefone: ['22323232323233232322'],
+          Cpf: '22222222222222',
+          Cnpj: '222222222222222222',
+          Enderecos: [
+            {
+              Cep: '222222222',
+              Cidade: 'Maringa',
+              Logradouro: '2323232',
+              Bairro: 'sdaadssad',
+              Complemento: 'sadsaddasdsa',
+              Numero: 23,
+            },
+          ],
+          Foto: {
+            Url: '1',
+            NomeArquivo: '12',
+          },
+        },
+        CadastroFreteiro: {
+          CNH: 'A',
+          Automovel: [
+            {
+              Nome: '2323',
+              Descricao: '2323323232323232',
+              Peso: 2323,
+              Comprimento: 23,
+              Largura: 23,
+              Altura: 23,
+              ImagemPrincipal: {
+                Url: '23232',
+                NomeArquivo: '22',
+              },
+              ImagensSecundarias: [
+                {
+                  Url: '23232',
+                  NomeArquivo: '22',
+                },
+              ],
+              Categoria: {
+                idCategoria: '323223',
+                Nome: '2323232',
+              },
+            },
+          ],
+        },
+        Maquinas: [],
+        Favoritos: [],
+        MaquinasAlugadas: [],
+        MaquinasLocadas: [],
+        FretesRealizados: [],
+        FretesSolicitados: [],
+        InformacoesBancarias: {
+          ContaBancaria: {
+            Agencia: '2323',
+            Conta: '23232',
+          },
+          Pix: {
+            Chave: '232323',
+            Tipo: '23232',
+          },
+        },
+      };
+
+      // Chame o método de registro da AccountService
+      this.accountService.register(userData).subscribe(
+        (response) => {
+          // Lida com a resposta do registro bem-sucedido, redireciona o usuário, etc.
+          this.login();
+        },
+        (error) => {
+          // Lida com erros, exibe mensagens de erro, etc.
+        }
+      );
+    }
   }
 }
