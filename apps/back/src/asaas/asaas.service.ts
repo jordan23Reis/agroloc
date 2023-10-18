@@ -7,6 +7,7 @@ import { CobrancaUnica } from './dto/create-cobranca-unica.dto';
 import { CobrancaSchemaDtoRestraints, addDays, aumentaPrecoParcela, formataData } from '@agroloc/shared/util';
 import { CobrancaParcelada } from './dto/create-cobranca-parcelada.dto';
 import { TransferenciaConta } from './dto/create-transferencia-conta.dto';
+import { TransferenciaPix } from './dto/create-transferencia-pix.dto';
 
 @Injectable()
 export class AsaasService {
@@ -192,12 +193,12 @@ export class AsaasService {
     }
   }
 
-  // a fazer
-  async criarTransferenciaPix(createTransferenciaConta: TransferenciaConta){
+  async criarTransferenciaPix(createTransferenciaPix: TransferenciaPix){
     try{
+
     const { data } = await firstValueFrom(
       this.httpService.post('/transfers', 
-      createTransferenciaConta
+      createTransferenciaPix
       ).pipe(
         catchError((error: AxiosError) => {
           throw error;

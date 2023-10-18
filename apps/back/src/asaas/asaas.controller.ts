@@ -13,6 +13,7 @@ import { Cliente } from './dto/create-cliente.dto';
 import { CobrancaUnica } from './dto/create-cobranca-unica.dto';
 import { CobrancaParcelada } from './dto/create-cobranca-parcelada.dto';
 import { TransferenciaConta } from './dto/create-transferencia-conta.dto';
+import { TransferenciaPix } from './dto/create-transferencia-pix.dto';
 
 @Controller('asaas')
 export class AsaasController {
@@ -118,9 +119,9 @@ export class AsaasController {
 
   
   @Post("transferencia/pix")
-  createTransferenciaParaPix(@Body() transferenciaConta: TransferenciaConta) {
+  createTransferenciaParaPix(@Body() transferenciaPix: TransferenciaPix) {
     try{
-    return this.asaasService.criarTransferenciaPix(transferenciaConta)
+    return this.asaasService.criarTransferenciaPix(transferenciaPix)
     }catch(e){
       return e;
     }

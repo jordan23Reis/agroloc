@@ -1,17 +1,17 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 
-export class CobrancaUnica {
+export class TransferenciaPix {
     @IsNotEmpty()
-    @IsString()
-    customer: string;
     @IsNumber()
-    @IsNotEmpty()
     value: number;
+    @IsNotEmpty()
     @IsString()
+    pixAddressKey: string;
+    @IsNotEmpty()
+    @IsString()
+    pixAddressKeyType: string;
     @IsOptional()
+    @IsString()
     description: string;
-    @IsOptional()
-    @IsString()
-    externalReference: string;
 }
