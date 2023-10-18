@@ -3,9 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Account } from '../entities/account-paths.interface';
 import { Observable } from 'rxjs';
 import {
-  AccountData,
-  Automovel,
-  EditAutomovel,
   EditarEndereco,
   Imagem,
   ImagemPrincipal,
@@ -14,6 +11,8 @@ import {
   NovoEndereco,
   UpdatePassword,
 } from '../entities/account-paths.interface';
+import { AccountData } from '../entities/register-account.interface';
+import { Automovel, EditAutomovel } from '../entities/car-path.interface';
 
 @Injectable({
   providedIn: 'root',
