@@ -1,3 +1,4 @@
+export * from './asaas';
 export * from './avaliacao';
 export * from './categoria';
 export * from './favorito';
