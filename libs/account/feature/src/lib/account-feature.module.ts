@@ -23,6 +23,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCardModule } from '@angular/material/card';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   imports: [
@@ -46,6 +47,7 @@ import { MatCardModule } from '@angular/material/card';
     MatTabsModule,
     MatExpansionModule,
     MatCardModule,
+    MatSnackBarModule,
   ],
   declarations: [
     AccountRegisterComponent,

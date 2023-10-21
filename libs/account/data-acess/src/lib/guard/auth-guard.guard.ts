@@ -6,6 +6,7 @@ import {
   Router,
 } from '@angular/router';
 import { AuthService } from '../service';
+import { Profile } from '../entities';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +19,8 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean {
     if (this.authService.IsLogged()) {
-      const requiredRoles = route.data.roles as string[];
-      const user = this.authService.userProfile.value;
+      const requiredRoles = route.data['roles'] as string[];
+      const user = (this.authService.userProfile.value as Profile) ?? null;
 
       if (
         !requiredRoles ||

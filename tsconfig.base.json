@@ -6,6 +6,7 @@
     "declaration": false,
     "moduleResolution": "node",
     "strictPropertyInitialization": false,
+    "noPropertyAccessFromIndexSignature": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,

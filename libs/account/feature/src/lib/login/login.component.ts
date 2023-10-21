@@ -34,16 +34,16 @@ export class AccountLoginComponent {
   }
 
   SingIn() {
-    this.date = {
-      Email: this.account.value.email,
-      Senha: this.account.value.password,
-    };
-    this.authService.SingIn(this.date);
-    if (this.authStorage.getAcessToken()) {
-      this.router.navigate(['web', 'home']);
-    } else {
-      this.accountError = true;
-    }
+    // this.date = {
+    //   Email: this.account.value.email,
+    //   Senha: this.account.value.password,
+    // };
+    // this.authService.SingIn(this.date);
+    // if (this.authStorage.getAcessToken()) {
+    //   this.router.navigate(['web', 'home']);
+    // } else {
+    //   this.accountError = true;
+    // }
   }
 
   invalidAccount(control: AbstractControl): { [key: string]: boolean } | null {

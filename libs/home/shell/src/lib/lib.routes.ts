@@ -23,7 +23,6 @@ export const homeShellRoutes: Route[] = [
     children: [
       {
         path: 'login',
-
         component: WebLoginComponent,
         children: [],
       },

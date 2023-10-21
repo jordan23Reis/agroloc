@@ -1,16 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Account } from '../entities/account-paths.interface';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
+import { InformacoesBancarias } from '../entities/account-paths.interface';
 import {
-  EditarEndereco,
   Imagem,
+  EditarEndereco,
   ImagemPrincipal,
   ImagensSecundarias,
-  InformacoesBancarias,
   NovoEndereco,
   UpdatePassword,
-} from '../entities/account-paths.interface';
+} from '../entities/others-paths.interface';
 import { AccountData } from '../entities/register-account.interface';
 import { Automovel, EditAutomovel } from '../entities/car-path.interface';
 
@@ -20,8 +20,13 @@ import { Automovel, EditAutomovel } from '../entities/car-path.interface';
 export class AccountService {
   http = inject(HttpClient);
 
-  register(account: Account): Observable<any> {
-    return this.http.post(`/api/usuario/`, account);
+  register(account: any): Observable<any> {
+    return this.http.post(`/api/usuario/`, account as Account).pipe(
+      catchError((error) => {
+        console.log('Error:', error);
+        throw new Error('Falha ao Registrar Conta.');
+      })
+    );
   }
 
   getUser(userId: string): Observable<AccountData> {

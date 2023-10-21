@@ -18,7 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     if (!this.access_token) {
-      reportError({ message: 'Ocorreu um erro de autenticação' });
+      reportError({ message: 'Informações do Token Ausente' });
     }
 
     if (this.access_token && this.access_token.length) {

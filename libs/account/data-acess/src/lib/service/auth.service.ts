@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Login } from '../entities/login.interface';
 import { Token } from '../entities/token.interface';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Profile } from '../entities/profile.interface';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class AuthService {
   http = inject(HttpClient);
   router = inject(Router);
 
-  userProfile = new BehaviorSubject<Profile | null>(null);
+  userProfile = new BehaviorSubject<Profile | undefined>(undefined);
   userProfile$ = this.userProfile.asObservable();
 
   SingIn(account: Login) {
@@ -35,19 +35,12 @@ export class AuthService {
   }
 
   GetProfile() {
-    this.http.get('/api/auth-user/payload').subscribe(
-      (profile: Profile) => {
-        this.userProfile.next(profile);
-      },
-      (error) => {}
-    );
+    this.http.get('/api/auth-user/payload').subscribe((response) => {
+      this.userProfile.next(response as Profile);
+    });
   }
 
   hasRequiredRoles(user: Profile, requiredRoles: string[]): boolean {
-    if (!user || !user.TipoUsuario) {
-      return false;
-    }
-
     return requiredRoles.includes(user.TipoUsuario);
   }
 }

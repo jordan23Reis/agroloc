@@ -1,5 +1,5 @@
 // Representa os dados de login
-export interface Login {
+interface Login {
   Email: string;
   Senha: string;
   Tipo: string;
@@ -20,7 +20,7 @@ export interface Account {
 }
 
 // Representa os dados do cadastro comum
-export interface CadastroComum {
+interface CadastroComum {
   Nome: string;
   Sobrenome: string;
   DataDeNascimento: string;
@@ -33,13 +33,13 @@ export interface CadastroComum {
 }
 
 // Representa os dados do cadastro de freteiro
-export interface CadastroFreteiro {
+interface CadastroFreteiro {
   CNH: string;
   Automovel?: Automovel[];
 }
 
 // Representa os dados de endereço
-export interface Address {
+interface Address {
   Cep: string;
   Cidade: string;
   Logradouro: string;
@@ -49,7 +49,7 @@ export interface Address {
 }
 
 // Representa os dados de um automóvel
-export interface Automovel {
+interface Automovel {
   Nome: string;
   Descricao: string;
   Peso?: number;
@@ -62,13 +62,13 @@ export interface Automovel {
 }
 
 // Representa os dados de uma imagem
-export interface Imagem {
+interface Imagem {
   Url: string;
   NomeArquivo: string;
 }
 
 // Representa os dados de uma categoria
-export interface Categoria {
+interface Categoria {
   idCategoria?: string;
   Nome?: string;
 }
@@ -80,49 +80,13 @@ export interface InformacoesBancarias {
 }
 
 // Representa os dados de conta bancária
-export interface ContaBancaria {
+interface ContaBancaria {
   Agencia: string;
   Conta: string;
 }
 
 // Representa os dados de PIX
-export interface Pix {
+interface Pix {
   Chave: string;
   Tipo: string;
-}
-
-export interface UpdatePassword {
-  Senha: string;
-}
-
-export interface Imagem {
-  Imagem: File;
-}
-
-export interface ImagemPrincipal {
-  Imagem: File;
-}
-
-export interface ImagensSecundarias {
-  Imagens: File[];
-}
-
-export interface NovoEndereco {
-  Cep: string;
-  Estado: string;
-  Cidade: string;
-  Logradouro: string;
-  Bairro?: string;
-  Complemento?: string;
-  Numero?: number;
-}
-
-export interface EditarEndereco {
-  Cep: string;
-  Estado: string;
-  Cidade: string;
-  Logradouro: string;
-  Bairro?: string;
-  Complemento?: string;
-  Numero?: number;
 }
