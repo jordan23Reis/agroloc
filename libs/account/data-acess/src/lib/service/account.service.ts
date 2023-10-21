@@ -21,12 +21,7 @@ export class AccountService {
   http = inject(HttpClient);
 
   register(account: any): Observable<any> {
-    return this.http.post(`/api/usuario/`, account as Account).pipe(
-      catchError((error) => {
-        console.log('Error:', error);
-        throw new Error('Falha ao Registrar Conta.');
-      })
-    );
+    return this.http.post(`/api/usuario/`, account as Account);
   }
 
   getUser(userId: string): Observable<AccountData> {

@@ -24,7 +24,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class AccountRegisterComponent {
   _formBuilder = inject(FormBuilder);
-  breakpointObserver = inject(BreakpointObserver);
   http = inject(HttpClient);
   platform = inject(Platform);
   router = inject(Router);
@@ -86,35 +85,16 @@ export class AccountRegisterComponent {
     CNH: [
       '',
       [
-        Validators.minLength(AvaliacaoSchemaDtoRestraints.minNivelAvaliacao),
-        Validators.maxLength(AvaliacaoSchemaDtoRestraints.maxNivelAvaliacao),
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinCnh),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxCnh),
       ],
     ],
   });
 
-  stepperOrientation: Observable<StepperOrientation>;
   firstPassword = true;
   secondPassword = true;
   container = 1;
   isMobile = this.platform.ANDROID || this.platform.IOS;
-
-  // applyStyle() {
-  //   this.styleUrls = this.getStyleUrl();
-  // }
-
-  // getStyleUrl() {
-  //   if (this.isMobile) {
-  //     return ['./register.component.scss'];
-  //   } else {
-  //     return ['./register.component.scss'];
-  //   }
-  // }
-
-  constructor() {
-    this.stepperOrientation = this.breakpointObserver
-      .observe('(min-width: 800px)')
-      .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
-  }
 
   next() {
     this.container += 1;
@@ -136,9 +116,18 @@ export class AccountRegisterComponent {
     this.firstFormGroup.patchValue({ Freteiro: true });
   }
 
+  comum() {
+    this.firstFormGroup.patchValue({ Freteiro: false });
+  }
+
   isFreteiro() {
     this.freteiro();
     this.next();
+  }
+
+  isComum() {
+    this.comum();
+    this.doubloNext();
   }
 
   login() {
@@ -150,9 +139,10 @@ export class AccountRegisterComponent {
       this.firstFormGroup.valid &&
       this.firstFormGroup.value.Senha === this.firstFormGroup.value.ConfSenha
     ) {
-      let userData;
+      let comumUserData;
+      let driveUserData;
       if (this.firstFormGroup.value.Freteiro) {
-        userData = {
+        driveUserData = {
           Login: {
             Email: this.firstFormGroup.value.Email,
             Senha: this.firstFormGroup.value.Senha,
@@ -169,11 +159,11 @@ export class AccountRegisterComponent {
           },
         };
       } else {
-        userData = {
+        comumUserData = {
           Login: {
             Email: this.firstFormGroup.value.Email,
             Senha: this.firstFormGroup.value.Senha,
-            Tipo: accountTypes.Freteiro,
+            Tipo: accountTypes.Comum,
           },
           CadastroComum: {
             Nome: this.firstFormGroup.value.Nome,
@@ -184,20 +174,38 @@ export class AccountRegisterComponent {
         };
       }
 
-      console.log(userData);
+      console.log(
+        this.firstFormGroup.value.Freteiro ? driveUserData : comumUserData
+      );
 
-      this.accountService.register(userData).subscribe((response) => {
-        console.log(response);
-        this.snackBar.open('Conta criada com Sucesso!!', 'Fechar', {
-          duration: 3000,
-        });
-        setTimeout(() => {
-          this.login();
-          this.snackBar.open('Agora faça o Login', 'Fechar', {
-            duration: 3000,
-          });
-        }, 4000);
-      });
+      this.accountService
+        .register(
+          this.firstFormGroup.value.Freteiro ? driveUserData : comumUserData
+        )
+        .subscribe(
+          (response) => {
+            console.log(response);
+            this.snackBar.open('Conta criada com Sucesso!!', 'Fechar', {
+              duration: 3000,
+            });
+            setTimeout(() => {
+              this.login();
+              this.snackBar.open(
+                'Agora efetue o Login da sua Conta',
+                'Fechar',
+                {
+                  duration: 3000,
+                }
+              );
+            }, 4000);
+          },
+          (error) => {
+            console.log(error);
+            this.snackBar.open('Falha ao criar Conta', 'Fechar', {
+              duration: 3000,
+            });
+          }
+        );
     }
   }
 }
