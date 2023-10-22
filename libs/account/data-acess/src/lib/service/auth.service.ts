@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Login } from '../entities/login.interface';
 import { Token } from '../entities/token.interface';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, catchError } from 'rxjs';
 import { Profile } from '../entities/profile.interface';
 
 @Injectable({
@@ -15,10 +15,10 @@ export class AuthService {
   http = inject(HttpClient);
   router = inject(Router);
 
-  userProfile = new BehaviorSubject<Profile | undefined>(undefined);
+  userProfile = new Subject<Profile>();
   userProfile$ = this.userProfile.asObservable();
 
-  SingIn(account: Login) {
+  SingIn(account: any) {
     return this.http.post<Token>('/api/auth-user/login', account);
   }
 
@@ -29,15 +29,35 @@ export class AuthService {
 
   IsLogged() {
     if (this.authStorage.getAcessToken()) {
-      return true;
+      this.http
+        .get('/api/auth-user/payload')
+        .pipe(
+          catchError((error) => {
+            console.log('Error: ', error);
+            throw new Error('Token Expirado.');
+          })
+        )
+        .subscribe((response) => {
+          return true;
+        });
     }
     return false;
   }
 
   GetProfile() {
-    this.http.get('/api/auth-user/payload').subscribe((response) => {
-      this.userProfile.next(response as Profile);
-    });
+    this.http
+      .get('/api/auth-user/payload')
+      .pipe(
+        catchError((error) => {
+          console.log('Error: ', error);
+          throw new Error(
+            'Ocorreu um Erro ao tentar obter o Profile do Usuario.'
+          );
+        })
+      )
+      .subscribe((response) => {
+        this.userProfile.next(response as Profile);
+      });
   }
 
   hasRequiredRoles(user: Profile, requiredRoles: string[]): boolean {

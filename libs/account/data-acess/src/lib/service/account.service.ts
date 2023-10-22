@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Account } from '../entities/account-paths.interface';
-import { Observable, catchError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
 import { InformacoesBancarias } from '../entities/account-paths.interface';
 import {
   Imagem,
@@ -20,12 +20,27 @@ import { Automovel, EditAutomovel } from '../entities/car-path.interface';
 export class AccountService {
   http = inject(HttpClient);
 
+  userDate = new Subject<Account>();
+  userDate$ = this.userDate.asObservable();
+
   register(account: any): Observable<any> {
     return this.http.post(`/api/usuario/`, account as Account);
   }
 
-  getUser(userId: string): Observable<AccountData> {
-    return this.http.get<AccountData>(`/api/usuario/${userId}`);
+  getUser(userId: string) {
+    this.http
+      .get(`/api/usuario/cadastro/${userId}`)
+      .pipe(
+        catchError((error) => {
+          console.log('Error: ', error);
+          throw new Error(
+            'Ocorreu um Erro ao tentar obter os dados do Usuario.'
+          );
+        })
+      )
+      .subscribe((response) => {
+        this.userDate.next(response as Account);
+      });
   }
 
   searchFreteiros(params: {

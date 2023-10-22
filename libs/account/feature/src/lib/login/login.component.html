@@ -13,7 +13,6 @@
       "
       required
     />
-    <mat-error *ngIf="account.invalid">{{ getErrorMessage() }}</mat-error>
   </mat-form-field>
 
   <mat-form-field class="matClass">
@@ -21,6 +20,7 @@
     <input
       id="password"
       matInput
+      formControlName="Senha"
       [type]="firstPassword ? 'password' : 'text'"
     />
     <button
@@ -32,7 +32,6 @@
     >
       <mat-icon>{{ firstPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
     </button>
-    <mat-error *ngIf="account.invalid">{{ getErrorMessage() }}</mat-error>
   </mat-form-field>
 
   <div class="registerOrLogin">
