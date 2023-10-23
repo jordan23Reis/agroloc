@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
     if (this.authService.IsLogged()) {
       const requiredRoles = route.data['roles'] as string[];
 
-      this.authService.userProfile$.subscribe((response) => {
+      this.authService.userProfile.subscribe((response) => {
         this.user = response as Profile;
       });
 

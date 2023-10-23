@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Account } from '../entities/account-paths.interface';
-import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, take } from 'rxjs';
 import { InformacoesBancarias } from '../entities/account-paths.interface';
 import {
   Imagem,
@@ -21,7 +21,6 @@ export class AccountService {
   http = inject(HttpClient);
 
   userDate = new Subject<Account>();
-  userDate$ = this.userDate.asObservable();
 
   register(account: any): Observable<any> {
     return this.http.post(`/api/usuario/`, account as Account);
@@ -31,6 +30,7 @@ export class AccountService {
     this.http
       .get(`/api/usuario/cadastro/${userId}`)
       .pipe(
+        take(1),
         catchError((error) => {
           console.log('Error: ', error);
           throw new Error(

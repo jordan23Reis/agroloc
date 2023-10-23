@@ -54,38 +54,47 @@ export class AccountLoginComponent {
     this.router.navigate(['web', 'register']);
   }
 
-  async SingIn() {
+  SingIn() {
     if (this.account.valid) {
-      this.authService.SingIn(this.account.value).subscribe(
+      const request = this.authService.SingIn(this.account.value).subscribe(
         (response) => {
+          this.authStorage.removeAcessToken();
           this.authStorage.setAcessToken(response.access_token);
+
           if (this.authStorage.getAcessToken()) {
             this.snackBar.open('Verificando Conta...', undefined, {
-              duration: 3000,
+              duration: 2000,
             });
 
             this.authService.GetProfile();
-            this.authService.userProfile$.subscribe((response) => {
-              this.accountService.getUser(response.IdUsuario);
-            });
-
-            setTimeout(() => {
-              this.accountService.userDate$.subscribe((response) => {
-                this.snackBar.open(
-                  `Seja Bem-Vindo, ${
-                    response.CadastroComum === undefined
-                      ? 'Usuario'
-                      : response.CadastroComum.Nome
-                  }`,
-                  undefined,
-                  {
-                    duration: 3000,
-                  }
-                );
-                this.router.navigate(['web', 'main']);
-              });
-            }, 4000);
+            const userProfile = this.authService.userProfile.subscribe(
+              (response) => {
+                this.accountService.getUser(response.IdUsuario);
+                userProfile.unsubscribe();
+              }
+            );
+            const userDate = this.accountService.userDate.subscribe(
+              (response) => {
+                setTimeout(() => {
+                  this.snackBar.open(
+                    `Seja Bem-Vindo, ${
+                      response.CadastroComum === undefined
+                        ? 'Usuario'
+                        : response.CadastroComum.Nome
+                    }`,
+                    undefined,
+                    {
+                      duration: 3000,
+                    }
+                  );
+                  this.router.navigate(['web', 'main']);
+                }, 2000);
+                userDate.unsubscribe();
+              }
+            );
           }
+
+          request.unsubscribe();
         },
         (error) => {
           console.log(error);

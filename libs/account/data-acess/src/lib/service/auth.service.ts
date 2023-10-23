@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Login } from '../entities/login.interface';
 import { Token } from '../entities/token.interface';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subject, catchError } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, switchMap, take } from 'rxjs';
 import { Profile } from '../entities/profile.interface';
 
 @Injectable({
@@ -16,7 +16,6 @@ export class AuthService {
   router = inject(Router);
 
   userProfile = new Subject<Profile>();
-  userProfile$ = this.userProfile.asObservable();
 
   SingIn(account: any) {
     return this.http.post<Token>('/api/auth-user/login', account);
@@ -48,6 +47,7 @@ export class AuthService {
     this.http
       .get('/api/auth-user/payload')
       .pipe(
+        take(1),
         catchError((error) => {
           console.log('Error: ', error);
           throw new Error(

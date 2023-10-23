@@ -15,6 +15,7 @@ import { MobMainComponent } from './mob-main/mob-main.component';
 import { HomeComponent } from '@agroloc/home/feature';
 import { DetailsComponent } from '@agroloc/machinery/feature';
 import { ManagementComponent } from '@agroloc/account/feature';
+import { AuthGuard } from '@agroloc/account/data-acess';
 
 export const homeShellRoutes: Route[] = [
   {
@@ -38,6 +39,10 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'home',
             component: HomeComponent,
+            // canActivate: [AuthGuard], // Use o AuthGuard para proteger a rota 'admin'.
+            // data: {
+            //   roles: ['Comum', 'Freteiro', 'admin'], // Defina as permissões necessárias para acessar a rota.
+            // },
             children: [],
           },
           {
