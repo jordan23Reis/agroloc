@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
     this.snackBar.open('Bem-Vindo ao Agroloc', 'Fechar', {
       duration: 3000,
     });
-
+    console.log(this.authService.IsLogged());
     if (this.authStorage.getAcessToken()) {
       this.authService.GetProfile();
       const userProfile = this.authService.userProfile.subscribe((response) => {

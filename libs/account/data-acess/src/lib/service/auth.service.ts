@@ -4,7 +4,16 @@ import { HttpClient } from '@angular/common/http';
 import { Login } from '../entities/login.interface';
 import { Token } from '../entities/token.interface';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subject, catchError, switchMap, take } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  catchError,
+  map,
+  of,
+  switchMap,
+  take,
+} from 'rxjs';
 import { Profile } from '../entities/profile.interface';
 
 @Injectable({
@@ -26,21 +35,21 @@ export class AuthService {
     this.router.navigate([]);
   }
 
-  IsLogged() {
-    if (this.authStorage.getAcessToken()) {
-      this.http
-        .get('/api/auth-user/payload')
-        .pipe(
-          catchError((error) => {
-            console.log('Error: ', error);
-            throw new Error('Token Expirado.');
-          })
-        )
-        .subscribe((response) => {
-          return true;
-        });
+  IsLogged(): Observable<boolean> {
+    const access_token = this.authStorage.getAcessToken();
+
+    if (access_token) {
+      return this.http.get('/api/auth-user/payload').pipe(
+        map((response) => true),
+        catchError((error) => {
+          console.log('Error: ', error);
+
+          return of(false);
+        })
+      );
+    } else {
+      return of(false);
     }
-    return false;
   }
 
   GetProfile() {
