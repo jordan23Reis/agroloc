@@ -8,6 +8,7 @@ import {
 import { AuthService } from '../service';
 import { Profile } from '../entities';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { lastValueFrom, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,25 +16,29 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class AuthGuard implements CanActivate {
   snackBar = inject(MatSnackBar);
   constructor(private authService: AuthService, private router: Router) {}
-  user: Profile;
-  canActivate(
+
+  async canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): boolean {
-    if (this.authService.IsLogged()) {
+  ): Promise<boolean> {
+    const valueLogged = this.authService.IsLogged();
+    const isLogged = await lastValueFrom(valueLogged);
+
+    if (isLogged) {
       const requiredRoles = route.data['roles'] as string[];
 
-      this.authService.userProfile.subscribe((response) => {
-        this.user = response as Profile;
-      });
-
+      const valueUser = this.authService.userProfile;
+      const user = await lastValueFrom(valueUser);
+      console.log(user);
       if (
         !requiredRoles ||
-        this.authService.hasRequiredRoles(this.user, requiredRoles)
+        this.authService.hasRequiredRoles(user as Profile, requiredRoles)
       ) {
         return true;
       }
     }
+
+    console.log(isLogged);
     this.snackBar.open('Acesso não Autorizado', 'Fechar', {
       duration: 3000,
     });

@@ -8,6 +8,7 @@ import {
   AuthService,
   AuthStorage,
 } from '@agroloc/account/data-acess';
+import { lastValueFrom } from 'rxjs';
 @Component({
   selector: 'agroloc-root',
   templateUrl: './app.component.html',
@@ -27,7 +28,7 @@ export class AppComponent implements OnInit {
   currentUrl = this.location.path() ?? '';
   filterUrl = this.prefixRemove(this.currentUrl);
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log(this.filterUrl);
     if (this.filterUrl !== '') {
       if (this.isMobile) {
@@ -45,7 +46,16 @@ export class AppComponent implements OnInit {
     this.snackBar.open('Bem-Vindo ao Agroloc', 'Fechar', {
       duration: 3000,
     });
-    console.log(this.authService.IsLogged());
+    const valueLogged = this.authService.IsLogged();
+    const isLogged = await lastValueFrom(valueLogged);
+    console.log(isLogged);
+    let valueUser;
+    this.authService.userProfile.subscribe((response) => {
+      valueUser = response;
+    });
+    const user = await lastValueFrom(valueUser);
+    console.log(user);
+
     if (this.authStorage.getAcessToken()) {
       this.authService.GetProfile();
       const userProfile = this.authService.userProfile.subscribe((response) => {

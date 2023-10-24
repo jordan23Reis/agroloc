@@ -75,7 +75,7 @@
         </mat-menu>
 
         <button
-          *ngIf="isLogged"
+          *ngIf="isLogged | async"
           mat-icon-button
           [matMenuTriggerFor]="person"
           class="example-icon account-button"
