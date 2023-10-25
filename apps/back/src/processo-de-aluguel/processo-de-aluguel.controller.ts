@@ -17,9 +17,9 @@ export class ProcessoDeAluguelController {
     private readonly processoDeAluguelService: ProcessoDeAluguelService
   ) {}
 
-  @Post()
-  create(@Body() createProcessoDeAluguelDto: CreateProcessoDeAluguelDto) {
-    return this.processoDeAluguelService.create(createProcessoDeAluguelDto);
+  @Post(":idMaquina/:idLocador/:idLocatario")
+  create(@Param('idMaquina') idMaquina: string, @Param('idLocador') idLocador: string, @Param('idLocatario') idLocatario: string) {
+    return this.processoDeAluguelService.create(idMaquina, idLocador, idLocatario);
   }
 
   @Get()
