@@ -44,6 +44,7 @@
         </button>
 
         <button
+          *ngIf="isLogged | async"
           mat-icon-button
           [matMenuTriggerFor]="notifications"
           class="example-icon"
@@ -60,6 +61,7 @@
         </mat-menu>
 
         <button
+          *ngIf="isLogged | async"
           mat-icon-button
           [matMenuTriggerFor]="favorite"
           class="example-icon"
@@ -99,9 +101,31 @@
             <mat-icon>switch_account</mat-icon>
             <span>Trocar de Conta</span>
           </button>
-          <button mat-menu-item>
+          <button mat-menu-item (click)="logout()">
             <mat-icon>logout</mat-icon>
             <span>Sair</span>
+          </button>
+        </mat-menu>
+
+        <button
+          *ngIf="notLogged | async"
+          mat-icon-button
+          [matMenuTriggerFor]="noPerson"
+          class="example-icon account-button"
+          aria-label="Example icon-button with person icon"
+        >
+          <mat-icon>person</mat-icon>
+        </button>
+
+        <mat-menu #noPerson="matMenu" xPosition="before">
+          <mat-divider></mat-divider>
+          <button mat-menu-item routerLink="../login">
+            <mat-icon matPrefix>login</mat-icon>
+            <span>Entrar</span>
+          </button>
+          <button mat-menu-item routerLink="../register">
+            <mat-icon>person_add</mat-icon>
+            <span>Cadastrar</span>
           </button>
         </mat-menu>
 

@@ -69,6 +69,7 @@ body {
 .cdk-overlay-pane {
   div.mat-mdc-menu-panel {
     max-width: none;
+    min-width: 200px;
   }
 }
 

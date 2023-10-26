@@ -31,9 +31,10 @@ export class AuthService {
     return this.http.post<Token>('/api/auth-user/login', account);
   }
 
-  SingOut() {
+  SingOutWeb() {
     this.authStorage.removeAcessToken();
-    this.router.navigate([]);
+    window.location.reload();
+    this.router.navigate(['web', 'main']);
   }
 
   IsLogged(): Observable<boolean> {

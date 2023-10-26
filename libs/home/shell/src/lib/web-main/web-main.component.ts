@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 import { Platform } from '@angular/cdk/platform';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { AccountService, AuthService } from '@agroloc/account/data-acess';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'agroloc-web-main',
@@ -19,6 +20,7 @@ export class WebMainComponent {
   currentUrl = this.location.path() ?? '';
 
   isLogged = this.authService.IsLogged();
+  notLogged = this.authService.IsLogged().pipe(map((response) => !response));
   isMobile = this.platform.ANDROID || this.platform.IOS;
   showFiller = false;
   isDarkMode?: boolean;
@@ -68,5 +70,9 @@ export class WebMainComponent {
       localStorage.setItem('prefers-color-scheme', 'light');
       document.body.classList.remove('darkMode');
     }
+  }
+
+  logout() {
+    this.authService.SingOutWeb();
   }
 }

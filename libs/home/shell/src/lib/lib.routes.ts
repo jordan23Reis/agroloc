@@ -59,9 +59,9 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'management',
             component: ManagementComponent,
-            canActivate: [AuthGuard], // Use o AuthGuard para proteger a rota 'admin'.
+            canActivate: [AuthGuard],
             data: {
-              roles: ['Admin'], // Defina as permissões necessárias para acessar a rota.
+              roles: ['Admin', 'Comum', 'Freteiro'],
             },
             children: [],
           },
