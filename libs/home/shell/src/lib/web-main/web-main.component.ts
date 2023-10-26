@@ -61,7 +61,6 @@ export class WebMainComponent {
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
     this.darkMode = this.isDarkMode;
-    console.log(localStorage.getItem('prefers-color-scheme'));
     if (this.isDarkMode) {
       localStorage.setItem('prefers-color-scheme', 'dark');
       document.body.classList.add('darkMode');

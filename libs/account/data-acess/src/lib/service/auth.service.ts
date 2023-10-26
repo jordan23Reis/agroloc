@@ -25,6 +25,7 @@ export class AuthService {
   router = inject(Router);
 
   userProfile = new Subject<Profile>();
+  userProfile$ = this.userProfile.asObservable();
 
   SingIn(account: any) {
     return this.http.post<Token>('/api/auth-user/login', account);
@@ -52,7 +53,19 @@ export class AuthService {
     }
   }
 
-  GetProfile() {
+  getProfile(): Observable<Profile> {
+    return this.http.get('/api/auth-user/payload').pipe(
+      map((response) => {
+        return response as Profile;
+      }),
+      catchError((error) => {
+        console.log('Error: ', error);
+        throw new Error('Ocorreu um erro ao Verificar o Usuario.');
+      })
+    );
+  }
+
+  updateProfile() {
     this.http
       .get('/api/auth-user/payload')
       .pipe(

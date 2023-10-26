@@ -39,10 +39,6 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'home',
             component: HomeComponent,
-            // canActivate: [AuthGuard], // Use o AuthGuard para proteger a rota 'admin'.
-            // data: {
-            //   roles: ['Comum', 'Freteiro', 'admin'], // Defina as permissões necessárias para acessar a rota.
-            // },
             children: [],
           },
           {
@@ -63,6 +59,10 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'management',
             component: ManagementComponent,
+            canActivate: [AuthGuard], // Use o AuthGuard para proteger a rota 'admin'.
+            data: {
+              roles: ['Admin'], // Defina as permissões necessárias para acessar a rota.
+            },
             children: [],
           },
         ],

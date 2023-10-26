@@ -48,7 +48,7 @@ export class AppComponent implements OnInit {
     });
 
     if (this.authStorage.getAcessToken()) {
-      this.authService.GetProfile();
+      this.authService.updateProfile();
       const userProfile = this.authService.userProfile.subscribe((response) => {
         this.accountService.getUser(response.IdUsuario);
         userProfile.unsubscribe();

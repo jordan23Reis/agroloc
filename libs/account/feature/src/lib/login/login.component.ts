@@ -66,7 +66,7 @@ export class AccountLoginComponent {
               duration: 2000,
             });
 
-            this.authService.GetProfile();
+            this.authService.updateProfile();
             const userProfile = this.authService.userProfile.subscribe(
               (response) => {
                 this.accountService.getUser(response.IdUsuario);

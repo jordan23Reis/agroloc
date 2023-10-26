@@ -174,17 +174,12 @@ export class AccountRegisterComponent {
         };
       }
 
-      console.log(
-        this.firstFormGroup.value.Freteiro ? driveUserData : comumUserData
-      );
-
       this.accountService
         .register(
           this.firstFormGroup.value.Freteiro ? driveUserData : comumUserData
         )
         .subscribe(
           (response) => {
-            console.log(response);
             this.snackBar.open('Conta criada com Sucesso!!', 'Fechar', {
               duration: 3000,
             });
