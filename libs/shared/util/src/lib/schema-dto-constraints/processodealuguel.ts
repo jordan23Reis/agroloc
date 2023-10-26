@@ -11,14 +11,17 @@ enum ProcessoDeAluguelSchemaDtoRestraints {
     tamMinStatusPagamento=0,
     tamMaxStatusPagamento=100,
     
+    tamMinTipoRecebimento=0,
+    tamMaxTipoRecebimento=100,
+
     minQuantificadorPreco=0,
     maxQuantificadorPreco=999999999999999,
 
     minValorPagamento=0,
     maxValorPagamento=999999999999999,
 
-    tamMinTipoPagamento=0,
-    tamMaxTipoPagamento=150,
+    tamMinLinkPagamento=0,
+    tamMaxLinkPagamento=300,
 
     tamMinContaPagamento=0,
     tamMaxContaPagamento=200,

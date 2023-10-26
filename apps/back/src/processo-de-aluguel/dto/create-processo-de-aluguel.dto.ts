@@ -144,9 +144,9 @@ class ContaBancariaRecebedor {
 class Pagamento {
     @IsNotEmpty()
     @IsString()
-    @MinLength(ProcessoDeAluguelSchemaDtoRestraints.tamMinTipoPagamento)
-    @MaxLength(ProcessoDeAluguelSchemaDtoRestraints.tamMaxTipoPagamento)
-    TipoPagamento: string;
+    @MinLength(ProcessoDeAluguelSchemaDtoRestraints.tamMinLinkPagamento)
+    @MaxLength(ProcessoDeAluguelSchemaDtoRestraints.tamMaxLinkPagamento)
+    LinkPagamento: string;
 
     @IsOptional()
     @IsNumber()
@@ -170,6 +170,12 @@ class Pagamento {
     @ValidateNested()
     @Type(() => Preco)
     Preco: Preco;
+
+    @IsOptional()
+    @IsString()
+    @MinLength(ProcessoDeAluguelSchemaDtoRestraints.tamMinTipoRecebimento)
+    @MaxLength(ProcessoDeAluguelSchemaDtoRestraints.tamMaxTipoRecebimento)
+    TipoRecebimento: string
 
     @IsOptional()
     @ValidateNested()

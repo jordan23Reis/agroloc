@@ -197,10 +197,10 @@ class Pagamento {
     @Prop({
         type: String, 
         required: true,
-        minlength: ProcessoDeAluguelSchemaDtoRestraints.tamMinTipoPagamento,
-        maxlength: ProcessoDeAluguelSchemaDtoRestraints.tamMaxTipoPagamento,
+        minlength: ProcessoDeAluguelSchemaDtoRestraints.tamMinLinkPagamento,
+        maxlength: ProcessoDeAluguelSchemaDtoRestraints.tamMaxLinkPagamento,
     })
-    TipoPagamento: string;
+    LinkPagamento: string;
 
     @Prop({
         type: Number, 
@@ -231,6 +231,14 @@ class Pagamento {
         required: true
     })
     Preco: Preco;
+
+    @Prop({
+        type: String, 
+        required: false,
+        minlength: ProcessoDeAluguelSchemaDtoRestraints.tamMinTipoRecebimento,
+        maxlength: ProcessoDeAluguelSchemaDtoRestraints.tamMaxTipoRecebimento,
+    })
+    TipoRecebimento: string;
 
     @Prop({
         type: PixRecebedor, 
