@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { Platform } from '@angular/cdk/platform';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { AccountService, AuthService } from '@agroloc/account/data-acess';
-import { map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Component({
   selector: 'agroloc-web-main',
@@ -19,8 +19,19 @@ export class WebMainComponent {
   accountService = inject(AccountService);
   currentUrl = this.location.path() ?? '';
 
+  userEmail: Observable<string> = this.accountService.userDate$.pipe(
+    map((response) => {
+      console.log(response);
+      return response.Login.Email;
+    })
+  );
   isLogged = this.authService.IsLogged();
-  notLogged = this.authService.IsLogged().pipe(map((response) => !response));
+  notLogged = this.authService.IsLogged().pipe(
+    map((response) => {
+      !response;
+      console.log(response);
+    })
+  );
   isMobile = this.platform.ANDROID || this.platform.IOS;
   showFiller = false;
   isDarkMode?: boolean;
@@ -33,7 +44,6 @@ export class WebMainComponent {
     { nome: 'Cadastrar', url: 'machinery' },
     { nome: 'Pesquisa', url: 'search' },
     { nome: 'Detalhes', url: 'details' },
-    { nome: 'Gerenciar Conta', url: 'management' },
   ];
 
   constructor() {
@@ -74,5 +84,9 @@ export class WebMainComponent {
 
   logout() {
     this.authService.SingOutWeb();
+  }
+
+  switchAccount() {
+    this.authService.SwtichAccountWeb();
   }
 }

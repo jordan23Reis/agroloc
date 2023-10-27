@@ -21,6 +21,7 @@ export class AccountService {
   http = inject(HttpClient);
 
   userDate = new Subject<Account>();
+  userDate$ = this.userDate.asObservable();
 
   register(account: any): Observable<any> {
     return this.http.post(`/api/usuario/`, account as Account);

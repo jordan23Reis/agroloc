@@ -24,8 +24,6 @@ export class AuthGuard implements CanActivate {
     return this.authService.IsLogged().pipe(
       switchMap((isLogged) => {
         if (isLogged) {
-          // eslint-disable-next-line no-debugger
-          debugger;
           const requiredRoles = route.data['roles'] as string[];
           return this.authService.getProfile().pipe(
             switchMap((response) => {

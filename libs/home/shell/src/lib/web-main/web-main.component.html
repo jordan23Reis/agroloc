@@ -67,7 +67,7 @@
           class="example-icon"
           aria-label="Example icon-button with favorite icon"
         >
-          <mat-icon>favorite</mat-icon>
+          <mat-icon class="favoriteIcon">favorite</mat-icon>
         </button>
 
         <mat-menu #favorite="matMenu" xPosition="before">
@@ -88,16 +88,16 @@
 
         <mat-menu #person="matMenu" xPosition="before">
           <div class="menuAccount" mat-menu-item>
-            <p>jordan.reis@alunos.unicesumar.edu.br</p>
+            <p>{{ userEmail | async }}</p>
             <img class="imgAccount" src="assets/gato-meow.jpg" />
             <h3>JORDAN BORGES DOS REIS</h3>
           </div>
           <mat-divider></mat-divider>
-          <button mat-menu-item>
+          <button mat-menu-item routerLink="management">
             <mat-icon matPrefix>account_circle</mat-icon>
             <span>Gereciar sua Conta</span>
           </button>
-          <button mat-menu-item>
+          <button mat-menu-item (click)="switchAccount()">
             <mat-icon>switch_account</mat-icon>
             <span>Trocar de Conta</span>
           </button>

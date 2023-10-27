@@ -33,8 +33,18 @@ export class AuthService {
 
   SingOutWeb() {
     this.authStorage.removeAcessToken();
-    window.location.reload();
     this.router.navigate(['web', 'main']);
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  }
+
+  SwtichAccountWeb() {
+    this.authStorage.removeAcessToken();
+    this.router.navigate(['web', 'login']);
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   }
 
   IsLogged(): Observable<boolean> {
