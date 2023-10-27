@@ -22,15 +22,17 @@ export class ProcessoDeAluguelService {
     const maquina = await this.maquinaService.findOne(idMaquina);
     const locador = await this.usersService.findOne(idLocador);
     const locatario = await this.usersService.findOne(idLocatario);
-    const tipoPreco = await this.tipoPrecoService.findOne(maquina.Preco.Tipo.idTipoPreco);
+    const tipoPreco = await this.tipoPrecoService.findOne(maquina.Preco.Tipo.idTipo);
+    const informacoesBancariasLocador = await this.usersService.findInformacoesBancarias(idLocador);
+
     const ProcessoDeAluguel = {
       Status: "A aceitar",
       Maquina: {
-        idMaquina: maquina._id,
+        idMaquina: maquina.id,
         Nome: maquina.Nome,
         ImagemPrincipal: {
-          Url: maquina.ImagemPrincipal.Url,
-          NomeArquivo: maquina.ImagemPrincipal.NomeArquivo
+          Url: maquina?.ImagemPrincipal?.Url,
+          NomeArquivo: maquina?.ImagemPrincipal?.NomeArquivo
         }
       },
 
@@ -39,17 +41,17 @@ export class ProcessoDeAluguelService {
         Preco: {  
           ValorPorTipo: maquina.Preco.ValorPorTipo,
           Tipo:{
-            idTipo: tipoPreco._id,
+            idTipo: tipoPreco.id,
             Nome: tipoPreco.Nome
           }
         },
         PixRecebedor: {
-          Chave: locador.InformacoesBancarias.Pix.Chave,
-          Tipo: locador.InformacoesBancarias.Pix.Tipo
+          Chave: informacoesBancariasLocador.Pix.Chave,
+          Tipo: informacoesBancariasLocador.Pix.Tipo
         },
         ContaBancariaRecebedor:{
-          Agencia: locador.InformacoesBancarias.ContaBancaria.Agencia,
-          Conta: locador.InformacoesBancarias.ContaBancaria.Conta
+          Agencia: informacoesBancariasLocador.ContaBancaria.Agencia,
+          Conta: informacoesBancariasLocador.ContaBancaria.Conta
         }
 
       },
@@ -59,23 +61,38 @@ export class ProcessoDeAluguelService {
           idLocador: locador._id.toString(),
           Nome: locador.CadastroComum.Nome,
           Foto: {
-            Url: locador.CadastroComum.Foto.Url,
-            NomeArquivo: locador.CadastroComum.Foto.NomeArquivo
+            Url: locador?.CadastroComum?.Foto?.Url,
+            NomeArquivo: locador?.CadastroComum?.Foto?.NomeArquivo
           }
         },
         Locatario: {
           idLocatario: locatario._id.toString(),
           Nome: locatario.CadastroComum.Nome,
           Foto: {
-            Url: locatario.CadastroComum.Foto.Url,
-            NomeArquivo: locatario.CadastroComum.Foto.NomeArquivo
-      }
+            Url: locatario?.CadastroComum?.Foto?.Url,
+            NomeArquivo: locatario?.CadastroComum?.Foto?.NomeArquivo
+          }
       }
     }
   }
+
+  if(!locatario?.CadastroComum?.Foto){
+    delete ProcessoDeAluguel.Envolvidos.Locatario.Foto;
+  }
+
+  if(!locador?.CadastroComum?.Foto){
+    delete ProcessoDeAluguel.Envolvidos.Locador.Foto;
+  }
+
+  if(!maquina?.ImagemPrincipal){
+    delete ProcessoDeAluguel.Maquina.ImagemPrincipal;
+  }
+
   const createdProcessoDeAluguel = this.processoDeAluguelModel.create(ProcessoDeAluguel);
   return createdProcessoDeAluguel;
   }
+
+  
 
   findAll() {
     return `This action returns all processoDeAluguel`;

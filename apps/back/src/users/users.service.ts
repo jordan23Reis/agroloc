@@ -308,11 +308,7 @@ export class UsersService {
 
   async findInformacoesBancarias(id: string) {
     const foundUser = await this.UserModel.findById(id).select('InformacoesBancarias');
-    if(foundUser.InformacoesBancarias?.ContaBancaria || foundUser.InformacoesBancarias?.Pix){
       return foundUser.InformacoesBancarias;
-    }else{
-      return {message: "Não há Informações bancarias registradas para este usuário"}
-    }
   }
 
   async updateInformacoesBancarias(id: string, informacoesBancarias: InformacoesBancarias){

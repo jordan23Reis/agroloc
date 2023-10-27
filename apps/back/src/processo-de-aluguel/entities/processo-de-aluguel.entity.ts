@@ -196,7 +196,7 @@ class Pagamento {
 
     @Prop({
         type: String, 
-        required: true,
+        required: false,
         minlength: ProcessoDeAluguelSchemaDtoRestraints.tamMinLinkPagamento,
         maxlength: ProcessoDeAluguelSchemaDtoRestraints.tamMaxLinkPagamento,
     })

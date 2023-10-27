@@ -142,7 +142,7 @@ class ContaBancariaRecebedor {
 }
 
 class Pagamento {
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @MinLength(ProcessoDeAluguelSchemaDtoRestraints.tamMinLinkPagamento)
     @MaxLength(ProcessoDeAluguelSchemaDtoRestraints.tamMaxLinkPagamento)
