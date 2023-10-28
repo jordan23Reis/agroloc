@@ -13,22 +13,20 @@ import {
 } from '../entities/others-paths.interface';
 import { AccountData } from '../entities/register-account.interface';
 import { Automovel, EditAutomovel } from '../entities/car-path.interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
   http = inject(HttpClient);
+  snackBar = inject(MatSnackBar);
 
-  userDate = new Subject<Account>();
-  userDate$ = this.userDate.asObservable();
+  userAccount = new BehaviorSubject<Account | undefined>(undefined);
+  userAccount$ = this.userAccount.asObservable();
 
-  register(account: any): Observable<any> {
-    return this.http.post(`/api/usuario/`, account as Account);
-  }
-
-  getUser(userId: string) {
-    this.http
+  nextAccount(userId: string) {
+    const nextAccountSubscribe = this.http
       .get(`/api/usuario/cadastro/${userId}`)
       .pipe(
         take(1),
@@ -40,8 +38,21 @@ export class AccountService {
         })
       )
       .subscribe((response) => {
-        this.userDate.next(response as Account);
+        this.userAccount.next(response as Account);
+
+        nextAccountSubscribe.unsubscribe();
       });
+  }
+
+  register(account: any): Observable<any> {
+    return this.http.post(`/api/usuario/`, account as Account).pipe(
+      catchError((error) => {
+        this.snackBar.open('Falha ao criar Conta', 'Fechar', {
+          duration: 3000,
+        });
+        throw new Error(error);
+      })
+    );
   }
 
   searchFreteiros(params: {

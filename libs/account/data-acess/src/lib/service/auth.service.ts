@@ -15,6 +15,7 @@ import {
   take,
 } from 'rxjs';
 import { Profile } from '../entities/profile.interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +24,38 @@ export class AuthService {
   authStorage = inject(AuthStorage);
   http = inject(HttpClient);
   router = inject(Router);
+  snackBar = inject(MatSnackBar);
 
   userProfile = new Subject<Profile>();
   userProfile$ = this.userProfile.asObservable();
 
+  nextProfile() {
+    const nextProfileSubscribe = this.http
+      .get('/api/auth-user/payload')
+      .pipe(
+        catchError((error) => {
+          console.log('Error: ', error);
+          throw new Error(
+            'Ocorreu um Erro ao tentar obter o Profile do Usuario.'
+          );
+        })
+      )
+      .subscribe((response) => {
+        this.userProfile.next(response as Profile);
+
+        nextProfileSubscribe.unsubscribe();
+      });
+  }
+
   SingIn(account: any) {
-    return this.http.post<Token>('/api/auth-user/login', account);
+    return this.http.post<Token>('/api/auth-user/login', account).pipe(
+      catchError((error) => {
+        this.snackBar.open('Conta Incorreta', 'Fechar', {
+          duration: 3000,
+        });
+        throw new Error(error);
+      })
+    );
   }
 
   SingOutWeb() {
@@ -36,7 +63,7 @@ export class AuthService {
     this.router.navigate(['web', 'main']);
     setTimeout(() => {
       window.location.reload();
-    }, 1000);
+    }, 100);
   }
 
   SwtichAccountWeb() {
@@ -44,19 +71,19 @@ export class AuthService {
     this.router.navigate(['web', 'login']);
     setTimeout(() => {
       window.location.reload();
-    }, 1000);
+    }, 100);
   }
 
   IsLogged(): Observable<boolean> {
     const access_token = this.authStorage.getAcessToken();
-
     if (access_token) {
-      return this.http.get('/api/auth-user/payload').pipe(
-        map((response) => true),
-        catchError((error) => {
-          console.log('Error: ', error);
-
-          return of(false);
+      return this.http.get<Profile>('/api/auth-user/payload').pipe(
+        map((response) => (response.IdUsuario ? true : false)),
+        catchError((error, caught) => {
+          if (error) {
+            throw new Error(error);
+          }
+          return caught;
         })
       );
     } else {
@@ -74,23 +101,6 @@ export class AuthService {
         throw new Error('Ocorreu um erro ao Verificar o Usuario.');
       })
     );
-  }
-
-  updateProfile() {
-    this.http
-      .get('/api/auth-user/payload')
-      .pipe(
-        take(1),
-        catchError((error) => {
-          console.log('Error: ', error);
-          throw new Error(
-            'Ocorreu um Erro ao tentar obter o Profile do Usuario.'
-          );
-        })
-      )
-      .subscribe((response) => {
-        this.userProfile.next(response as Profile);
-      });
   }
 
   hasRequiredRoles(user: Profile, requiredRoles: string[]): boolean {

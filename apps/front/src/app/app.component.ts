@@ -8,7 +8,7 @@ import {
   AuthService,
   AuthStorage,
 } from '@agroloc/account/data-acess';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, take } from 'rxjs';
 @Component({
   selector: 'agroloc-root',
   templateUrl: './app.component.html',
@@ -48,26 +48,26 @@ export class AppComponent implements OnInit {
     });
 
     if (this.authStorage.getAcessToken()) {
-      this.authService.updateProfile();
-      const userProfile = this.authService.userProfile.subscribe((response) => {
-        this.accountService.getUser(response.IdUsuario);
-        userProfile.unsubscribe();
+      this.authService.nextProfile();
+
+      this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
+        this.accountService.nextAccount(response.IdUsuario);
       });
-      const userDate = this.accountService.userDate.subscribe((response) => {
+
+      this.accountService.userAccount$.subscribe((response) => {
         setTimeout(() => {
           this.snackBar.open(
             `Seja Bem-Vindo, ${
-              response.CadastroComum === undefined
+              response?.CadastroComum === undefined
                 ? 'Usuario'
-                : response.CadastroComum.Nome
+                : response?.CadastroComum.Nome
             }`,
             undefined,
             {
               duration: 3000,
             }
           );
-        }, 4000);
-        userDate.unsubscribe();
+        }, 2000);
       });
     }
   }

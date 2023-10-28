@@ -18,10 +18,6 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     const access_token = this.authStorage.getAcessToken();
 
-    if (!access_token) {
-      console.log({ message: 'Informações do Token Ausente' });
-    }
-
     if (access_token && access_token.length) {
       request = request.clone({
         headers: request.headers.set('Authorization', `Bearer ${access_token}`),

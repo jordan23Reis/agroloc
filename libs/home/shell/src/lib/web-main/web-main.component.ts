@@ -1,10 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnChanges, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Platform } from '@angular/cdk/platform';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { AccountService, AuthService } from '@agroloc/account/data-acess';
-import { Observable, map } from 'rxjs';
+import {
+  Account,
+  AccountService,
+  AuthService,
+  Profile,
+} from '@agroloc/account/data-acess';
+import { Observable, Subject, map, of } from 'rxjs';
 
 @Component({
   selector: 'agroloc-web-main',
@@ -19,17 +24,17 @@ export class WebMainComponent {
   accountService = inject(AccountService);
   currentUrl = this.location.path() ?? '';
 
-  userEmail: Observable<string> = this.accountService.userDate$.pipe(
+  userLogin = this.accountService.userAccount$.pipe(
     map((response) => {
-      console.log(response);
-      return response.Login.Email;
+      return response;
     })
   );
+
   isLogged = this.authService.IsLogged();
   notLogged = this.authService.IsLogged().pipe(
     map((response) => {
-      !response;
       console.log(response);
+      return !response;
     })
   );
   isMobile = this.platform.ANDROID || this.platform.IOS;

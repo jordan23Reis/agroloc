@@ -88,7 +88,7 @@
 
         <mat-menu #person="matMenu" xPosition="before">
           <div class="menuAccount" mat-menu-item>
-            <p>{{ userEmail | async }}</p>
+            <p>{{ (userLogin | async)?.Login?.Email }}</p>
             <img class="imgAccount" src="assets/gato-meow.jpg" />
             <h3>JORDAN BORGES DOS REIS</h3>
           </div>

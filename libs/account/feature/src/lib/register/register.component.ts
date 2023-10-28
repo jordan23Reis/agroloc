@@ -174,33 +174,23 @@ export class AccountRegisterComponent {
         };
       }
 
-      this.accountService
+      const registerSubscribe = this.accountService
         .register(
           this.firstFormGroup.value.Freteiro ? driveUserData : comumUserData
         )
-        .subscribe(
-          (response) => {
-            this.snackBar.open('Conta criada com Sucesso!!', 'Fechar', {
+        .subscribe((response) => {
+          this.snackBar.open('Conta criada com Sucesso!!', 'Fechar', {
+            duration: 3000,
+          });
+          setTimeout(() => {
+            this.login();
+            this.snackBar.open('Agora efetue o Login da sua Conta', 'Fechar', {
               duration: 3000,
             });
-            setTimeout(() => {
-              this.login();
-              this.snackBar.open(
-                'Agora efetue o Login da sua Conta',
-                'Fechar',
-                {
-                  duration: 3000,
-                }
-              );
-            }, 4000);
-          },
-          (error) => {
-            console.log(error);
-            this.snackBar.open('Falha ao criar Conta', 'Fechar', {
-              duration: 3000,
-            });
-          }
-        );
+          }, 4000);
+
+          registerSubscribe.unsubscribe();
+        });
     }
   }
 }
