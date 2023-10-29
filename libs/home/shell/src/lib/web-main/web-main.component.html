@@ -83,14 +83,34 @@
           class="example-icon account-button"
           aria-label="Example icon-button with person icon"
         >
-          <img class="account-img" src="assets/gato-meow.jpg" />
+          <img
+            class="account-img"
+            [src]="
+              (userDate | async)?.CadastroComum?.Foto?.Url
+                ? (userDate | async)?.CadastroComum?.Foto?.Url
+                : 'assets/default-account-icon.png'
+            "
+          />
         </button>
 
         <mat-menu #person="matMenu" xPosition="before">
           <div class="menuAccount" mat-menu-item>
-            <p>{{ (userLogin | async)?.Login?.Email }}</p>
-            <img class="imgAccount" src="assets/gato-meow.jpg" />
-            <h3>JORDAN BORGES DOS REIS</h3>
+            <p>{{ (userDate | async)?.Login?.Email }}</p>
+            <img
+              class="imgAccount"
+              [src]="
+                (userDate | async)?.CadastroComum?.Foto?.Url
+                  ? (userDate | async)?.CadastroComum?.Foto?.Url
+                  : 'assets/default-account-icon.png'
+              "
+            />
+            <h3>
+              {{
+                (userDate | async)?.CadastroComum?.Nome +
+                  ' ' +
+                  (userDate | async)?.CadastroComum?.Sobrenome | uppercase
+              }}
+            </h3>
           </div>
           <mat-divider></mat-divider>
           <button mat-menu-item routerLink="management">
@@ -114,7 +134,7 @@
           class="example-icon account-button"
           aria-label="Example icon-button with person icon"
         >
-          <mat-icon>person</mat-icon>
+          <mat-icon class="person-img">account_circle</mat-icon>
         </button>
 
         <mat-menu #noPerson="matMenu" xPosition="before">

@@ -28,8 +28,7 @@ export class AppComponent implements OnInit {
   currentUrl = this.location.path() ?? '';
   filterUrl = this.prefixRemove(this.currentUrl);
 
-  async ngOnInit() {
-    console.log(this.filterUrl);
+  ngOnInit() {
     if (this.filterUrl !== '') {
       if (this.isMobile) {
         this.router.navigateByUrl(`/mob/${this.filterUrl}`);
@@ -46,30 +45,37 @@ export class AppComponent implements OnInit {
     this.snackBar.open('Bem-Vindo ao Agroloc', 'Fechar', {
       duration: 3000,
     });
+    this.accountCheck();
+  }
 
-    if (this.authStorage.getAcessToken()) {
-      this.authService.nextProfile();
+  accountCheck() {
+    this.authService.IsLogged().subscribe((response) => {
+      if (response) {
+        this.authService.nextProfile();
 
-      this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
-        this.accountService.nextAccount(response.IdUsuario);
-      });
+        this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
+          this.accountService.nextAccount(response.IdUsuario);
+        });
 
-      this.accountService.userAccount$.subscribe((response) => {
-        setTimeout(() => {
-          this.snackBar.open(
-            `Seja Bem-Vindo, ${
-              response?.CadastroComum === undefined
-                ? 'Usuario'
-                : response?.CadastroComum.Nome
-            }`,
-            undefined,
-            {
-              duration: 3000,
-            }
-          );
-        }, 2000);
-      });
-    }
+        this.accountService.userAccount$.subscribe((response) => {
+          if (response) {
+            setTimeout(() => {
+              this.snackBar.open(
+                `Seja Bem-Vindo, ${
+                  response?.CadastroComum === undefined
+                    ? 'Usuario'
+                    : response?.CadastroComum.Nome
+                }`,
+                undefined,
+                {
+                  duration: 3000,
+                }
+              );
+            }, 2000);
+          }
+        });
+      }
+    });
   }
 
   prefixRemove(url: string): string {

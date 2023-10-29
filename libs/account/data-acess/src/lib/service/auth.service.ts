@@ -79,11 +79,8 @@ export class AuthService {
     if (access_token) {
       return this.http.get<Profile>('/api/auth-user/payload').pipe(
         map((response) => (response.IdUsuario ? true : false)),
-        catchError((error, caught) => {
-          if (error) {
-            throw new Error(error);
-          }
-          return caught;
+        catchError((error) => {
+          return of(false);
         })
       );
     } else {

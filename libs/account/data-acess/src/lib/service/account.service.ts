@@ -22,7 +22,81 @@ export class AccountService {
   http = inject(HttpClient);
   snackBar = inject(MatSnackBar);
 
-  userAccount = new BehaviorSubject<Account | undefined>(undefined);
+  loadingAccount: Account = {
+    Login: {
+      Email: 'Carregando',
+      Senha: 'Carregando',
+      Tipo: 'Carregando',
+    },
+    CadastroComum: {
+      Nome: 'Carregando',
+      Sobrenome: 'Carregando',
+      DataDeNascimento: '1990-01-01',
+      Sexo: 'Carregando',
+      Telefone: ['Carregando'],
+      Cpf: 'Carregando',
+      Cnpj: 'Carregando',
+      Enderecos: [
+        {
+          Cep: 'Carregando',
+          Cidade: 'Carregando',
+          Logradouro: 'Carregando',
+          Bairro: 'Carregando',
+          Complemento: 'Carregando',
+          Numero: 23,
+        },
+      ],
+      Foto: {
+        Url: 'assets/default-account-icon.png',
+        NomeArquivo: 'Carregando',
+      },
+    },
+    CadastroFreteiro: {
+      CNH: 'Carregando',
+      Automovel: [
+        {
+          Nome: 'Carregando',
+          Descricao: 'Carregando',
+          Peso: 2323,
+          Comprimento: 23,
+          Largura: 23,
+          Altura: 23,
+          ImagemPrincipal: {
+            Url: 'https://th.bing.com/th/id/R.a1d5699377217044dd3932f4b9438aaf?rik=NA1cHKeLwV%2fNJw&pid=ImgRaw&r=0',
+            NomeArquivo: 'Carregando',
+          },
+          ImagensSecundarias: [
+            {
+              Url: 'https://th.bing.com/th/id/R.a1d5699377217044dd3932f4b9438aaf?rik=NA1cHKeLwV%2fNJw&pid=ImgRaw&r=0',
+              NomeArquivo: 'Carregando',
+            },
+          ],
+          Categoria: {
+            idCategoria: 'Carregando',
+            Nome: 'Carregando',
+          },
+        },
+      ],
+    },
+    Maquinas: [],
+    Favoritos: [],
+    MaquinasAlugadas: [],
+    MaquinasLocadas: [],
+    FretesRealizados: [],
+    FretesSolicitados: [],
+    InformacoesBancarias: {
+      ContaBancaria: {
+        Agencia: 'Carregando',
+        Conta: 'Carregando',
+      },
+      Pix: {
+        Chave: 'Carregando',
+        Tipo: 'Carregando',
+      },
+    },
+  };
+
+  userAccount = new BehaviorSubject<Account>(this.loadingAccount);
   userAccount$ = this.userAccount.asObservable();
 
   nextAccount(userId: string) {
@@ -76,7 +150,7 @@ export class AccountService {
     return this.http.get(`/api/usuario/cadastro/${accountId}`);
   }
 
-  updateProfile(accountId: string, accountData: AccountData): Observable<any> {
+  updateAccount(accountId: string, accountData: any): Observable<any> {
     return this.http.put(`/api/usuario/cadastro/${accountId}`, accountData);
   }
 

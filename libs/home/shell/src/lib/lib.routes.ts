@@ -59,10 +59,10 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'management',
             component: ManagementComponent,
-            // canActivate: [AuthGuard],
-            // data: {
-            //   roles: ['Admin', 'Comum', 'Freteiro'],
-            // },
+            canActivate: [AuthGuard],
+            data: {
+              roles: ['Admin', 'Comum', 'Freteiro'],
+            },
             children: [],
           },
         ],

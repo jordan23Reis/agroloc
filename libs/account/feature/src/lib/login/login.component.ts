@@ -62,32 +62,36 @@ export class AccountLoginComponent {
         .subscribe((response) => {
           this.authStorage.setAcessToken(response.access_token);
 
-          if (this.authStorage.getAcessToken()) {
-            this.authService.nextProfile();
+          this.authService.IsLogged().subscribe((response) => {
+            if (response) {
+              this.authService.nextProfile();
 
-            this.authService.userProfile$
-              .pipe(take(1))
-              .subscribe((response) => {
-                this.accountService.nextAccount(response.IdUsuario);
+              this.authService.userProfile$
+                .pipe(take(1))
+                .subscribe((response) => {
+                  this.accountService.nextAccount(response.IdUsuario);
+                });
+
+              this.accountService.userAccount$.subscribe((response) => {
+                if (response) {
+                  setTimeout(() => {
+                    this.snackBar.open(
+                      `Seja Bem-Vindo, ${
+                        response?.CadastroComum === undefined
+                          ? 'Usuario'
+                          : response?.CadastroComum.Nome
+                      }`,
+                      undefined,
+                      {
+                        duration: 3000,
+                      }
+                    );
+                    this.router.navigate(['web', 'main']);
+                  }, 2000);
+                }
               });
-
-            this.accountService.userAccount$.subscribe((response) => {
-              setTimeout(() => {
-                this.snackBar.open(
-                  `Seja Bem-Vindo, ${
-                    response?.CadastroComum === undefined
-                      ? 'Usuario'
-                      : response?.CadastroComum.Nome
-                  }`,
-                  undefined,
-                  {
-                    duration: 3000,
-                  }
-                );
-                this.router.navigate(['web', 'main']);
-              }, 2000);
-            });
-          }
+            }
+          });
 
           loginSubscribe.unsubscribe();
         });

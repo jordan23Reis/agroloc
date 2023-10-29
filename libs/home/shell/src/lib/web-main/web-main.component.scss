@@ -46,7 +46,7 @@
   }
 
   .favoriteIcon {
-    color: #3483fa;
+    color: rgb(26, 115, 232);
   }
 
   #content {
@@ -77,6 +77,12 @@
     width: 80%;
     height: 80%;
     border-radius: 100%;
+  }
+
+  .person-img {
+    width: 36px;
+    height: 36px;
+    font-size: 36px;
   }
 
   .accountIcon {

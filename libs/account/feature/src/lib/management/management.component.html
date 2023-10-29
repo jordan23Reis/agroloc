@@ -2,8 +2,21 @@
   <mat-tab-group>
     <mat-tab label="Inicio">
       <div class="inicio">
-        <img src="assets/gato-meow.jpg" />
-        <h2>Ola, JORDAN BORGES DOS REIS</h2>
+        <img
+          [src]="
+            (userDate | async)?.CadastroComum?.Foto?.Url
+              ? (userDate | async)?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
+          "
+        />
+        <h2>
+          Ola,
+          {{
+            (userDate | async)?.CadastroComum?.Nome +
+              ' ' +
+              (userDate | async)?.CadastroComum?.Sobrenome | uppercase
+          }}
+        </h2>
         <h3>Seja Bem-Vindo!</h3>
         <p>
           Aprimore a gestão de suas informações, privacidade e segurança, de
@@ -29,9 +42,200 @@
                   <span class="example-spacer"></span>
                 </mat-expansion-panel-header>
                 <span class="example-spacer"></span>
-                <div class="conteudo">
-                  <p>Informações de identidade visíveis para outras.</p>
-                </div>
+                <form [formGroup]="infoPessoais">
+                  <form class="conteudo" formGroupName="CadastroComum">
+                    <p>
+                      Informações de identidade visíveis para outras pessoas
+                    </p>
+
+                    <div class="containerFoto">
+                      <h4>Foto do Perfil</h4>
+                      <span class="example-spacer"></span>
+                      <p>
+                        Uma foto ajuda as pessoas a reconhecerem <br />
+                        você e permite que você saiba quando <br />
+                        a conta está conectada
+                      </p>
+                      <span class="example-spacer"></span>
+                      <img
+                        style="cursor: pointer"
+                        [src]="
+                          imagePreview
+                            ? imagePreview
+                            : (userDate | async)?.CadastroComum?.Foto?.Url
+                            ? (userDate | async)?.CadastroComum?.Foto?.Url
+                            : 'assets/default-account-icon.png'
+                        "
+                        (click)="selectImage()"
+                      />
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png"
+                        id="fileInput"
+                        style="display: none"
+                        (change)="handleImageSelection($event)"
+                      />
+                    </div>
+
+                    <div class="formContainer">
+                      <p>Nome</p>
+                      <mat-form-field class="form">
+                        <input
+                          type="text"
+                          matInput
+                          [value]="(userDate | async)?.CadastroComum?.Nome"
+                          formControlName="Nome"
+                        />
+                        <button
+                          mat-icon-button
+                          matSuffix
+                          (click)="swtichStateEditName()"
+                        >
+                          <mat-icon>{{
+                            disableNome ? 'edit' : 'edit_off'
+                          }}</mat-icon>
+                        </button>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="formContainer">
+                      <p>Sobrenome</p>
+                      <mat-form-field class="form">
+                        <input
+                          type="text"
+                          matInput
+                          [value]="(userDate | async)?.CadastroComum?.Sobrenome"
+                          formControlName="Sobrenome"
+                        />
+                        <button
+                          mat-icon-button
+                          matSuffix
+                          (click)="swtichStateEditSobrenome()"
+                        >
+                          <mat-icon>{{
+                            disableSobrenome ? 'edit' : 'edit_off'
+                          }}</mat-icon>
+                        </button>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="formContainer">
+                      <p>Data de Nascimento</p>
+                      <mat-form-field class="form">
+                        <input
+                          type="text"
+                          matInput
+                          [matDatepicker]="dp3"
+                          (dateInput)="swtichStateEditNascimento()"
+                          [value]="
+                            (userDate | async)?.CadastroComum?.DataDeNascimento
+                          "
+                          formControlName="Nascimento"
+                        />
+                        <mat-datepicker-toggle
+                          matIconSuffix
+                          [for]="dp3"
+                        ></mat-datepicker-toggle>
+                        <mat-datepicker #dp3 disabled="false"></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="formContainer">
+                      <p>Gênero</p>
+                      <mat-form-field class="form">
+                        <input
+                          *ngIf="disableGenero"
+                          disabled
+                          type="text"
+                          matInput
+                          (dateInput)="swtichStateEditNascimento()"
+                          [value]="(userDate | async)?.CadastroComum?.Sexo"
+                        />
+                        <mat-select
+                          *ngIf="!disableGenero"
+                          formControlName="Sexo"
+                        >
+                          <mat-option value="Masculino">Masculino</mat-option>
+                          <mat-option value="Feminino">Feminino</mat-option>
+                          <mat-option value="Outro">Outro</mat-option>
+                        </mat-select>
+                        <button
+                          mat-icon-button
+                          matSuffix
+                          (click)="swtichStateEditSexo()"
+                        >
+                          <mat-icon>{{
+                            disableGenero ? 'edit' : 'edit_off'
+                          }}</mat-icon>
+                        </button>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="formContainer">
+                      <p>CPF</p>
+                      <mat-form-field class="form">
+                        <input
+                          type="text"
+                          matInput
+                          [value]="
+                            (userDate | async)?.CadastroComum?.Cpf
+                              ? (userDate | async)?.CadastroComum?.Cpf
+                              : 'Sem CPF'
+                          "
+                          formControlName="Cpf"
+                        />
+                        <button
+                          mat-icon-button
+                          matSuffix
+                          (click)="swtichStateEditCpf()"
+                        >
+                          <mat-icon>{{
+                            disableCpf ? 'edit' : 'edit_off'
+                          }}</mat-icon>
+                        </button>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="formContainer">
+                      <p>CNPJ</p>
+                      <mat-form-field class="form">
+                        <input
+                          type="text"
+                          matInput
+                          [value]="
+                            (userDate | async)?.CadastroComum?.Cnpj
+                              ? (userDate | async)?.CadastroComum?.Cnpj
+                              : 'Sem CNPJ'
+                          "
+                          formControlName="Cnpj"
+                        />
+                        <button
+                          mat-icon-button
+                          matSuffix
+                          (click)="swtichStateEditCnpj()"
+                        >
+                          <mat-icon>{{
+                            disableCnpj ? 'edit' : 'edit_off'
+                          }}</mat-icon>
+                        </button>
+                      </mat-form-field>
+                    </div>
+
+                    <div class="menuButtons">
+                      <span class="example-spacer"></span>
+                      <button
+                        class="nextButton"
+                        mat-raised-button
+                        color="primary"
+                        (click)="setInfoPessoais()"
+                        [disabled]="AllDisable"
+                      >
+                        Aplicar
+                      </button>
+                    </div>
+                  </form>
+                </form>
+
                 <span class="example-spacer"></span>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
@@ -45,7 +249,39 @@
                     <mat-icon>phone</mat-icon>
                   </mat-panel-title>
 
-                  <h3>Informações de contato</h3>
+                  <h3>Informações de Contato</h3>
+                  <span class="example-spacer"></span>
+                </mat-expansion-panel-header>
+                <p>Formas de pagamento e transações feitas na conta.</p>
+              </mat-expansion-panel>
+              <mat-divider></mat-divider>
+
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <mat-icon>local_shipping</mat-icon>
+                  </mat-panel-title>
+
+                  <h3>Informações de Freteiro</h3>
+                  <span class="example-spacer"></span>
+                </mat-expansion-panel-header>
+                <p>Formas de pagamento e transações feitas na conta.</p>
+              </mat-expansion-panel>
+              <mat-divider></mat-divider>
+
+              <mat-expansion-panel
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <mat-icon>password</mat-icon>
+                  </mat-panel-title>
+
+                  <h3>Alterar Senha</h3>
                   <span class="example-spacer"></span>
                 </mat-expansion-panel-header>
                 <p>Formas de pagamento e transações feitas na conta.</p>
@@ -119,5 +355,3 @@
     </mat-tab>
   </mat-tab-group>
 </div>
-<mat-divider></mat-divider>
-<span class="example-spacer"></span>

@@ -22,9 +22,8 @@ export class WebMainComponent {
   platform = inject(Platform);
   authService = inject(AuthService);
   accountService = inject(AccountService);
-  currentUrl = this.location.path() ?? '';
 
-  userLogin = this.accountService.userAccount$.pipe(
+  userDate = this.accountService.userAccount$.pipe(
     map((response) => {
       return response;
     })
@@ -33,10 +32,11 @@ export class WebMainComponent {
   isLogged = this.authService.IsLogged();
   notLogged = this.authService.IsLogged().pipe(
     map((response) => {
-      console.log(response);
       return !response;
     })
   );
+
+  currentUrl = this.location.path() ?? '';
   isMobile = this.platform.ANDROID || this.platform.IOS;
   showFiller = false;
   isDarkMode?: boolean;

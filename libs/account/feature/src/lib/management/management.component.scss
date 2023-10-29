@@ -83,9 +83,62 @@
       }
     }
 
+    mat-list {
+      width: 100%;
+      height: auto;
+    }
+
     .conteudo {
       display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .formContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+      justify-content: center;
+      p {
+        align-self: flex-start;
+        margin-left: 15%;
+      }
+    }
+
+    .form {
+      width: 70%;
+      height: auto;
+    }
+
+    .containerFoto {
+      display: flex;
       flex-direction: row;
+      width: 70%;
+      height: auto;
+      align-items: center;
+      justify-content: center;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      img {
+        width: 120px;
+        height: 120px;
+        padding: 5px;
+        border-radius: 100%;
+        border-style: groove;
+        border-color: inherit;
+        object-fit: cover;
+      }
+    }
+
+    .menuButtons {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 70%;
+      height: 80px;
+      margin-top: 15px;
     }
   }
 }
