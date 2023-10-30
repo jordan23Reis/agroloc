@@ -1,7 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Account } from '../entities/account-paths.interface';
-import { BehaviorSubject, Observable, Subject, catchError, take } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  ReplaySubject,
+  Subject,
+  catchError,
+  map,
+  take,
+} from 'rxjs';
 import { InformacoesBancarias } from '../entities/account-paths.interface';
 import {
   Imagem,
@@ -96,11 +104,11 @@ export class AccountService {
     },
   };
 
-  userAccount = new BehaviorSubject<Account>(this.loadingAccount);
+  userAccount = new ReplaySubject<Account>(1);
   userAccount$ = this.userAccount.asObservable();
 
   nextAccount(userId: string) {
-    const nextAccountSubscribe = this.http
+    this.http
       .get(`/api/usuario/cadastro/${userId}`)
       .pipe(
         take(1),
@@ -113,8 +121,7 @@ export class AccountService {
       )
       .subscribe((response) => {
         this.userAccount.next(response as Account);
-
-        nextAccountSubscribe.unsubscribe();
+        this.userAccount.complete();
       });
   }
 

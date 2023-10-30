@@ -11,7 +11,7 @@ import { Component, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { take } from 'rxjs';
+import { take, takeLast, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'agroloc-login',
@@ -57,44 +57,14 @@ export class AccountLoginComponent {
 
   SingIn() {
     if (this.account.valid) {
-      const loginSubscribe = this.authService
-        .SingIn(this.account.value)
-        .subscribe((response) => {
-          this.authStorage.setAcessToken(response.access_token);
-
-          this.authService.IsLogged().subscribe((response) => {
-            if (response) {
-              this.authService.nextProfile();
-
-              this.authService.userProfile$
-                .pipe(take(1))
-                .subscribe((response) => {
-                  this.accountService.nextAccount(response.IdUsuario);
-                });
-
-              this.accountService.userAccount$.subscribe((response) => {
-                if (response) {
-                  setTimeout(() => {
-                    this.snackBar.open(
-                      `Seja Bem-Vindo, ${
-                        response?.CadastroComum === undefined
-                          ? 'Usuario'
-                          : response?.CadastroComum.Nome
-                      }`,
-                      undefined,
-                      {
-                        duration: 3000,
-                      }
-                    );
-                    this.router.navigate(['web', 'main']);
-                  }, 2000);
-                }
-              });
-            }
-          });
-
-          loginSubscribe.unsubscribe();
+      this.authService.SingIn(this.account.value).subscribe((response) => {
+        this.authStorage.setAcessToken(response.access_token);
+        this.authService.nextProfile();
+        this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
+          this.accountService.nextAccount(response.IdUsuario);
         });
+        this.router.navigate(['web', 'main']);
+      });
     }
   }
 }

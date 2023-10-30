@@ -38,4 +38,4 @@ import { MatSelectModule } from '@angular/material/select';
   declarations: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
   exports: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
 })
-export class MachineryFeatureModule { }
+export class MachineryFeatureModule {}

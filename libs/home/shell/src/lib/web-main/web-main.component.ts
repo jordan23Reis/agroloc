@@ -23,11 +23,7 @@ export class WebMainComponent {
   authService = inject(AuthService);
   accountService = inject(AccountService);
 
-  userDate = this.accountService.userAccount$.pipe(
-    map((response) => {
-      return response;
-    })
-  );
+  userDate = this.accountService.userAccount$;
 
   isLogged = this.authService.IsLogged();
   notLogged = this.authService.IsLogged().pipe(

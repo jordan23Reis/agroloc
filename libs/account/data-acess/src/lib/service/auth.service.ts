@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import {
   BehaviorSubject,
   Observable,
+  ReplaySubject,
   Subject,
   catchError,
   map,
@@ -26,11 +27,11 @@ export class AuthService {
   router = inject(Router);
   snackBar = inject(MatSnackBar);
 
-  userProfile = new Subject<Profile>();
+  userProfile = new ReplaySubject<Profile>();
   userProfile$ = this.userProfile.asObservable();
 
   nextProfile() {
-    const nextProfileSubscribe = this.http
+    this.http
       .get('/api/auth-user/payload')
       .pipe(
         catchError((error) => {
@@ -42,8 +43,6 @@ export class AuthService {
       )
       .subscribe((response) => {
         this.userProfile.next(response as Profile);
-
-        nextProfileSubscribe.unsubscribe();
       });
   }
 

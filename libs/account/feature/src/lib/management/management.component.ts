@@ -5,8 +5,17 @@ import {
   AccountService,
   Imagem,
   AccountData,
+  Account,
+  Profile,
 } from '@agroloc/account/data-acess';
-import { combineLatest, map, take } from 'rxjs';
+import {
+  Observable,
+  combineLatest,
+  debounceTime,
+  map,
+  take,
+  takeLast,
+} from 'rxjs';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,16 +32,8 @@ export class ManagementComponent implements OnInit {
   _formBuilder = inject(FormBuilder);
   snackBar = inject(MatSnackBar);
 
-  userDate = this.accountService.userAccount$.pipe(
-    map((response) => {
-      return response;
-    })
-  );
-  userProfile = this.authService.userProfile$.pipe(
-    map((response) => {
-      return response;
-    })
-  );
+  userDate = this.accountService.userAccount$.pipe();
+  userProfile = this.authService.userProfile$.pipe();
 
   // enctype="multipart/form-data"
 
@@ -60,55 +61,51 @@ export class ManagementComponent implements OnInit {
     Foto: [this.Image],
   });
   infoPessoais = this._formBuilder.group({
-    CadastroComum: this._formBuilder.group({
-      Nome: [
-        undefined,
-        [
-          Validators.minLength(UsuarioSchemaDtoRestraints.tamMinNome),
-          Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxNome),
-        ],
+    Nome: [
+      undefined,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinNome),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxNome),
       ],
-      Sobrenome: [
-        undefined,
-        [
-          Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSobrenome),
-          Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSobrenome),
-        ],
+    ],
+    Sobrenome: [
+      undefined,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSobrenome),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSobrenome),
       ],
-      Nascimento: [undefined],
-      Sexo: [
-        undefined,
-        [
-          Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSexo),
-          Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSexo),
-        ],
+    ],
+    Nascimento: [undefined],
+    Sexo: [
+      undefined,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSexo),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSexo),
       ],
-      Cpf: [
-        undefined,
-        [
-          Validators.minLength(UsuarioSchemaDtoRestraints.tamMinCpf),
-          Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxCpf),
-        ],
+    ],
+    Cpf: [
+      undefined,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinCpf),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxCpf),
       ],
-      Cnpj: [
-        undefined,
-        [
-          Validators.minLength(UsuarioSchemaDtoRestraints.tamMinCnpj),
-          Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxCnpj),
-        ],
+    ],
+    Cnpj: [
+      undefined,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinCnpj),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxCnpj),
       ],
-    }),
+    ],
   });
 
   ngOnInit() {
-    this.infoPessoais.controls['CadastroComum'].controls['Nome'].disable();
-    this.infoPessoais.controls['CadastroComum'].controls['Sobrenome'].disable();
-    this.infoPessoais.controls['CadastroComum'].controls[
-      'Nascimento'
-    ].disable();
-    this.infoPessoais.controls['CadastroComum'].controls['Sexo'].disable();
-    this.infoPessoais.controls['CadastroComum'].controls['Cpf'].disable();
-    this.infoPessoais.controls['CadastroComum'].controls['Cnpj'].disable();
+    this.infoPessoais.controls['Nome'].disable();
+    this.infoPessoais.controls['Sobrenome'].disable();
+    this.infoPessoais.controls['Nascimento'].disable();
+    this.infoPessoais.controls['Sexo'].disable();
+    this.infoPessoais.controls['Cpf'].disable();
+    this.infoPessoais.controls['Cnpj'].disable();
     this.checkDisable();
   }
 
@@ -139,10 +136,10 @@ export class ManagementComponent implements OnInit {
 
   swtichStateEditName() {
     if (this.disableNome) {
-      this.infoPessoais.controls['CadastroComum'].controls['Nome'].enable();
+      this.infoPessoais.controls['Nome'].enable();
       this.disableNome = !this.disableNome;
     } else {
-      this.infoPessoais.controls['CadastroComum'].controls['Nome'].disable();
+      this.infoPessoais.controls['Nome'].disable();
       this.disableNome = !this.disableNome;
     }
     this.checkDisable();
@@ -150,35 +147,27 @@ export class ManagementComponent implements OnInit {
 
   swtichStateEditSobrenome() {
     if (this.disableSobrenome) {
-      this.infoPessoais.controls['CadastroComum'].controls[
-        'Sobrenome'
-      ].enable();
+      this.infoPessoais.controls['Sobrenome'].enable();
       this.disableSobrenome = !this.disableSobrenome;
     } else {
-      this.infoPessoais.controls['CadastroComum'].controls[
-        'Sobrenome'
-      ].disable();
+      this.infoPessoais.controls['Sobrenome'].disable();
       this.disableSobrenome = !this.disableSobrenome;
     }
     this.checkDisable();
   }
 
   swtichStateEditNascimento() {
-    this.infoPessoais.controls['CadastroComum'].controls['Nascimento'].enable();
+    this.infoPessoais.controls['Nascimento'].enable();
     this.checkDisable();
   }
 
   swtichStateEditSexo() {
     if (this.disableGenero) {
-      this.infoPessoais.controls['CadastroComum'].controls['Sexo'].enable();
+      this.infoPessoais.controls['Sexo'].enable();
       this.disableGenero = !this.disableGenero;
     } else {
-      this.infoPessoais.controls['CadastroComum'].controls['Sexo'].disable();
-      this.infoPessoais.patchValue({
-        CadastroComum: {
-          Sexo: null,
-        },
-      });
+      this.infoPessoais.controls['Sexo'].disable();
+      this.infoPessoais.patchValue({ Sexo: null });
       this.disableGenero = !this.disableGenero;
     }
     this.checkDisable();
@@ -186,10 +175,10 @@ export class ManagementComponent implements OnInit {
 
   swtichStateEditCpf() {
     if (this.disableCpf) {
-      this.infoPessoais.controls['CadastroComum'].controls['Cpf'].enable();
+      this.infoPessoais.controls['Cpf'].enable();
       this.disableCpf = !this.disableCpf;
     } else {
-      this.infoPessoais.controls['CadastroComum'].controls['Cpf'].disable();
+      this.infoPessoais.controls['Cpf'].disable();
       this.disableCpf = !this.disableCpf;
     }
     this.checkDisable();
@@ -197,24 +186,24 @@ export class ManagementComponent implements OnInit {
 
   swtichStateEditCnpj() {
     if (this.disableCnpj) {
-      this.infoPessoais.controls['CadastroComum'].controls['Cnpj'].enable();
+      this.infoPessoais.controls['Cnpj'].enable();
       this.disableCnpj = !this.disableCnpj;
     } else {
-      this.infoPessoais.controls['CadastroComum'].controls['Cnpj'].disable();
+      this.infoPessoais.controls['Cnpj'].disable();
       this.disableCnpj = !this.disableCnpj;
     }
     this.checkDisable();
   }
 
   setInfoPessoais() {
-    combineLatest([this.userDate, this.userProfile])
-      .pipe(take(1))
-      .subscribe((response) => {
-        this.accountService
-          .updateAccount(response[1].IdUsuario, this.infoPessoais.value)
-          .subscribe((response) => console.log(response));
-      });
-    console.log(this.infoPessoais.value);
-    console.log(this.fotoPerfil.value);
+    // combineLatest([this.userDate, this.userProfile])
+    //   .pipe(take(1))
+    //   .subscribe(([account, profile]) => {
+    //     this.accountService
+    //       .updateAccount(profile.IdUsuario, this.infoPessoais.value)
+    //       .subscribe((response) => console.log(response));
+    //   });
+    // console.log(this.infoPessoais.value);
+    // console.log(this.fotoPerfil.value);
   }
 }
