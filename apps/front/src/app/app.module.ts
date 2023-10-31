@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { LoaderInterceptor } from '../http/interceptor/loader.interceptor';
+// import { LoaderInterceptor } from '@agroloc/shared/util';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthInterceptor } from '@agroloc/account/data-acess';
 
@@ -22,14 +22,14 @@ import { AuthInterceptor } from '@agroloc/account/data-acess';
   providers: [
     // {
     //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthInterceptor,
+    //   multi: true,
+    // },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
     //   useClass: LoaderInterceptor,
     //   multi: true,
     // },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true,
-    },
   ],
   bootstrap: [AppComponent],
 })

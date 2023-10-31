@@ -34,7 +34,7 @@ export class ManagementComponent implements OnInit {
   _formBuilder = inject(FormBuilder);
   snackBar = inject(MatSnackBar);
 
-  userDate = this.accountService.userAccount$.pipe(debounceTime(1))
+  userDate = this.accountService.userAccount$.pipe(debounceTime(1));
   userProfile = this.authService.userProfile$;
 
   // enctype="multipart/form-data"
@@ -127,7 +127,7 @@ export class ManagementComponent implements OnInit {
       this.disableNascimento &&
       this.disableGenero &&
       this.disableCpf &&
-      this.disableCnpj
+      this.disableCnpj;
   }
 
   selectImage() {
@@ -168,7 +168,7 @@ export class ManagementComponent implements OnInit {
 
   swtichStateEditNascimento() {
     this.infoPessoais.controls['Nascimento'].enable();
-    this.disableNascimento = false
+    this.disableNascimento = false;
     this.checkDisable();
   }
 
@@ -207,58 +207,58 @@ export class ManagementComponent implements OnInit {
   }
 
   setInfoPessoais() {
-    let dataUser: AccountData
-    let infoNext: Observable<boolean>
+    let dataUser: AccountData;
+    let infoNext: Observable<boolean>;
 
     combineLatest([this.userDate, this.userProfile])
-      .pipe(take(1), debounceTime(1))
+      .pipe(take(1), debounceTime(1000))
       .subscribe(([account, profile]) => {
-        dataUser = account as unknown as AccountData
+        dataUser = account as unknown as AccountData;
         if (!this.disableNome) {
-          dataUser.CadastroComum!.Nome = this.infoPessoais.value.Nome as unknown as string
+          dataUser.CadastroComum!.Nome = this.infoPessoais.value
+            .Nome as unknown as string;
         }
         if (!this.disableSobrenome) {
-          dataUser.CadastroComum!.Sobrenome = this.infoPessoais.value.Sobrenome as unknown as string
+          dataUser.CadastroComum!.Sobrenome = this.infoPessoais.value
+            .Sobrenome as unknown as string;
         }
         if (!this.disableSobrenome) {
-          dataUser.CadastroComum!.Sobrenome = this.infoPessoais.value.Sobrenome as unknown as string
+          dataUser.CadastroComum!.Sobrenome = this.infoPessoais.value
+            .Sobrenome as unknown as string;
         }
         if (!this.disableNascimento) {
-          dataUser.CadastroComum!.DataDeNascimento = this.infoPessoais.value.Nascimento as unknown as string
+          dataUser.CadastroComum!.DataDeNascimento = this.infoPessoais.value
+            .Nascimento as unknown as string;
         }
         if (!this.disableCpf) {
-          dataUser.CadastroComum!.Cpf = this.infoPessoais.value.Cpf as unknown as string
+          dataUser.CadastroComum!.Cpf = this.infoPessoais.value
+            .Cpf as unknown as string;
         }
         if (!this.disableCnpj) {
-          dataUser.CadastroComum!.Cnpj = this.infoPessoais.value.Cnpj as unknown as string
+          dataUser.CadastroComum!.Cnpj = this.infoPessoais.value
+            .Cnpj as unknown as string;
         }
 
         if (this.fotoPerfil.value.Imagem) {
-          this.accountService.updatePhoto(profile.IdUsuario, this.fotoPerfil.value as Imagem).subscribe((response) => {
-            this.snackBar.open(
-              `Foto Alterada`,
-              undefined,
-              {
+          this.accountService
+            .updatePhoto(profile.IdUsuario, this.fotoPerfil.value as Imagem)
+            .subscribe((response) => {
+              this.snackBar.open(`Foto Alterada`, undefined, {
                 duration: 3000,
-              }
-            );
-            this.accountService.nextAccount(profile.IdUsuario)
-          })
+              });
+              this.accountService.nextAccount(profile.IdUsuario);
+            });
         }
         if (!this.FormDisable) {
-          this.accountService.updateAccount(profile.IdUsuario, dataUser).subscribe((response) => {
-            this.snackBar.open(
-              `Informações Alterada`,
-              undefined,
-              {
+          this.accountService
+            .updateAccount(profile.IdUsuario, dataUser)
+            .subscribe((response) => {
+              this.snackBar.open(`Informações Alterada`, undefined, {
                 duration: 3000,
-              }
-            );
-          });
-          this.accountService.nextAccount(profile.IdUsuario)
+              });
+            });
+          this.accountService.nextAccount(profile.IdUsuario);
         }
       });
-
-
   }
 }

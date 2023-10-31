@@ -90,7 +90,7 @@
                         (click)="swtichStateEditName()"
                       >
                         <mat-icon>{{
-                          disableNome ? 'edit' : 'edit_off'
+                          disableNome ? 'edit' : 'close'
                         }}</mat-icon>
                       </button>
                     </mat-form-field>
@@ -111,7 +111,7 @@
                         (click)="swtichStateEditSobrenome()"
                       >
                         <mat-icon>{{
-                          disableSobrenome ? 'edit' : 'edit_off'
+                          disableSobrenome ? 'edit' : 'close'
                         }}</mat-icon>
                       </button>
                     </mat-form-field>
@@ -160,7 +160,7 @@
                         (click)="swtichStateEditSexo()"
                       >
                         <mat-icon>{{
-                          disableGenero ? 'edit' : 'edit_off'
+                          disableGenero ? 'edit' : 'close'
                         }}</mat-icon>
                       </button>
                     </mat-form-field>
@@ -184,9 +184,7 @@
                         matSuffix
                         (click)="swtichStateEditCpf()"
                       >
-                        <mat-icon>{{
-                          disableCpf ? 'edit' : 'edit_off'
-                        }}</mat-icon>
+                        <mat-icon>{{ disableCpf ? 'edit' : 'close' }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
@@ -210,7 +208,7 @@
                         (click)="swtichStateEditCnpj()"
                       >
                         <mat-icon>{{
-                          disableCnpj ? 'edit' : 'edit_off'
+                          disableCnpj ? 'edit' : 'close'
                         }}</mat-icon>
                       </button>
                     </mat-form-field>
@@ -231,6 +229,7 @@
                 </form>
 
                 <span class="example-spacer"></span>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 

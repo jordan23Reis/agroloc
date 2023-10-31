@@ -94,7 +94,11 @@
         </button>
 
         <mat-menu #person="matMenu" xPosition="before">
-          <div class="menuAccount" mat-menu-item>
+          <div
+            class="menuAccount"
+            style="display: flex; flex-direction: column; align-items: center"
+            mat-menu-item
+          >
             <p>{{ (userDate | async)?.Login?.Email }}</p>
             <img
               class="imgAccount"
