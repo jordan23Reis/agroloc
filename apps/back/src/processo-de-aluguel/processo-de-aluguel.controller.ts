@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { ProcessoDeAluguelService } from './processo-de-aluguel.service';
 import { UpdateProcessoDeAluguelDto } from './dto/update-processo-de-aluguel.dto';
@@ -15,6 +16,12 @@ import { LocadorLocatarioGuard } from './guards/LocadorLocatarioGuard';
 import { InformacoesBancariasLocadorGuard } from './guards/InformacoesBancariasLocadorGuard';
 import { JwtAuthGuard } from '../auth-user/guards/jwt.auth-user.guard';
 import { MaquinaGuard } from './guards/MaquinaGuard';
+import { ProcessoAAceitarJaExisteGuard } from './guards/ProcessoAAceitarJaExisteGuard';
+import { UsuarioLogadoDonoDoProcessoGuard } from './guards/UsuarioLogadoDonoDoProcessoGuard';
+import { ProcessoAAceitarGuard } from './guards/ProcessoAAceitar';
+import { ProcessoAguardandoFrete } from './guards/ProcessoAguardandoFrete';
+import { ProcessoAComecar } from './guards/ProcessoAComecar';
+import { ProcessoEmAndamento } from './guards/ProcessoEmAndamento';
 
 @Controller('processo-de-aluguel')
 export class ProcessoDeAluguelController {
@@ -23,20 +30,60 @@ export class ProcessoDeAluguelController {
   ) {}
 
 
-  @UseGuards(JwtAuthGuard, MaquinaGuard, LocadorLocatarioGuard, TipoPrecoGuard, InformacoesBancariasLocadorGuard)
+  @UseGuards(JwtAuthGuard, MaquinaGuard, LocadorLocatarioGuard, ProcessoAAceitarJaExisteGuard, TipoPrecoGuard, InformacoesBancariasLocadorGuard )
   @Post(":idMaquina/:idLocador/:idLocatario")
   create(@Param('idMaquina') idMaquina: string, @Param('idLocador') idLocador: string, @Param('idLocatario') idLocatario: string) {
+    try{
     return this.processoDeAluguelService.create(idMaquina, idLocador, idLocatario);
+    }catch(e){
+      throw new Error(e.message);
+    }
   }
+
+  @UseGuards(JwtAuthGuard, ProcessoAAceitarGuard, UsuarioLogadoDonoDoProcessoGuard)
+  @Patch("mudarstatus/aceitar/:idProcessoDeAluguel")
+  aceitarProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){
+    try{
+      return this.processoDeAluguelService.aceitarProcessoDeAluguel(idProcessoDeAluguel);
+    }catch(e){
+      throw new Error(e.message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, ProcessoAguardandoFrete, UsuarioLogadoDonoDoProcessoGuard)
+  @Patch("mudarstatus/pularfrete/:idProcessoDeAluguel")
+  pularProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){
+    try{
+      return this.processoDeAluguelService.pularFrete(idProcessoDeAluguel);
+    }catch(e){
+      throw new Error(e.message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, ProcessoAComecar, UsuarioLogadoDonoDoProcessoGuard)
+  @Patch("mudarstatus/comecar/:idProcessoDeAluguel")
+  comecarProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){
+    try{
+      return this.processoDeAluguelService.comecarProcesso(idProcessoDeAluguel);
+    }catch(e){
+      throw new Error(e.message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, ProcessoEmAndamento, UsuarioLogadoDonoDoProcessoGuard)
+  @Patch("mudarstatus/comecar/:idProcessoDeAluguel")
+  concluirProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){
+    try{
+      // return this.processoDeAluguelService.concluirProcessoDeAluguel(idProcessoDeAluguel);
+    }catch(e){
+      throw new Error(e.message);
+    }
+  }
+
 
   @Get()
   findAll() {
     return this.processoDeAluguelService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.processoDeAluguelService.findOne(+id);
   }
 
   @Patch(':id')

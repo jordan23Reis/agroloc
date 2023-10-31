@@ -7,6 +7,7 @@ import { TipoPrecoService } from '../tipo-preco/tipo-preco.service';
 import { ProcessoDeAluguel } from './entities/processo-de-aluguel.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { PagamentoDto } from './dto/pagamento-dto';
 
 @Injectable()
 export class ProcessoDeAluguelService {
@@ -92,14 +93,60 @@ export class ProcessoDeAluguelService {
   return createdProcessoDeAluguel;
   }
 
-  
+  async findExistingProcessoDeAluguelAAceitar(idMaquina: string, idLocador: string, idLocatario: string) {
+    const processoDeAluguel = await this.processoDeAluguelModel.findOne({
+      Status: "A aceitar",
+      "Maquina.idMaquina": idMaquina,
+      "Envolvidos.Locador.idLocador": idLocador,
+      "Envolvidos.Locatario.idLocatario": idLocatario
+    });
 
+    return processoDeAluguel;
+  }
+
+  async aceitarProcessoDeAluguel(idProcessoDeAluguel: string){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    const maquinaAtreladaAprocesso = await this.maquinaService.findOne(processoDeAluguel.Maquina.idMaquina.toString());
+
+    maquinaAtreladaAprocesso.EstaAtiva = true;
+    processoDeAluguel.Status = "Aguardando Frete";
+
+    await processoDeAluguel.save();
+    await maquinaAtreladaAprocesso.save();
+    return processoDeAluguel;
+  }
+
+  async pularFrete(idProcessoDeAluguel: string){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    processoDeAluguel.Status = "A Comecar";
+
+    await processoDeAluguel.save();
+    return processoDeAluguel;
+  }
+
+  async comecarProcesso(idProcessoDeAluguel: string){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    processoDeAluguel.Status = "Em Andamento";
+
+    await processoDeAluguel.save();
+    return processoDeAluguel;
+  }
+  
+  async concluirProcessoDeAluguel(idProcessoDeAluguel: string, pagamentoDto: PagamentoDto){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    processoDeAluguel.Status = "A Pagar";
+
+    await processoDeAluguel.save();
+    return processoDeAluguel;
+  }
+  
   findAll() {
     return `This action returns all processoDeAluguel`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} processoDeAluguel`;
+  async findOne(id: string) {
+    const foundUser = await this.processoDeAluguelModel.findById(id);
+    return foundUser;
   }
 
   update(id: number, updateProcessoDeAluguelDto: UpdateProcessoDeAluguelDto) {
