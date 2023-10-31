@@ -26,6 +26,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   imports: [
@@ -52,6 +53,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatSnackBarModule,
     MatListModule,
     MatProgressBarModule,
+    MatTableModule,
   ],
   declarations: [
     AccountRegisterComponent,

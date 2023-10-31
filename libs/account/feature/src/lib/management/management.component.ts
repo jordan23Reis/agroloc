@@ -5,19 +5,9 @@ import {
   AccountService,
   Imagem,
   AccountData,
-  Account,
-  Profile,
+  UpdatePassword,
 } from '@agroloc/account/data-acess';
-import {
-  Observable,
-  combineLatest,
-  debounceTime,
-  map,
-  of,
-  switchMap,
-  take,
-  takeLast,
-} from 'rxjs';
+import { combineLatest, debounceTime, map, take } from 'rxjs';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -41,8 +31,6 @@ export class ManagementComponent implements OnInit {
   userDate = this.accountService.userAccount$.pipe(debounceTime(1));
   userProfile = this.authService.userProfile$;
 
-  // enctype="multipart/form-data"
-
   isLogged = this.authService.IsLogged();
   notLogged = this.authService.IsLogged().pipe(
     map((response) => {
@@ -58,14 +46,23 @@ export class ManagementComponent implements OnInit {
   disableGenero = true;
   disableCpf = true;
   disableCnpj = true;
-  AllDisable: boolean;
-  FormDisable: boolean;
+  AllDisableInfoPessoais: boolean;
+  FormDisableInfoPessoais: boolean;
+  disableEmail = true;
+  disableTelefoneOne = true;
+  disableTelefoneTwo = true;
+  AllDisableInfoContatos: boolean;
+  disableSenha = true;
+  disableNovaSenha = true;
+  disableConfSenha = true;
 
-  Image: File | null | undefined = null;
+  ImageType: File | null | undefined = null;
   imagePreview: string | ArrayBuffer | null | undefined = null;
+  phoneTypeTwo: string | null = null;
+  passwordType: string | null = null;
 
   fotoPerfil = this._formBuilder.group({
-    Imagem: [this.Image],
+    Imagem: [this.ImageType],
   });
   infoPessoais = this._formBuilder.group({
     Nome: [
@@ -106,18 +103,79 @@ export class ManagementComponent implements OnInit {
     ],
   });
 
+  infoContato = this._formBuilder.group({
+    Email: [
+      undefined,
+      [
+        Validators.email,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinEmail),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxEmail),
+      ],
+    ],
+    TelefoneOne: [
+      undefined,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinNumeroTelefone),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone),
+      ],
+    ],
+    TelefoneTwo: [
+      this.phoneTypeTwo,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinNumeroTelefone),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxNumeroTelefone),
+      ],
+    ],
+  });
+
+  infoSenha = this._formBuilder.group({
+    Senha: [
+      this.passwordType,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSenha),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSenha),
+      ],
+    ],
+    NovaSenha: [
+      this.passwordType,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSenha),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSenha),
+      ],
+    ],
+    ConfSenha: [
+      this.passwordType,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSenha),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSenha),
+      ],
+    ],
+  });
+
   ngOnInit() {
+    this.disableAllInfoPessoais();
+    this.checkDisableInfoPessoais();
+    this.disableAllInfoContatos();
+    this.checkDisableInfoContatos();
+  }
+
+  disableAllInfoPessoais() {
     this.infoPessoais.controls['Nome'].disable();
     this.infoPessoais.controls['Sobrenome'].disable();
     this.infoPessoais.controls['Nascimento'].disable();
     this.infoPessoais.controls['Sexo'].disable();
     this.infoPessoais.controls['Cpf'].disable();
     this.infoPessoais.controls['Cnpj'].disable();
-    this.checkDisable();
   }
 
-  checkDisable() {
-    this.AllDisable =
+  disableAllInfoContatos() {
+    this.infoContato.controls['Email'].disable();
+    this.infoContato.controls['TelefoneOne'].disable();
+    this.infoContato.controls['TelefoneTwo'].disable();
+  }
+
+  checkDisableInfoPessoais() {
+    this.AllDisableInfoPessoais =
       this.disableNome &&
       this.disableSobrenome &&
       this.disableNascimento &&
@@ -125,13 +183,33 @@ export class ManagementComponent implements OnInit {
       this.disableCpf &&
       this.disableCnpj &&
       this.fotoPerfil.value.Imagem === null;
-    this.FormDisable =
+    this.FormDisableInfoPessoais =
       this.disableNome &&
       this.disableSobrenome &&
       this.disableNascimento &&
       this.disableGenero &&
       this.disableCpf &&
       this.disableCnpj;
+  }
+
+  checkDisableInfoContatos() {
+    this.AllDisableInfoContatos =
+      this.disableEmail && this.disableTelefoneOne && this.disableTelefoneTwo;
+  }
+
+  resetDisableInfoPessoais() {
+    this.disableNome = true;
+    this.disableSobrenome = true;
+    this.disableNascimento = true;
+    this.disableGenero = true;
+    this.disableCpf = true;
+    this.disableCnpj = true;
+  }
+
+  resetDisableInfoContatos() {
+    this.disableEmail = true;
+    this.disableTelefoneOne = true;
+    this.disableTelefoneTwo = true;
   }
 
   selectImage() {
@@ -145,7 +223,7 @@ export class ManagementComponent implements OnInit {
       this.fotoPerfil.patchValue({ Imagem: file });
       this.imagePreview = URL.createObjectURL(file);
     }
-    this.checkDisable();
+    this.checkDisableInfoPessoais();
   }
 
   swtichStateEditName() {
@@ -156,7 +234,7 @@ export class ManagementComponent implements OnInit {
       this.infoPessoais.controls['Nome'].disable();
       this.disableNome = !this.disableNome;
     }
-    this.checkDisable();
+    this.checkDisableInfoPessoais();
   }
 
   swtichStateEditSobrenome() {
@@ -167,13 +245,13 @@ export class ManagementComponent implements OnInit {
       this.infoPessoais.controls['Sobrenome'].disable();
       this.disableSobrenome = !this.disableSobrenome;
     }
-    this.checkDisable();
+    this.checkDisableInfoPessoais();
   }
 
   swtichStateEditNascimento() {
     this.infoPessoais.controls['Nascimento'].enable();
     this.disableNascimento = false;
-    this.checkDisable();
+    this.checkDisableInfoPessoais();
   }
 
   swtichStateEditSexo() {
@@ -185,7 +263,7 @@ export class ManagementComponent implements OnInit {
       this.infoPessoais.patchValue({ Sexo: null });
       this.disableGenero = !this.disableGenero;
     }
-    this.checkDisable();
+    this.checkDisableInfoPessoais();
   }
 
   swtichStateEditCpf() {
@@ -196,7 +274,7 @@ export class ManagementComponent implements OnInit {
       this.infoPessoais.controls['Cpf'].disable();
       this.disableCpf = !this.disableCpf;
     }
-    this.checkDisable();
+    this.checkDisableInfoPessoais();
   }
 
   swtichStateEditCnpj() {
@@ -207,24 +285,53 @@ export class ManagementComponent implements OnInit {
       this.infoPessoais.controls['Cnpj'].disable();
       this.disableCnpj = !this.disableCnpj;
     }
-    this.checkDisable();
+    this.checkDisableInfoPessoais();
+  }
+
+  swtichStateEditEmail() {
+    if (this.disableEmail) {
+      this.infoContato.controls['Email'].enable();
+      this.disableEmail = !this.disableEmail;
+    } else {
+      this.infoContato.controls['Email'].disable();
+      this.disableEmail = !this.disableEmail;
+    }
+    this.checkDisableInfoContatos();
+  }
+
+  swtichStateEditTelefoneOne() {
+    if (this.disableTelefoneOne) {
+      this.infoContato.controls['TelefoneOne'].enable();
+      this.disableTelefoneOne = !this.disableTelefoneOne;
+    } else {
+      this.infoContato.controls['TelefoneOne'].disable();
+      this.disableTelefoneOne = !this.disableTelefoneOne;
+    }
+    this.checkDisableInfoContatos();
+  }
+
+  swtichStateEditTelefoneTwo() {
+    if (this.disableTelefoneTwo) {
+      this.infoContato.controls['TelefoneTwo'].enable();
+      this.disableTelefoneTwo = !this.disableTelefoneTwo;
+    } else {
+      this.infoContato.controls['TelefoneTwo'].disable();
+      this.disableTelefoneTwo = !this.disableTelefoneTwo;
+    }
+    this.checkDisableInfoContatos();
   }
 
   setInfoPessoais() {
     let dataUser: AccountData;
-    let infoNext: Observable<boolean>;
 
     combineLatest([this.userDate, this.userProfile])
       .pipe(take(1), debounceTime(1000))
       .subscribe(([account, profile]) => {
         dataUser = account as unknown as AccountData;
+
         if (!this.disableNome) {
           dataUser.CadastroComum!.Nome = this.infoPessoais.value
             .Nome as unknown as string;
-        }
-        if (!this.disableSobrenome) {
-          dataUser.CadastroComum!.Sobrenome = this.infoPessoais.value
-            .Sobrenome as unknown as string;
         }
         if (!this.disableSobrenome) {
           dataUser.CadastroComum!.Sobrenome = this.infoPessoais.value
@@ -250,18 +357,98 @@ export class ManagementComponent implements OnInit {
               this.snackBar.open(`Foto Alterada`, undefined, {
                 duration: 3000,
               });
+              this.fotoPerfil.patchValue({ Imagem: this.ImageType });
+              this.checkDisableInfoPessoais();
               this.accountService.nextAccount(profile.IdUsuario);
             });
         }
-        if (!this.FormDisable) {
+        if (!this.FormDisableInfoPessoais) {
           this.accountService
             .updateAccount(profile.IdUsuario, dataUser)
             .subscribe((response) => {
               this.snackBar.open(`Informações Alterada`, undefined, {
                 duration: 3000,
               });
+              this.disableAllInfoPessoais();
+              this.resetDisableInfoPessoais();
+              this.checkDisableInfoPessoais();
+              this.accountService.nextAccount(profile.IdUsuario);
             });
-          this.accountService.nextAccount(profile.IdUsuario);
+        }
+      });
+  }
+
+  setInfoContatos() {
+    let dataUser: AccountData;
+
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {
+        dataUser = account as unknown as AccountData;
+
+        // if (!this.disableEmail) {
+        //   dataUser.Login.Email = this.infoPessoais.value
+        //     .Nome as unknown as string;
+        // }
+        if (!this.disableTelefoneOne) {
+          dataUser.CadastroComum!.Telefone = [
+            this.infoContato.value.TelefoneOne as unknown as string,
+            account.CadastroComum?.Telefone?.[1] as string,
+          ];
+        }
+        if (!this.disableTelefoneTwo) {
+          if (account.CadastroComum?.Telefone?.[0]) {
+            dataUser.CadastroComum!.Telefone = [
+              account.CadastroComum?.Telefone?.[0] as string,
+              this.infoContato.value.TelefoneTwo as unknown as string,
+            ];
+          } else {
+            dataUser.CadastroComum!.Telefone = [
+              this.infoContato.value.TelefoneTwo as unknown as string,
+            ];
+            this.infoContato.patchValue({ TelefoneTwo: 'Sem Telefone 2' });
+          }
+        }
+
+        if (!this.AllDisableInfoContatos) {
+          this.accountService
+            .updateAccount(profile.IdUsuario, dataUser)
+            .subscribe((response) => {
+              this.snackBar.open(`Informações Alterada`, undefined, {
+                duration: 3000,
+              });
+              this.disableAllInfoContatos();
+              this.resetDisableInfoContatos();
+              this.checkDisableInfoContatos();
+              this.accountService.nextAccount(profile.IdUsuario);
+            });
+        }
+      });
+  }
+
+  setInfoSenha() {
+    let newPassword: UpdatePassword;
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {
+        if (
+          this.infoSenha.value.Senha === account.Login.Senha &&
+          this.infoSenha.value.NovaSenha === this.infoSenha.value.ConfSenha
+        ) {
+          newPassword.Senha = this.infoSenha.value
+            .NovaSenha as unknown as string;
+          this.accountService
+            .updatePassword(profile.IdUsuario, newPassword)
+            .subscribe((response) => {
+              this.snackBar.open(`Senha Alterada`, undefined, {
+                duration: 3000,
+              });
+              this.accountService.nextAccount(profile.IdUsuario);
+            });
+        } else {
+          this.snackBar.open(`Senha Incorreta`, undefined, {
+            duration: 3000,
+          });
         }
       });
   }

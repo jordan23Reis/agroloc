@@ -221,7 +221,9 @@
                       mat-raised-button
                       color="primary"
                       (click)="setInfoPessoais()"
-                      [disabled]="AllDisable || (loadingRequest | async)"
+                      [disabled]="
+                        AllDisableInfoPessoais || (loadingRequest | async)
+                      "
                     >
                       Aplicar
                     </button>
@@ -248,7 +250,115 @@
                   <h3>Informações de Contato</h3>
                   <span class="example-spacer"></span>
                 </mat-expansion-panel-header>
-                <p>Formas de pagamento e transações feitas na conta.</p>
+                <span class="example-spacer"></span>
+
+                <form class="conteudo" [formGroup]="infoContato">
+                  <p>Informações de contato importantes para Validações</p>
+
+                  <p>
+                    Trocar seu endereço de email permite receber informações
+                    importantes e manter sua conta segura.
+                  </p>
+                  <div class="formContainer">
+                    <p>Email</p>
+                    <mat-form-field class="form">
+                      <input
+                        type="text"
+                        matInput
+                        [value]="(userDate | async)?.Login?.Email"
+                        formControlName="Email"
+                      />
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="swtichStateEditEmail()"
+                      >
+                        <mat-icon>{{
+                          disableEmail ? 'edit' : 'close'
+                        }}</mat-icon>
+                      </button>
+                    </mat-form-field>
+                  </div>
+
+                  <p>
+                    Adicione números de telefone à sua conta para manter seus
+                    contatos atualizados.
+                  </p>
+                  <div class="formContainer">
+                    <p>Adicione Telefones</p>
+                    <mat-form-field class="form">
+                      <input
+                        type="text"
+                        matInput
+                        [value]="
+                          (userDate | async)?.CadastroComum?.Telefone?.[0] !==
+                          undefined || null || ''
+                            ? (userDate | async)?.CadastroComum?.Telefone?.[0]
+                            : 'Sem Telefone 1'
+                        "
+                        formControlName="TelefoneOne"
+                      />
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="swtichStateEditTelefoneOne()"
+                      >
+                        <mat-icon>{{
+                          disableTelefoneOne ? 'edit' : 'close'
+                        }}</mat-icon>
+                      </button>
+                    </mat-form-field>
+
+                    <mat-form-field class="form">
+                      <input
+                        type="text"
+                        matInput
+                        [value]="
+                          (userDate | async)?.CadastroComum?.Telefone?.[1] ===
+                          undefined
+                            ? 'Sem Telefone 2'
+                            : (userDate | async)?.CadastroComum?.Telefone?.[1]
+                        "
+                        formControlName="TelefoneTwo"
+                      />
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="swtichStateEditTelefoneTwo()"
+                      >
+                        <mat-icon>{{
+                          disableTelefoneTwo ? 'edit' : 'close'
+                        }}</mat-icon>
+                      </button>
+                    </mat-form-field>
+                  </div>
+
+                  <p>
+                    Certifique-se de escolher um email válido e acessível, pois
+                    ele é essencial para redefinir senhas e receber atualizações
+                    da conta.
+                  </p>
+                  <div class="menuButtons">
+                    <span class="example-spacer"></span>
+                    <button
+                      class="nextButton"
+                      mat-raised-button
+                      color="primary"
+                      (click)="setInfoContatos()"
+                      [disabled]="
+                        AllDisableInfoContatos || (loadingRequest | async)
+                      "
+                    >
+                      Aplicar
+                    </button>
+                  </div>
+                </form>
+
+                <span class="example-spacer"></span>
+                <mat-progress-bar
+                  *ngIf="loadingRequest | async"
+                  mode="indeterminate"
+                ></mat-progress-bar>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 
@@ -280,7 +390,112 @@
                   <h3>Alterar Senha</h3>
                   <span class="example-spacer"></span>
                 </mat-expansion-panel-header>
-                <p>Formas de pagamento e transações feitas na conta.</p>
+
+                <span class="example-spacer"></span>
+
+                <form class="conteudo" [formGroup]="infoSenha">
+                  <p>
+                    Para garantir a segurança da sua conta, você pode facilmente
+                    atualizar sua senha. O processo é simples e envolve os
+                    seguintes passos
+                  </p>
+
+                  <p>
+                    Comece informando sua senha atual para confirmar sua
+                    identidade.
+                  </p>
+                  <div class="formContainer">
+                    <p>Senha</p>
+                    <mat-form-field class="form">
+                      <input
+                        type="text"
+                        matInput
+                        [type]="disableSenha ? 'password' : 'text'"
+                        formControlName="Senha"
+                      />
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="disableSenha = !disableSenha"
+                      >
+                        <mat-icon>{{
+                          disableSenha ? 'visibility' : 'visibility_off'
+                        }}</mat-icon>
+                      </button>
+                    </mat-form-field>
+                  </div>
+
+                  <p>
+                    Escolha uma nova senha que seja forte e única. Recomendamos
+                    o uso de uma combinação de letras maiúsculas, letras
+                    minúsculas, números e símbolos.
+                  </p>
+                  <div class="formContainer">
+                    <p>Nova Senha</p>
+                    <mat-form-field class="form">
+                      <input
+                        type="text"
+                        matInput
+                        [type]="disableNovaSenha ? 'password' : 'text'"
+                        formControlName="NovaSenha"
+                      />
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="disableNovaSenha = !disableNovaSenha"
+                      >
+                        <mat-icon>{{
+                          disableNovaSenha ? 'visibility' : 'visibility_off'
+                        }}</mat-icon>
+                      </button>
+                    </mat-form-field>
+                  </div>
+
+                  <p>
+                    Digite a nova senha novamente para garantir que você não
+                    cometeu erros de digitação e que ela corresponda à senha
+                    escolhida anteriormente.
+                  </p>
+                  <div class="formContainer">
+                    <p>Confirmar Nova Senha</p>
+                    <mat-form-field class="form">
+                      <input
+                        type="text"
+                        matInput
+                        [type]="disableConfSenha ? 'password' : 'text'"
+                        formControlName="ConfSenha"
+                      />
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="disableConfSenha = !disableConfSenha"
+                      >
+                        <mat-icon>{{
+                          disableConfSenha ? 'visibility' : 'visibility_off'
+                        }}</mat-icon>
+                      </button>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="menuButtons">
+                    <span class="example-spacer"></span>
+                    <button
+                      class="nextButton"
+                      mat-raised-button
+                      color="primary"
+                      (click)="setInfoSenha()"
+                      [disabled]="loadingRequest | async"
+                    >
+                      Aplicar
+                    </button>
+                  </div>
+                </form>
+
+                <span class="example-spacer"></span>
+                <mat-progress-bar
+                  *ngIf="loadingRequest | async"
+                  mode="indeterminate"
+                ></mat-progress-bar>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 
