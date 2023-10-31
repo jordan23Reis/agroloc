@@ -6,14 +6,17 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class LoaderFacade {
   active$ = new BehaviorSubject<boolean>(false);
+  requestCount = 0;
 
   activate() {
-    console.log('ativado');
+    this.requestCount += 1;
     this.active$.next(true);
   }
 
   desactivate() {
-    console.log('desativado');
-    this.active$.next(false);
+    this.requestCount -= 1;
+    if (!this.requestCount) {
+      this.active$.next(false);
+    }
   }
 }

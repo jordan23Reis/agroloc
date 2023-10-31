@@ -221,7 +221,7 @@
                       mat-raised-button
                       color="primary"
                       (click)="setInfoPessoais()"
-                      [disabled]="AllDisable"
+                      [disabled]="AllDisable || (loadingRequest | async)"
                     >
                       Aplicar
                     </button>
@@ -229,7 +229,10 @@
                 </form>
 
                 <span class="example-spacer"></span>
-                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                <mat-progress-bar
+                  *ngIf="loadingRequest | async"
+                  mode="indeterminate"
+                ></mat-progress-bar>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 

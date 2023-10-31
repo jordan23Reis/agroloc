@@ -21,6 +21,7 @@ import {
 import { FormBuilder, Validators } from '@angular/forms';
 import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoaderFacade } from '@agroloc/shared/data-access';
 
 @Component({
   selector: 'agroloc-management',
@@ -33,6 +34,9 @@ export class ManagementComponent implements OnInit {
   accountService = inject(AccountService);
   _formBuilder = inject(FormBuilder);
   snackBar = inject(MatSnackBar);
+  loader = inject(LoaderFacade);
+
+  loadingRequest = this.loader.active$;
 
   userDate = this.accountService.userAccount$.pipe(debounceTime(1));
   userProfile = this.authService.userProfile$;
