@@ -173,9 +173,9 @@
                         type="text"
                         matInput
                         [value]="
-                          (userDate | async)?.CadastroComum?.Cpf
-                            ? (userDate | async)?.CadastroComum?.Cpf
-                            : 'Sem CPF'
+                          (userDate | async)?.CadastroComum?.Cpf === undefined
+                            ? 'Sem CPF'
+                            : (userDate | async)?.CadastroComum?.Cpf
                         "
                         formControlName="Cpf"
                       />
@@ -198,9 +198,9 @@
                         type="text"
                         matInput
                         [value]="
-                          (userDate | async)?.CadastroComum?.Cnpj
-                            ? (userDate | async)?.CadastroComum?.Cnpj
-                            : 'Sem CNPJ'
+                          (userDate | async)?.CadastroComum?.Cnpj === undefined
+                            ? 'Sem CNPJ'
+                            : (userDate | async)?.CadastroComum?.Cnpj
                         "
                         formControlName="Cnpj"
                       />

@@ -7,13 +7,14 @@ import {
 import { AuthService } from '../service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { switchMap, of, Observable } from 'rxjs';
+import { AuthStorage } from '../storage';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
   snackBar = inject(MatSnackBar);
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private authStorage: AuthStorage) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -39,9 +40,15 @@ export class AuthGuard implements CanActivate {
             })
           );
         } else {
-          this.snackBar.open('Acesso não Autorizado', 'Fechar', {
+          if(this.authStorage.getAcessToken()){
+            this.snackBar.open('Conta expirada, Efetue o Login novamente', undefined, {
+              duration: 3000,
+            });
+          } else {
+             this.snackBar.open('Acesso não Autorizado', 'Fechar', {
             duration: 3000,
           });
+          }
           return of(false);
         }
       })

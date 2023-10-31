@@ -4,9 +4,9 @@ export interface CadastroComum {
     Sobrenome: string;
     DataDeNascimento: string;
     Sexo: string;
-    Telefone: string[];
-    Cpf: string;
-    Cnpj: string;
+    Telefone?: string[];
+    Cpf?: string;
+    Cnpj?: string;
   }
   
   // Interface para os dados da conta Freteiro

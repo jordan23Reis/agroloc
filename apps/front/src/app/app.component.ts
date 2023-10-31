@@ -63,7 +63,7 @@ export class AppComponent implements OnInit {
           });
         }
 
-        this.accountService.userAccount$.subscribe((response) => {
+        this.accountService.userAccount$.pipe(debounceTime(1000), take(1)).subscribe((response) => {
           this.snackBar.open(
             `Seja Bem-Vindo, ${response?.CadastroComum?.Nome}`,
             undefined,

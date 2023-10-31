@@ -13,6 +13,8 @@ import {
   combineLatest,
   debounceTime,
   map,
+  of,
+  switchMap,
   take,
   takeLast,
 } from 'rxjs';
@@ -32,8 +34,8 @@ export class ManagementComponent implements OnInit {
   _formBuilder = inject(FormBuilder);
   snackBar = inject(MatSnackBar);
 
-  userDate = this.accountService.userAccount$.pipe();
-  userProfile = this.authService.userProfile$.pipe();
+  userDate = this.accountService.userAccount$.pipe(debounceTime(1))
+  userProfile = this.authService.userProfile$;
 
   // enctype="multipart/form-data"
 
@@ -53,12 +55,13 @@ export class ManagementComponent implements OnInit {
   disableCpf = true;
   disableCnpj = true;
   AllDisable: boolean;
+  FormDisable: boolean;
 
   Image: File | null | undefined = null;
   imagePreview: string | ArrayBuffer | null | undefined = null;
 
   fotoPerfil = this._formBuilder.group({
-    Foto: [this.Image],
+    Imagem: [this.Image],
   });
   infoPessoais = this._formBuilder.group({
     Nome: [
@@ -117,7 +120,14 @@ export class ManagementComponent implements OnInit {
       this.disableGenero &&
       this.disableCpf &&
       this.disableCnpj &&
-      this.fotoPerfil.value.Foto === null;
+      this.fotoPerfil.value.Imagem === null;
+    this.FormDisable =
+      this.disableNome &&
+      this.disableSobrenome &&
+      this.disableNascimento &&
+      this.disableGenero &&
+      this.disableCpf &&
+      this.disableCnpj
   }
 
   selectImage() {
@@ -128,7 +138,7 @@ export class ManagementComponent implements OnInit {
   handleImageSelection(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.fotoPerfil.patchValue({ Foto: file });
+      this.fotoPerfil.patchValue({ Imagem: file });
       this.imagePreview = URL.createObjectURL(file);
     }
     this.checkDisable();
@@ -158,6 +168,7 @@ export class ManagementComponent implements OnInit {
 
   swtichStateEditNascimento() {
     this.infoPessoais.controls['Nascimento'].enable();
+    this.disableNascimento = false
     this.checkDisable();
   }
 
@@ -196,14 +207,58 @@ export class ManagementComponent implements OnInit {
   }
 
   setInfoPessoais() {
-    // combineLatest([this.userDate, this.userProfile])
-    //   .pipe(take(1))
-    //   .subscribe(([account, profile]) => {
-    //     this.accountService
-    //       .updateAccount(profile.IdUsuario, this.infoPessoais.value)
-    //       .subscribe((response) => console.log(response));
-    //   });
-    // console.log(this.infoPessoais.value);
-    // console.log(this.fotoPerfil.value);
+    let dataUser: AccountData
+    let infoNext: Observable<boolean>
+
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1))
+      .subscribe(([account, profile]) => {
+        dataUser = account as unknown as AccountData
+        if (!this.disableNome) {
+          dataUser.CadastroComum!.Nome = this.infoPessoais.value.Nome as unknown as string
+        }
+        if (!this.disableSobrenome) {
+          dataUser.CadastroComum!.Sobrenome = this.infoPessoais.value.Sobrenome as unknown as string
+        }
+        if (!this.disableSobrenome) {
+          dataUser.CadastroComum!.Sobrenome = this.infoPessoais.value.Sobrenome as unknown as string
+        }
+        if (!this.disableNascimento) {
+          dataUser.CadastroComum!.DataDeNascimento = this.infoPessoais.value.Nascimento as unknown as string
+        }
+        if (!this.disableCpf) {
+          dataUser.CadastroComum!.Cpf = this.infoPessoais.value.Cpf as unknown as string
+        }
+        if (!this.disableCnpj) {
+          dataUser.CadastroComum!.Cnpj = this.infoPessoais.value.Cnpj as unknown as string
+        }
+
+        if (this.fotoPerfil.value.Imagem) {
+          this.accountService.updatePhoto(profile.IdUsuario, this.fotoPerfil.value as Imagem).subscribe((response) => {
+            this.snackBar.open(
+              `Foto Alterada`,
+              undefined,
+              {
+                duration: 3000,
+              }
+            );
+            this.accountService.nextAccount(profile.IdUsuario)
+          })
+        }
+        if (!this.FormDisable) {
+          this.accountService.updateAccount(profile.IdUsuario, dataUser).subscribe((response) => {
+            this.snackBar.open(
+              `Informações Alterada`,
+              undefined,
+              {
+                duration: 3000,
+              }
+            );
+          });
+          this.accountService.nextAccount(profile.IdUsuario)
+        }
+      });
+
+
   }
 }

@@ -121,7 +121,6 @@ export class AccountService {
       )
       .subscribe((response) => {
         this.userAccount.next(response as Account);
-        this.userAccount.complete();
       });
   }
 
