@@ -21,7 +21,7 @@ export interface NovoEndereco {
   Logradouro: string;
   Bairro?: string;
   Complemento?: string;
-  Numero?: number;
+  Numero: number;
 }
 
 export interface EditarEndereco {

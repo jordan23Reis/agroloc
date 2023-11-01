@@ -2,19 +2,17 @@
   <mat-tab-group>
     <mat-tab label="Inicio">
       <div class="inicio">
-        <img
-          [src]="
+        <img [src]="
             (userDate | async)?.CadastroComum?.Foto?.Url
               ? (userDate | async)?.CadastroComum?.Foto?.Url
               : 'assets/default-account-icon.png'
-          "
-        />
+          " />
         <h2>
           Ola,
           {{
-            (userDate | async)?.CadastroComum?.Nome +
-              ' ' +
-              (userDate | async)?.CadastroComum?.Sobrenome | uppercase
+          (userDate | async)?.CadastroComum?.Nome +
+          ' ' +
+          (userDate | async)?.CadastroComum?.Sobrenome | uppercase
           }}
         </h2>
         <h3>Seja Bem-Vindo!</h3>
@@ -30,10 +28,7 @@
           <h2>Informações sobre você e suas Preferências</h2>
           <div class="painel">
             <mat-accordion>
-              <mat-expansion-panel
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
-              >
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>person</mat-icon>
@@ -55,43 +50,26 @@
                       a conta está conectada
                     </p>
                     <span class="example-spacer"></span>
-                    <img
-                      style="cursor: pointer"
-                      [src]="
+                    <img style="cursor: pointer" [src]="
                         imagePreview
                           ? imagePreview
                           : (userDate | async)?.CadastroComum?.Foto?.Url
                           ? (userDate | async)?.CadastroComum?.Foto?.Url
                           : 'assets/default-account-icon.png'
-                      "
-                      (click)="selectImage()"
-                    />
-                    <input
-                      type="file"
-                      accept="image/jpeg,image/png"
-                      id="fileInput"
-                      style="display: none"
-                      (change)="handleImageSelection($event)"
-                    />
+                      " (click)="selectImage()" />
+                    <input type="file" accept="image/jpeg,image/png" id="fileInput" style="display: none"
+                      (change)="handleImageSelection($event)" />
                   </div>
 
                   <div class="formContainer">
                     <p>Nome</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [value]="(userDate | async)?.CadastroComum?.Nome"
-                        formControlName="Nome"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="swtichStateEditName()"
-                      >
+                      <input type="text" matInput [value]="(userDate | async)?.CadastroComum?.Nome"
+                        formControlName="Nome" />
+                      <button mat-icon-button matSuffix (click)="swtichStateEditName()">
                         <mat-icon>{{
                           disableNome ? 'edit' : 'close'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
@@ -99,20 +77,12 @@
                   <div class="formContainer">
                     <p>Sobrenome</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [value]="(userDate | async)?.CadastroComum?.Sobrenome"
-                        formControlName="Sobrenome"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="swtichStateEditSobrenome()"
-                      >
+                      <input type="text" matInput [value]="(userDate | async)?.CadastroComum?.Sobrenome"
+                        formControlName="Sobrenome" />
+                      <button mat-icon-button matSuffix (click)="swtichStateEditSobrenome()">
                         <mat-icon>{{
                           disableSobrenome ? 'edit' : 'close'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
@@ -120,20 +90,11 @@
                   <div class="formContainer">
                     <p>Data de Nascimento</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [matDatepicker]="dp3"
-                        (dateInput)="swtichStateEditNascimento()"
+                      <input type="text" matInput [matDatepicker]="dp3" (dateInput)="swtichStateEditNascimento()"
                         [value]="
                           (userDate | async)?.CadastroComum?.DataDeNascimento
-                        "
-                        formControlName="Nascimento"
-                      />
-                      <mat-datepicker-toggle
-                        matIconSuffix
-                        [for]="dp3"
-                      ></mat-datepicker-toggle>
+                        " formControlName="Nascimento" />
+                      <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
                       <mat-datepicker #dp3 disabled="false"></mat-datepicker>
                     </mat-form-field>
                   </div>
@@ -141,27 +102,17 @@
                   <div class="formContainer">
                     <p>Gênero</p>
                     <mat-form-field class="form">
-                      <input
-                        *ngIf="disableGenero"
-                        disabled
-                        type="text"
-                        matInput
-                        (dateInput)="swtichStateEditNascimento()"
-                        [value]="(userDate | async)?.CadastroComum?.Sexo"
-                      />
+                      <input *ngIf="disableGenero" disabled type="text" matInput
+                        (dateInput)="swtichStateEditNascimento()" [value]="(userDate | async)?.CadastroComum?.Sexo" />
                       <mat-select *ngIf="!disableGenero" formControlName="Sexo">
                         <mat-option value="Masculino">Masculino</mat-option>
                         <mat-option value="Feminino">Feminino</mat-option>
                         <mat-option value="Outro">Outro</mat-option>
                       </mat-select>
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="swtichStateEditSexo()"
-                      >
+                      <button mat-icon-button matSuffix (click)="swtichStateEditSexo()">
                         <mat-icon>{{
                           disableGenero ? 'edit' : 'close'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
@@ -169,21 +120,12 @@
                   <div class="formContainer">
                     <p>CPF</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [value]="
+                      <input type="text" matInput [value]="
                           (userDate | async)?.CadastroComum?.Cpf === undefined
                             ? 'Sem CPF'
                             : (userDate | async)?.CadastroComum?.Cpf
-                        "
-                        formControlName="Cpf"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="swtichStateEditCpf()"
-                      >
+                        " formControlName="Cpf" />
+                      <button mat-icon-button matSuffix (click)="swtichStateEditCpf()">
                         <mat-icon>{{ disableCpf ? 'edit' : 'close' }}</mat-icon>
                       </button>
                     </mat-form-field>
@@ -192,56 +134,35 @@
                   <div class="formContainer">
                     <p>CNPJ</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [value]="
+                      <input type="text" matInput [value]="
                           (userDate | async)?.CadastroComum?.Cnpj === undefined
                             ? 'Sem CNPJ'
                             : (userDate | async)?.CadastroComum?.Cnpj
-                        "
-                        formControlName="Cnpj"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="swtichStateEditCnpj()"
-                      >
+                        " formControlName="Cnpj" />
+                      <button mat-icon-button matSuffix (click)="swtichStateEditCnpj()">
                         <mat-icon>{{
                           disableCnpj ? 'edit' : 'close'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
 
                   <div class="menuButtons">
                     <span class="example-spacer"></span>
-                    <button
-                      class="nextButton"
-                      mat-raised-button
-                      color="primary"
-                      (click)="setInfoPessoais()"
-                      [disabled]="
+                    <button class="nextButton" mat-raised-button color="primary" (click)="setInfoPessoais()" [disabled]="
                         AllDisableInfoPessoais || (loadingRequest | async)
-                      "
-                    >
+                      ">
                       Aplicar
                     </button>
                   </div>
                 </form>
 
                 <span class="example-spacer"></span>
-                <mat-progress-bar
-                  *ngIf="loadingRequest | async"
-                  mode="indeterminate"
-                ></mat-progress-bar>
+                <mat-progress-bar *ngIf="loadingRequest | async" mode="indeterminate"></mat-progress-bar>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 
-              <mat-expansion-panel
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
-              >
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>phone</mat-icon>
@@ -260,22 +181,14 @@
                     importantes e manter sua conta segura.
                   </p>
                   <div class="formContainer">
+
                     <p>Email</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [value]="(userDate | async)?.Login?.Email"
-                        formControlName="Email"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="swtichStateEditEmail()"
-                      >
+                      <input type="text" matInput [value]="(userDate | async)?.Login?.Email" formControlName="Email" />
+                      <button mat-icon-button matSuffix (click)="swtichStateEditEmail()">
                         <mat-icon>{{
                           disableEmail ? 'edit' : 'close'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
@@ -287,48 +200,31 @@
                   <div class="formContainer">
                     <p>Adicione Telefones</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [value]="
+                      <input type="text" matInput [value]="
                           (userDate | async)?.CadastroComum?.Telefone?.[0] !==
                           undefined || null || ''
                             ? (userDate | async)?.CadastroComum?.Telefone?.[0]
                             : 'Sem Telefone 1'
-                        "
-                        formControlName="TelefoneOne"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="swtichStateEditTelefoneOne()"
-                      >
+                        " formControlName="TelefoneOne" />
+                      <button mat-icon-button matSuffix (click)="swtichStateEditTelefoneOne()">
                         <mat-icon>{{
                           disableTelefoneOne ? 'edit' : 'close'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
 
+                    <p>Outros Telefones</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [value]="
+                      <input type="text" matInput [value]="
                           (userDate | async)?.CadastroComum?.Telefone?.[1] ===
                           undefined
                             ? 'Sem Telefone 2'
                             : (userDate | async)?.CadastroComum?.Telefone?.[1]
-                        "
-                        formControlName="TelefoneTwo"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="swtichStateEditTelefoneTwo()"
-                      >
+                        " formControlName="TelefoneTwo" />
+                      <button mat-icon-button matSuffix (click)="swtichStateEditTelefoneTwo()">
                         <mat-icon>{{
                           disableTelefoneTwo ? 'edit' : 'close'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
@@ -340,32 +236,20 @@
                   </p>
                   <div class="menuButtons">
                     <span class="example-spacer"></span>
-                    <button
-                      class="nextButton"
-                      mat-raised-button
-                      color="primary"
-                      (click)="setInfoContatos()"
-                      [disabled]="
+                    <button class="nextButton" mat-raised-button color="primary" (click)="setInfoContatos()" [disabled]="
                         AllDisableInfoContatos || (loadingRequest | async)
-                      "
-                    >
+                      ">
                       Aplicar
                     </button>
                   </div>
                 </form>
 
                 <span class="example-spacer"></span>
-                <mat-progress-bar
-                  *ngIf="loadingRequest | async"
-                  mode="indeterminate"
-                ></mat-progress-bar>
+                <mat-progress-bar *ngIf="loadingRequest | async" mode="indeterminate"></mat-progress-bar>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 
-              <mat-expansion-panel
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
-              >
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>local_shipping</mat-icon>
@@ -378,10 +262,7 @@
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 
-              <mat-expansion-panel
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
-              >
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>password</mat-icon>
@@ -407,20 +288,11 @@
                   <div class="formContainer">
                     <p>Senha</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [type]="disableSenha ? 'password' : 'text'"
-                        formControlName="Senha"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="disableSenha = !disableSenha"
-                      >
+                      <input type="text" matInput [type]="disableSenha ? 'password' : 'text'" formControlName="Senha" />
+                      <button mat-icon-button matSuffix (click)="disableSenha = !disableSenha">
                         <mat-icon>{{
                           disableSenha ? 'visibility' : 'visibility_off'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
@@ -433,20 +305,12 @@
                   <div class="formContainer">
                     <p>Nova Senha</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [type]="disableNovaSenha ? 'password' : 'text'"
-                        formControlName="NovaSenha"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="disableNovaSenha = !disableNovaSenha"
-                      >
+                      <input type="text" matInput [type]="disableNovaSenha ? 'password' : 'text'"
+                        formControlName="NovaSenha" />
+                      <button mat-icon-button matSuffix (click)="disableNovaSenha = !disableNovaSenha">
                         <mat-icon>{{
                           disableNovaSenha ? 'visibility' : 'visibility_off'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
@@ -459,50 +323,31 @@
                   <div class="formContainer">
                     <p>Confirmar Nova Senha</p>
                     <mat-form-field class="form">
-                      <input
-                        type="text"
-                        matInput
-                        [type]="disableConfSenha ? 'password' : 'text'"
-                        formControlName="ConfSenha"
-                      />
-                      <button
-                        mat-icon-button
-                        matSuffix
-                        (click)="disableConfSenha = !disableConfSenha"
-                      >
+                      <input type="text" matInput [type]="disableConfSenha ? 'password' : 'text'"
+                        formControlName="ConfSenha" />
+                      <button mat-icon-button matSuffix (click)="disableConfSenha = !disableConfSenha">
                         <mat-icon>{{
                           disableConfSenha ? 'visibility' : 'visibility_off'
-                        }}</mat-icon>
+                          }}</mat-icon>
                       </button>
                     </mat-form-field>
                   </div>
 
                   <div class="menuButtons">
                     <span class="example-spacer"></span>
-                    <button
-                      class="nextButton"
-                      mat-raised-button
-                      color="primary"
-                      (click)="setInfoSenha()"
-                      [disabled]="loadingRequest | async"
-                    >
+                    <button class="nextButton" mat-raised-button color="primary" (click)="setInfoSenha()"
+                      [disabled]="loadingRequest | async">
                       Aplicar
                     </button>
                   </div>
                 </form>
 
                 <span class="example-spacer"></span>
-                <mat-progress-bar
-                  *ngIf="loadingRequest | async"
-                  mode="indeterminate"
-                ></mat-progress-bar>
+                <mat-progress-bar *ngIf="loadingRequest | async" mode="indeterminate"></mat-progress-bar>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 
-              <mat-expansion-panel
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
-              >
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>house</mat-icon>
@@ -511,7 +356,76 @@
                   <h3>Endereços</h3>
                   <span class="example-spacer"></span>
                 </mat-expansion-panel-header>
-                <p>Formas de pagamento e transações feitas na conta.</p>
+
+                <span class="example-spacer"></span>
+
+                <form class="conteudo" [formGroup]="infoEndereco">
+                  <p><strong>Informações de Endereços</strong></p>
+
+                  <div class="formContainer">
+                    <div class="formEndereco">
+
+                      <div class="titleEnd">
+                        <p>
+                          Adicionar Endereço
+                        </p>
+                        <span class="example-spacer"></span>
+                        <button *ngIf="!disableEndereco" mat-mini-fab color="primary" (click)="setInfoEndereco()">
+                          <mat-icon> done</mat-icon>
+                        </button>
+                        <button mat-mini-fab [color]="!disableEndereco ? 'warn' : 'primary'"
+                          (click)="swtichStateEditEndereco()">
+                          <mat-icon>{{
+                            disableEndereco ? 'edit' : 'close'
+                            }}</mat-icon>
+                        </button>
+                        <mat-progress-bar *ngIf="loadingRequest | async" mode="indeterminate"></mat-progress-bar>
+                      </div>
+
+                      <div class="logNum">
+                        <mat-form-field id="log" class="form">
+                          <mat-label>Logradouro</mat-label>
+                          <input type="text" matInput formControlName="Logradouro" />
+                        </mat-form-field>
+                        <mat-form-field id="num" class="form">
+                          <mat-label>Nr</mat-label>
+                          <input type="number" matInput formControlName="Numero" />
+                        </mat-form-field>
+                      </div>
+
+                      <div class="baiCom">
+                        <mat-form-field id="bai" class="form">
+                          <mat-label>Bairro</mat-label>
+                          <input type="text" matInput formControlName="Bairro" />
+                        </mat-form-field>
+                        <mat-form-field id="com" class="form">
+                          <mat-label>Complemento</mat-label>
+                          <input type="text" matInput formControlName="Complemento" />
+                        </mat-form-field>
+                      </div>
+
+                      <div class="cidCEstCep">
+                        <mat-form-field id="cid" class="form">
+                          <mat-label>Cidade</mat-label>
+                          <input type="text" matInput formControlName="Bairro" />
+                        </mat-form-field>
+                        <mat-form-field id="est" class="form">
+                          <mat-label>UF</mat-label>
+                          <input type="text" matInput formControlName="Complemento" />
+                        </mat-form-field>
+                        <mat-form-field id="cep" class="form">
+                          <mat-label>CEP</mat-label>
+                          <input type="text" matInput formControlName="Complemento" />
+                        </mat-form-field>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </form>
+
+                <span class="example-spacer"></span>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
             </mat-accordion>
@@ -525,10 +439,7 @@
           <h2>Informações de pagamento, Transações e Historico</h2>
           <div class="painel">
             <mat-accordion>
-              <mat-expansion-panel
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
-              >
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>payment</mat-icon>
@@ -544,10 +455,7 @@
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 
-              <mat-expansion-panel
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
-              >
+              <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>monetization_on</mat-icon>

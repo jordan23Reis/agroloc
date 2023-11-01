@@ -1,6 +1,5 @@
 :host {
-  .mobForm {
-  }
+  .mobForm {}
 
   .webForm {
     display: flex;
@@ -21,7 +20,7 @@
       height: auto;
     }
 
-    .mat-mdc-form-field + .mat-mdc-form-field {
+    .mat-mdc-form-field+.mat-mdc-form-field {
       margin-left: 8px;
     }
 
@@ -31,6 +30,7 @@
       width: 100%;
       height: auto;
       align-items: center;
+
       img {
         width: 120px;
         height: 120px;
@@ -79,6 +79,7 @@
 
     mat-expansion-panel-header {
       height: 70px;
+
       h3 {
         margin-right: 26px;
       }
@@ -102,9 +103,85 @@
       height: auto;
       align-items: center;
       justify-content: center;
+
+    }
+
+    .formContainer>p {
+      align-self: flex-start;
+      margin-left: 15%;
+      margin-right: 15%;
+    }
+
+    .formEndereco {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+
       p {
-        align-self: flex-start;
-        margin-left: 15%;
+        text-align: justify;
+        align-self: center;
+      }
+    }
+
+    .titleEnd {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      justify-content: center;
+      button {
+        margin-left: 5px;
+      }
+    }
+
+    .logNum {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #log {
+        width: 85%;
+      }
+
+      #num {
+        width: 15%;
+      }
+    }
+
+    .baiCom {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #bai {
+        width: 20%;
+      }
+
+      #com {
+        width: 80%;
+      }
+    }
+
+    .cidCEstCep {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #cid {
+        width: 60%;
+      }
+
+      #est {
+        width: 10%;
+      }
+
+      #cep {
+        width: 30%;
       }
     }
 
@@ -122,6 +199,7 @@
       justify-content: center;
       margin-top: 30px;
       margin-bottom: 15px;
+
       img {
         width: 120px;
         height: 120px;

@@ -6,6 +6,7 @@ import {
   Imagem,
   AccountData,
   UpdatePassword,
+  NovoEndereco,
 } from '@agroloc/account/data-acess';
 import { combineLatest, debounceTime, map, take } from 'rxjs';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -55,11 +56,13 @@ export class ManagementComponent implements OnInit {
   disableSenha = true;
   disableNovaSenha = true;
   disableConfSenha = true;
+  disableEndereco = true;
 
   ImageType: File | null | undefined = null;
   imagePreview: string | ArrayBuffer | null | undefined = null;
   phoneTypeTwo: string | null = null;
   passwordType: string | null = null;
+  stringType: string | null = null
 
   fotoPerfil = this._formBuilder.group({
     Imagem: [this.ImageType],
@@ -152,11 +155,69 @@ export class ManagementComponent implements OnInit {
     ],
   });
 
+  infoEndereco = this._formBuilder.group({
+    Cep: [
+      this.stringType,
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxCep),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinCep),
+      ],
+    ],
+    Estado: [
+      this.stringType,
+      [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(2),
+      ],
+    ],
+    Cidade: [
+      this.stringType,
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxNomeCidade),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinNomeCidade),
+      ],
+    ],
+    Logradouro: [
+      this.stringType,
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxLogradouro),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinLogradouro),
+      ],
+    ],
+    Bairro: [
+      this.stringType,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxNomeBairro),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinNomeBairro),
+      ],
+    ],
+    Complemento: [
+      this.stringType,
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxComplemento),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinComplemento),
+      ],
+    ],
+    Numero: [
+      this.stringType,
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxNumero),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinNumero),
+      ],
+    ],
+  });
+
   ngOnInit() {
     this.disableAllInfoPessoais();
     this.checkDisableInfoPessoais();
     this.disableAllInfoContatos();
     this.checkDisableInfoContatos();
+    this.disableAllInfoEndereco()
   }
 
   disableAllInfoPessoais() {
@@ -172,6 +233,16 @@ export class ManagementComponent implements OnInit {
     this.infoContato.controls['Email'].disable();
     this.infoContato.controls['TelefoneOne'].disable();
     this.infoContato.controls['TelefoneTwo'].disable();
+  }
+
+  disableAllInfoEndereco() {
+    this.infoEndereco.controls['Cep'].disable();
+    this.infoEndereco.controls['Estado'].disable();
+    this.infoEndereco.controls['Cidade'].disable();
+    this.infoEndereco.controls['Logradouro'].disable();
+    this.infoEndereco.controls['Bairro'].disable();
+    this.infoEndereco.controls['Complemento'].disable();
+    this.infoEndereco.controls['Numero'].disable();
   }
 
   checkDisableInfoPessoais() {
@@ -210,6 +281,10 @@ export class ManagementComponent implements OnInit {
     this.disableEmail = true;
     this.disableTelefoneOne = true;
     this.disableTelefoneTwo = true;
+  }
+
+  resetDisableInfoEndereco() {
+    this.disableEndereco = true
   }
 
   selectImage() {
@@ -317,6 +392,29 @@ export class ManagementComponent implements OnInit {
     } else {
       this.infoContato.controls['TelefoneTwo'].disable();
       this.disableTelefoneTwo = !this.disableTelefoneTwo;
+    }
+    this.checkDisableInfoContatos();
+  }
+
+  swtichStateEditEndereco() {
+    if (this.disableEndereco) {
+      this.infoEndereco.controls['Cep'].enable();
+      this.infoEndereco.controls['Estado'].enable();
+      this.infoEndereco.controls['Cidade'].enable();
+      this.infoEndereco.controls['Logradouro'].enable();
+      this.infoEndereco.controls['Bairro'].enable();
+      this.infoEndereco.controls['Complemento'].enable();
+      this.infoEndereco.controls['Numero'].enable();
+      this.disableEndereco = !this.disableEndereco;
+    } else {
+      this.infoEndereco.controls['Cep'].disable();
+      this.infoEndereco.controls['Estado'].disable();
+      this.infoEndereco.controls['Cidade'].disable();
+      this.infoEndereco.controls['Logradouro'].disable();
+      this.infoEndereco.controls['Bairro'].disable();
+      this.infoEndereco.controls['Complemento'].disable();
+      this.infoEndereco.controls['Numero'].disable();
+      this.disableEndereco = !this.disableEndereco;
     }
     this.checkDisableInfoContatos();
   }
@@ -450,6 +548,41 @@ export class ManagementComponent implements OnInit {
             duration: 3000,
           });
         }
+      });
+  }
+
+  setInfoEndereco() {
+    let novoEndereco: NovoEndereco;
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {        
+        if (this.infoEndereco.valid) {
+          console.log('passei');
+          novoEndereco = this.infoEndereco.value as unknown as NovoEndereco
+          this.accountService
+            .addEndereco(profile.IdUsuario, novoEndereco)
+            .subscribe((response) => {
+              this.snackBar.open(`Endereço Adicionado`, undefined, {
+                duration: 3000,
+              });
+              this.accountService.nextAccount(profile.IdUsuario);
+            });
+        }
+      });
+  }
+
+  remInfoEndereco(endereco: string) {
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {
+        this.accountService
+          .removeEndereco(profile.IdUsuario, endereco)
+          .subscribe((response) => {
+            this.snackBar.open(`Endereço Removido`, undefined, {
+              duration: 3000,
+            });
+            this.accountService.nextAccount(profile.IdUsuario);
+          });
       });
   }
 }
