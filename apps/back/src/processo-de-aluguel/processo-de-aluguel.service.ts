@@ -8,6 +8,7 @@ import { ProcessoDeAluguel } from './entities/processo-de-aluguel.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { PagamentoDto } from './dto/pagamento-dto';
+import { AsaasService } from '../asaas/asaas.service';
 
 @Injectable()
 export class ProcessoDeAluguelService {
@@ -15,7 +16,8 @@ export class ProcessoDeAluguelService {
     @InjectModel(ProcessoDeAluguel.name) private processoDeAluguelModel: Model<ProcessoDeAluguel>,
     private usersService: UsersService,
     private maquinaService: MaquinaService,
-    private tipoPrecoService: TipoPrecoService
+    private tipoPrecoService: TipoPrecoService,
+    private asaasService: AsaasService
   ) { }
 
 
@@ -134,11 +136,37 @@ export class ProcessoDeAluguelService {
   
   async concluirProcessoDeAluguel(idProcessoDeAluguel: string, pagamentoDto: PagamentoDto){
     const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    processoDeAluguel.Status = "A Confirmar Preco";
+    processoDeAluguel.Pagamento.TipoRecebimento = pagamentoDto.TipoRecebimento;
+    processoDeAluguel.Pagamento.QuantificadorPreco = pagamentoDto.QuantificadorPreco;
+    processoDeAluguel.Pagamento.Valor = pagamentoDto.QuantificadorPreco * processoDeAluguel.Pagamento.Preco.ValorPorTipo;
+
+    await processoDeAluguel.save();
+    return processoDeAluguel;
+  }
+
+  async confirmarPrecoProcessoDeAluguel(idProcessoDeAluguel){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+
     processoDeAluguel.Status = "A Pagar";
 
     await processoDeAluguel.save();
     return processoDeAluguel;
   }
+
+  async recusarPrecoProcessoDeAluguel(idProcessoDeAluguel){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    processoDeAluguel.Status = "A Refazer Preco";
+    processoDeAluguel.Pagamento.TipoRecebimento = undefined;
+    processoDeAluguel.Pagamento.QuantificadorPreco = undefined;
+    processoDeAluguel.Pagamento.Valor = undefined;
+    
+    await processoDeAluguel.save();
+    return processoDeAluguel;
+  }
+
+
+
   
   findAll() {
     return `This action returns all processoDeAluguel`;

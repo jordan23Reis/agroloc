@@ -21,7 +21,10 @@ import { UsuarioLogadoDonoDoProcessoGuard } from './guards/UsuarioLogadoDonoDoPr
 import { ProcessoAAceitarGuard } from './guards/ProcessoAAceitar';
 import { ProcessoAguardandoFrete } from './guards/ProcessoAguardandoFrete';
 import { ProcessoAComecar } from './guards/ProcessoAComecar';
-import { ProcessoEmAndamento } from './guards/ProcessoEmAndamento';
+import { ProcessoEmAndamentoOuARefazerPreco } from './guards/ProcessoEmAndamentoOuARefazerPreco';
+import { PagamentoDto } from './dto/pagamento-dto';
+import { UsuarioLogadoLocatarioDoProcessoGuard } from './guards/UsuarioLogadoLocatarioDoProcessoGuard';
+import { ProcessoAConfirmarPreco } from './guards/ProcessoAConfirmarPreco';
 
 @Controller('processo-de-aluguel')
 export class ProcessoDeAluguelController {
@@ -70,16 +73,36 @@ export class ProcessoDeAluguelController {
     }
   }
 
-  @UseGuards(JwtAuthGuard, ProcessoEmAndamento, UsuarioLogadoDonoDoProcessoGuard)
-  @Patch("mudarstatus/comecar/:idProcessoDeAluguel")
-  concluirProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){
+  @UseGuards(JwtAuthGuard, ProcessoEmAndamentoOuARefazerPreco, UsuarioLogadoDonoDoProcessoGuard)
+  @Patch("mudarstatus/concluir/:idProcessoDeAluguel")
+  concluirProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string, @Body() pagamentoDto: PagamentoDto){
     try{
-      // return this.processoDeAluguelService.concluirProcessoDeAluguel(idProcessoDeAluguel);
+      return this.processoDeAluguelService.concluirProcessoDeAluguel(idProcessoDeAluguel, pagamentoDto);
     }catch(e){
       throw new Error(e.message);
     }
   }
 
+
+  @UseGuards(JwtAuthGuard, ProcessoAConfirmarPreco, UsuarioLogadoLocatarioDoProcessoGuard)
+  @Patch("mudarstatus/confirmarpreco/:idProcessoDeAluguel")
+  confirmarPrecoProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){
+    try{
+      return this.processoDeAluguelService.confirmarPrecoProcessoDeAluguel(idProcessoDeAluguel);
+    }catch(e){
+      throw new Error(e.message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, ProcessoAConfirmarPreco, UsuarioLogadoLocatarioDoProcessoGuard)
+  @Patch("mudarstatus/recusarpreco/:idProcessoDeAluguel")
+  recusarPrecoProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){
+    try{
+      return this.processoDeAluguelService.recusarPrecoProcessoDeAluguel(idProcessoDeAluguel);
+    }catch(e){
+      throw new Error(e.message);
+    }
+  }
 
   @Get()
   findAll() {

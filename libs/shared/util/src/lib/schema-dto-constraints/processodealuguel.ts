@@ -68,8 +68,11 @@ enum ProcessoDeAluguelSchemaDtoRestraints {
     tamMinIdTipo=0,
     tamMaxIdTipo=150
 
-
-
 }
 
-export {ProcessoDeAluguelSchemaDtoRestraints};
+enum ProcessoDeAluguelTiposRecebimento{
+    Pix='Pix',
+    ContaBancaria='ContaBancaria',
+}
+
+export {ProcessoDeAluguelSchemaDtoRestraints, ProcessoDeAluguelTiposRecebimento};
