@@ -7,6 +7,7 @@ import { ProcessoDeAluguelMiddlewares } from './entities/processo-de-aluguel.mid
 import { MaquinaModule } from '../maquina/maquina.module';
 import { UsersModule } from '../users/users.module';
 import { TipoPrecoModule } from '../tipo-preco/tipo-preco.module';
+import { AsaasModule } from '../asaas/asaas.module';
 
 
 const modelProcessoDeAluguel = MongooseModule.forFeatureAsync([
@@ -17,7 +18,7 @@ const modelProcessoDeAluguel = MongooseModule.forFeatureAsync([
 ]);
 
 @Module({
-  imports: [modelProcessoDeAluguel, MaquinaModule, UsersModule, TipoPrecoModule],
+  imports: [modelProcessoDeAluguel, MaquinaModule, UsersModule, TipoPrecoModule, AsaasModule],
   controllers: [ProcessoDeAluguelController],
   providers: [ProcessoDeAluguelService],
 })

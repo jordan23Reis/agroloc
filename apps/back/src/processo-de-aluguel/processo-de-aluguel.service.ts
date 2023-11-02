@@ -9,6 +9,8 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { PagamentoDto } from './dto/pagamento-dto';
 import { AsaasService } from '../asaas/asaas.service';
+import { Cliente } from '../asaas/dto/create-cliente.dto';
+import { CobrancaUnica } from '../asaas/dto/create-cobranca-unica.dto';
 
 @Injectable()
 export class ProcessoDeAluguelService {
@@ -147,9 +149,43 @@ export class ProcessoDeAluguelService {
 
   async confirmarPrecoProcessoDeAluguel(idProcessoDeAluguel){
     const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    const locatario = await this.usersService.findOne(processoDeAluguel.Envolvidos.Locatario.idLocatario.toString());
+    let cliente;
+    if(locatario.CadastroComum.Cpf){
+      cliente = await this.asaasService.recuperarClientePorCpfCnpj(locatario.CadastroComum.Cpf)
+      if(!cliente){
+        const clienteDto: Cliente = {
+          name: locatario.CadastroComum.Nome,
+          cpfCnpj: locatario.CadastroComum.Cpf,
+          externalReference: locatario._id.toString()
+        }
+        console.log(clienteDto);
+        cliente = await this.asaasService.createCliente(clienteDto);
+      }
+    }
+    else if (locatario.CadastroComum.Cnpj){
+      cliente = await this.asaasService.recuperarClientePorCpfCnpj(locatario.CadastroComum.Cnpj)
+      if(!cliente){
+        const clienteDto: Cliente = {
+          name: locatario.CadastroComum.Nome,
+          cpfCnpj: locatario.CadastroComum.Cpf,
+          externalReference: locatario._id.toString()
+        }
+        cliente = await this.asaasService.createCliente(clienteDto);
+      }
+    }
 
+    const cobrancaDto: CobrancaUnica = {
+      customer: cliente.id,
+      value: processoDeAluguel.Pagamento.Valor,
+      description: "Aluguel de "+processoDeAluguel.Maquina.Nome,
+      externalReference: processoDeAluguel._id.toString()
+    }
+    
+    const cobranca = await this.asaasService.criarCobrancaPagamentoUnico(cobrancaDto)
+    processoDeAluguel.Pagamento.LinkPagamento = cobranca.invoiceUrl;
+    processoDeAluguel.Pagamento.Status = "PENDING";
     processoDeAluguel.Status = "A Pagar";
-
     await processoDeAluguel.save();
     return processoDeAluguel;
   }

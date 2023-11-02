@@ -37,6 +37,15 @@ export class AsaasController {
     }
   }
 
+  @Get("cliente/cpfCnpj/:cpfCnpj")
+  findClienteCpf(@Param('cpfCnpj') cpfCnpj: string) {
+    try{
+    return this.asaasService.recuperarClientePorCpfCnpj(cpfCnpj);
+    }catch(e){
+      return e;
+    }
+  }
+
   @Get("cliente")
   findClientes(){
     try{

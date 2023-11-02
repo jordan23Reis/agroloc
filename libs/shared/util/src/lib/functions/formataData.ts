@@ -1,5 +1,8 @@
 function formataData(data: Date){
-    return data.toLocaleDateString('en-CA');
+    return data;
 }   
 
 export {formataData};
+
+
+

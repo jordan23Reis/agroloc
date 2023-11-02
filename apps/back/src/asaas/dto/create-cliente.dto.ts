@@ -10,10 +10,10 @@ export class Cliente {
     cpfCnpj: string;
     @IsOptional()
     @IsString()
-    email: string;
+    email?: string;
     @IsOptional()
     @IsString()
-    mobilePhone: string;
+    mobilePhone?: string;
     @IsOptional()
     @IsString()
     externalReference: string;

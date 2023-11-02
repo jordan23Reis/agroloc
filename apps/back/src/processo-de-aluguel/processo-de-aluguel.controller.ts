@@ -39,7 +39,7 @@ export class ProcessoDeAluguelController {
     try{
     return this.processoDeAluguelService.create(idMaquina, idLocador, idLocatario);
     }catch(e){
-      throw new Error(e.message);
+      return new Error(e.message);
     }
   }
 
@@ -49,7 +49,7 @@ export class ProcessoDeAluguelController {
     try{
       return this.processoDeAluguelService.aceitarProcessoDeAluguel(idProcessoDeAluguel);
     }catch(e){
-      throw new Error(e.message);
+      return new Error(e.message);
     }
   }
 
@@ -59,7 +59,7 @@ export class ProcessoDeAluguelController {
     try{
       return this.processoDeAluguelService.pularFrete(idProcessoDeAluguel);
     }catch(e){
-      throw new Error(e.message);
+      return new Error(e.message);
     }
   }
 
@@ -69,7 +69,7 @@ export class ProcessoDeAluguelController {
     try{
       return this.processoDeAluguelService.comecarProcesso(idProcessoDeAluguel);
     }catch(e){
-      throw new Error(e.message);
+      return new Error(e.message);
     }
   }
 
@@ -79,7 +79,7 @@ export class ProcessoDeAluguelController {
     try{
       return this.processoDeAluguelService.concluirProcessoDeAluguel(idProcessoDeAluguel, pagamentoDto);
     }catch(e){
-      throw new Error(e.message);
+      return new Error(e.message);
     }
   }
 
@@ -90,7 +90,7 @@ export class ProcessoDeAluguelController {
     try{
       return this.processoDeAluguelService.confirmarPrecoProcessoDeAluguel(idProcessoDeAluguel);
     }catch(e){
-      throw new Error(e.message);
+      return new Error(e.message);
     }
   }
 
@@ -100,7 +100,7 @@ export class ProcessoDeAluguelController {
     try{
       return this.processoDeAluguelService.recusarPrecoProcessoDeAluguel(idProcessoDeAluguel);
     }catch(e){
-      throw new Error(e.message);
+      return new Error(e.message);
     }
   }
 

@@ -24,5 +24,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   controllers: [AsaasController],
   providers: [AsaasService],
+  exports:[AsaasService]
 })
 export class AsaasModule {}

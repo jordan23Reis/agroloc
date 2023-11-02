@@ -43,6 +43,18 @@ export class AsaasService {
     return data;
   }
 
+  async recuperarClientePorCpfCnpj(cpfCnpj: string){
+    const { data } = await firstValueFrom(
+      this.httpService.get('/customers?cpfCnpj='+cpfCnpj+"&limit=1"
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data.data[0];
+  }
+
   async recuperarClientes(){
     const { data } = await firstValueFrom(
       this.httpService.get('/customers'
