@@ -7,6 +7,8 @@ import {
   AccountData,
   UpdatePassword,
   NovoEndereco,
+  Login,
+  AuthStorage,
 } from '@agroloc/account/data-acess';
 import { combineLatest, debounceTime, map, take } from 'rxjs';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -26,6 +28,7 @@ export class ManagementComponent implements OnInit {
   _formBuilder = inject(FormBuilder);
   snackBar = inject(MatSnackBar);
   loader = inject(LoaderFacade);
+  authStorage = inject(AuthStorage);
 
   loadingRequest = this.loader.active$;
 
@@ -57,12 +60,14 @@ export class ManagementComponent implements OnInit {
   disableNovaSenha = true;
   disableConfSenha = true;
   disableEndereco = true;
+  disableBancarias = true;
+  disablePix = true;
 
   ImageType: File | null | undefined = null;
   imagePreview: string | ArrayBuffer | null | undefined = null;
   phoneTypeTwo: string | null = null;
   passwordType: string | null = null;
-  stringType: string | null = null
+  stringType = '';
 
   fotoPerfil = this._formBuilder.group({
     Imagem: [this.ImageType],
@@ -160,54 +165,96 @@ export class ManagementComponent implements OnInit {
       this.stringType,
       [
         Validators.required,
-        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxCep),
-        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinCep),
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinCep),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxCep),
       ],
     ],
     Estado: [
       this.stringType,
-      [
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(2),
-      ],
+      [Validators.required, Validators.minLength(2), Validators.maxLength(2)],
     ],
     Cidade: [
       this.stringType,
       [
         Validators.required,
-        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxNomeCidade),
-        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinNomeCidade),
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinNomeCidade),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxNomeCidade),
       ],
     ],
     Logradouro: [
       this.stringType,
       [
         Validators.required,
-        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxLogradouro),
-        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinLogradouro),
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinLogradouro),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxLogradouro),
       ],
     ],
     Bairro: [
       this.stringType,
       [
-        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxNomeBairro),
-        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinNomeBairro),
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinNomeBairro),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxNomeBairro),
       ],
     ],
     Complemento: [
       this.stringType,
       [
-        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxComplemento),
-        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinComplemento),
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinComplemento),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxComplemento),
       ],
     ],
     Numero: [
+      null,
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinNumero),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxNumero),
+      ],
+    ],
+  });
+
+  infoBancarias = this._formBuilder.group({
+    Agencia: [
       this.stringType,
       [
         Validators.required,
-        Validators.minLength(UsuarioSchemaDtoRestraints.tamMaxNumero),
-        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMinNumero),
+        Validators.minLength(
+          UsuarioSchemaDtoRestraints.tamMinAgenciaContaBancaria
+        ),
+        Validators.maxLength(
+          UsuarioSchemaDtoRestraints.tamMaxAgenciaContaBancaria
+        ),
+      ],
+    ],
+    Conta: [
+      this.stringType,
+      [
+        Validators.required,
+        Validators.minLength(
+          UsuarioSchemaDtoRestraints.tamMinContaContaBancaria
+        ),
+        Validators.maxLength(
+          UsuarioSchemaDtoRestraints.tamMaxContaContabancaria
+        ),
+      ],
+    ],
+  });
+
+  infoPix = this._formBuilder.group({
+    Chave: [
+      this.stringType,
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinChavePix),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxChavePix),
+      ],
+    ],
+    Tipo: [
+      this.stringType,
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinTipoPix),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxTipoPix),
       ],
     ],
   });
@@ -217,7 +264,9 @@ export class ManagementComponent implements OnInit {
     this.checkDisableInfoPessoais();
     this.disableAllInfoContatos();
     this.checkDisableInfoContatos();
-    this.disableAllInfoEndereco()
+    this.disableAllInfoEndereco();
+    this.disableAllInfoBancarias();
+    this.disableAllInfoPix();
   }
 
   disableAllInfoPessoais() {
@@ -243,6 +292,16 @@ export class ManagementComponent implements OnInit {
     this.infoEndereco.controls['Bairro'].disable();
     this.infoEndereco.controls['Complemento'].disable();
     this.infoEndereco.controls['Numero'].disable();
+  }
+
+  disableAllInfoBancarias() {
+    this.infoBancarias.controls['Agencia'].disable();
+    this.infoBancarias.controls['Conta'].disable();
+  }
+
+  disableAllInfoPix() {
+    this.infoPix.controls['Chave'].disable();
+    this.infoPix.controls['Tipo'].disable();
   }
 
   checkDisableInfoPessoais() {
@@ -284,7 +343,15 @@ export class ManagementComponent implements OnInit {
   }
 
   resetDisableInfoEndereco() {
-    this.disableEndereco = true
+    this.disableEndereco = true;
+  }
+
+  resetDisableInfoBancarias() {
+    this.disableBancarias = true;
+  }
+
+  resetDisableInfoPix() {
+    this.disablePix = true;
   }
 
   selectImage() {
@@ -416,7 +483,30 @@ export class ManagementComponent implements OnInit {
       this.infoEndereco.controls['Numero'].disable();
       this.disableEndereco = !this.disableEndereco;
     }
-    this.checkDisableInfoContatos();
+  }
+
+  swtichStateEditBancarias() {
+    if (this.disableBancarias) {
+      this.infoBancarias.controls['Agencia'].enable();
+      this.infoBancarias.controls['Conta'].enable();
+      this.disableBancarias = !this.disableBancarias;
+    } else {
+      this.infoBancarias.controls['Agencia'].disable();
+      this.infoBancarias.controls['Conta'].disable();
+      this.disableBancarias = !this.disableBancarias;
+    }
+  }
+
+  swtichStateEditPix() {
+    if (this.disablePix) {
+      this.infoPix.controls['Chave'].enable();
+      this.infoPix.controls['Tipo'].enable();
+      this.disablePix = !this.disablePix;
+    } else {
+      this.infoPix.controls['Chave'].disable();
+      this.infoPix.controls['Tipo'].disable();
+      this.disablePix = !this.disablePix;
+    }
   }
 
   setInfoPessoais() {
@@ -525,23 +615,32 @@ export class ManagementComponent implements OnInit {
   }
 
   setInfoSenha() {
-    let newPassword: UpdatePassword;
+    const newPassword: UpdatePassword = {
+      Senha: this.infoSenha.value.NovaSenha as unknown as string,
+    };
     combineLatest([this.userDate, this.userProfile])
       .pipe(take(1), debounceTime(1000))
       .subscribe(([account, profile]) => {
-        if (
-          this.infoSenha.value.Senha === account.Login.Senha &&
-          this.infoSenha.value.NovaSenha === this.infoSenha.value.ConfSenha
-        ) {
-          newPassword.Senha = this.infoSenha.value
-            .NovaSenha as unknown as string;
-          this.accountService
-            .updatePassword(profile.IdUsuario, newPassword)
+        if (this.infoSenha.value.NovaSenha === this.infoSenha.value.ConfSenha) {
+          const dateAccount: Login = {
+            Email: account.Login.Email as unknown as string,
+            Senha: this.infoSenha.value.Senha as unknown as string,
+          };
+
+          this.authService
+            .SingIn(dateAccount)
+            .pipe(take(1))
             .subscribe((response) => {
-              this.snackBar.open(`Senha Alterada`, undefined, {
-                duration: 3000,
-              });
-              this.accountService.nextAccount(profile.IdUsuario);
+              this.authStorage.setAcessToken(response.access_token);
+              this.accountService
+                .updatePassword(profile.IdUsuario, newPassword)
+                .pipe(take(1))
+                .subscribe((response) => {
+                  this.snackBar.open(`Senha Alterada`, undefined, {
+                    duration: 3000,
+                  });
+                  this.accountService.nextAccount(profile.IdUsuario);
+                });
             });
         } else {
           this.snackBar.open(`Senha Incorreta`, undefined, {
@@ -553,18 +652,22 @@ export class ManagementComponent implements OnInit {
 
   setInfoEndereco() {
     let novoEndereco: NovoEndereco;
+    console.log(this.infoEndereco.value);
+
     combineLatest([this.userDate, this.userProfile])
       .pipe(take(1), debounceTime(1000))
-      .subscribe(([account, profile]) => {        
+      .subscribe(([account, profile]) => {
         if (this.infoEndereco.valid) {
           console.log('passei');
-          novoEndereco = this.infoEndereco.value as unknown as NovoEndereco
+          novoEndereco = this.infoEndereco.value as unknown as NovoEndereco;
           this.accountService
             .addEndereco(profile.IdUsuario, novoEndereco)
             .subscribe((response) => {
               this.snackBar.open(`Endereço Adicionado`, undefined, {
                 duration: 3000,
               });
+              this.disableAllInfoEndereco();
+              this.resetDisableInfoEndereco();
               this.accountService.nextAccount(profile.IdUsuario);
             });
         }
@@ -583,6 +686,30 @@ export class ManagementComponent implements OnInit {
             });
             this.accountService.nextAccount(profile.IdUsuario);
           });
+      });
+  }
+
+  setInfoBancarias() {
+    let novoEndereco: NovoEndereco;
+    console.log(this.infoEndereco.value);
+
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {
+        if (this.infoEndereco.valid) {
+          console.log('passei');
+          novoEndereco = this.infoEndereco.value as unknown as NovoEndereco;
+          this.accountService
+            .addEndereco(profile.IdUsuario, novoEndereco)
+            .subscribe((response) => {
+              this.snackBar.open(`Endereço Adicionado`, undefined, {
+                duration: 3000,
+              });
+              this.disableAllInfoEndereco();
+              this.resetDisableInfoEndereco();
+              this.accountService.nextAccount(profile.IdUsuario);
+            });
+        }
       });
   }
 }

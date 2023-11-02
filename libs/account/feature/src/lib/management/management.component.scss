@@ -1,5 +1,6 @@
 :host {
-  .mobForm {}
+  .mobForm {
+  }
 
   .webForm {
     display: flex;
@@ -20,7 +21,7 @@
       height: auto;
     }
 
-    .mat-mdc-form-field+.mat-mdc-form-field {
+    .mat-mdc-form-field + .mat-mdc-form-field {
       margin-left: 8px;
     }
 
@@ -73,6 +74,24 @@
       margin-top: 30px;
     }
 
+    .alert {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      justify-content: center;
+      color: inherit;
+      mat-icon {
+        color: rgb(253, 253, 0);
+        align-self: center;
+        justify-self: center;
+        margin-right: 5%;
+      }
+      p {
+        display: flex;
+        width: 90%;
+      }
+    }
+
     mat-expansion-panel {
       margin-bottom: 15px;
     }
@@ -90,6 +109,12 @@
       height: auto;
     }
 
+    mat-selection-list {
+      max-height: 300px;
+      height: auto;
+      overflow-y: scroll;
+    }
+
     .conteudo {
       display: flex;
       flex-direction: column;
@@ -103,10 +128,9 @@
       height: auto;
       align-items: center;
       justify-content: center;
-
     }
 
-    .formContainer>p {
+    .formContainer > p {
       align-self: flex-start;
       margin-left: 15%;
       margin-right: 15%;
@@ -125,6 +149,34 @@
       }
     }
 
+    .listEndereco {
+      display: flex;
+      flex-direction: column;
+      width: 70%;
+      height: auto;
+      margin-bottom: 60px;
+    }
+
+    .option {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    // mat-list-option {
+    //   height: auto;
+    //   align-items: center;
+    //   justify-content: center;
+    //   padding-top: 15px;
+    //   padding-left: 15px;
+    // }
+
+    // .mdc-list-item__content {
+    //   display: flex;
+    //   flex-direction: column;
+    //   justify-content: center;
+    // }
+
     .titleEnd {
       display: flex;
       flex-direction: row;
@@ -133,6 +185,20 @@
       justify-content: center;
       button {
         margin-left: 5px;
+        margin-right: 7px;
+      }
+    }
+
+    .footerList {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      justify-content: center;
+      margin-top: 30px;
+      button {
+        margin-left: 5px;
+        margin-right: 7px;
       }
     }
 
@@ -181,6 +247,33 @@
       }
 
       #cep {
+        width: 30%;
+      }
+    }
+
+    .ageNume {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #age {
+        width: 30%;
+      }
+      #nume {
+        width: 70%;
+      }
+    }
+
+    .chaTip {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      #cha {
+        width: 70%;
+      }
+      #tip {
         width: 30%;
       }
     }

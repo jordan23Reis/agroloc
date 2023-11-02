@@ -23,6 +23,11 @@ export const homeShellRoutes: Route[] = [
     component: WebComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'main',
+        pathMatch: 'full',
+      },
+      {
         path: 'login',
         component: WebLoginComponent,
         children: [],

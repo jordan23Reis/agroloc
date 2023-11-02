@@ -67,5 +67,47 @@ export class FavoriteComponent {
       preco: 'R$4.249,00',
       delete: 'delete aqui',
     },
+    {
+      foto: 'foto aqui',
+      titulo:
+        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
+      preco: 'R$4.249,00',
+      delete: 'delete aqui',
+    },
+    {
+      foto: 'foto aqui',
+      titulo:
+        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
+      preco: 'R$4.249,00',
+      delete: 'delete aqui',
+    },
+    {
+      foto: 'foto aqui',
+      titulo:
+        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
+      preco: 'R$4.249,00',
+      delete: 'delete aqui',
+    },
+    {
+      foto: 'foto aqui',
+      titulo:
+        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
+      preco: 'R$4.249,00',
+      delete: 'delete aqui',
+    },
+    {
+      foto: 'foto aqui',
+      titulo:
+        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
+      preco: 'R$4.249,00',
+      delete: 'delete aqui',
+    },
+    {
+      foto: 'foto aqui',
+      titulo:
+        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
+      preco: 'R$4.249,00',
+      delete: 'delete aqui',
+    },
   ];
 }

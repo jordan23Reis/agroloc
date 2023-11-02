@@ -40,12 +40,14 @@ interface CadastroFreteiro {
 
 // Representa os dados de endereço
 interface Address {
+  _id: string;
   Cep: string;
+  Estado: string;
   Cidade: string;
   Logradouro: string;
   Bairro?: string;
   Complemento?: string;
-  Numero?: number;
+  Numero: number;
 }
 
 // Representa os dados de um automóvel

@@ -18,7 +18,9 @@
   .example-sidenav-content {
     height: 100%;
     align-items: center;
-    justify-content: center;
+
+    display: flex;
+    flex-direction: column;
   }
 
   .example-sidenav {
@@ -39,6 +41,9 @@
     mat-toolbar-row {
       min-height: 70px;
     }
+  }
+
+  .footerToolbar {
   }
 
   .mat-tab-body-wrapper {

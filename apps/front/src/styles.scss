@@ -81,3 +81,8 @@ body {
     justify-content: center;
   }
 }
+
+.mdc-list-item--with-trailing-radio.mdc-list-item--with-three-lines
+  .mdc-list-item__end.ng-star-inserted {
+  align-self: center;
+}
