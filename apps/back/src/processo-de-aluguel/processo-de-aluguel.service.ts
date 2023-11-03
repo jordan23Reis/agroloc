@@ -11,6 +11,8 @@ import { PagamentoDto } from './dto/pagamento-dto';
 import { AsaasService } from '../asaas/asaas.service';
 import { Cliente } from '../asaas/dto/create-cliente.dto';
 import { CobrancaUnica } from '../asaas/dto/create-cobranca-unica.dto';
+import { TransferenciaPix } from '../asaas/dto/create-transferencia-pix.dto';
+import { TransferenciaConta } from '../asaas/dto/create-transferencia-conta.dto';
 
 @Injectable()
 export class ProcessoDeAluguelService {
@@ -199,6 +201,40 @@ export class ProcessoDeAluguelService {
     
     await processoDeAluguel.save();
     return processoDeAluguel;
+  }
+
+  async cobrancaConcluida(webHook){
+    console.log(webHook);
+    if(webHook.event == "PAYMENT_RECEIVED"){
+      const processoDeAluguel = await this.processoDeAluguelModel.findById(webHook.payment.externalReference);
+      if(processoDeAluguel){
+
+      if(processoDeAluguel.Pagamento.TipoRecebimento == "Pix"){
+        const transacaoPix: TransferenciaPix = {
+          value: processoDeAluguel.Pagamento.Valor,
+          pixAddressKey: processoDeAluguel.Pagamento.PixRecebedor.Chave,
+          pixAddressKeyType: processoDeAluguel.Pagamento.PixRecebedor.Tipo,
+        }
+
+        try{
+          const asaas = await this.asaasService.criarTransferenciaPix(transacaoPix);
+          processoDeAluguel.Status = "Transação Concluida";
+          processoDeAluguel.Pagamento.Status = "RECEIVED";
+        }catch(e){
+          processoDeAluguel.Status = "Transação Falhada";
+          processoDeAluguel.Pagamento.Status = "FAILED";
+        }
+
+      }else if(processoDeAluguel.Pagamento.TipoRecebimento == "ContaBancaria"){
+      //   const transacaoConta: TransferenciaConta = {
+      //     value: processoDeAluguel.Pagamento.Valor,
+      //     bankAccount: processoDeAluguel.Pagamento.ContaBancariaRecebedor.Agencia
+      //   }
+      }
+        await processoDeAluguel.save();
+        return processoDeAluguel;
+      }
+    }
   }
 
 

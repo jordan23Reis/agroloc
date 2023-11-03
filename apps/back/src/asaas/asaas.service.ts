@@ -174,6 +174,18 @@ export class AsaasService {
     return data;
   }
 
+  async recuperarCobrancaPorExternalId(id: string){
+    const { data } = await firstValueFrom(
+      this.httpService.get('/payments?externalReference='+id+"&limit=1"
+      ).pipe(
+        catchError((error: AxiosError) => {
+          throw error;
+        }),
+      ),
+    );
+    return data;
+  }
+
   async deletarCobranca(id: string){
     const { data } = await firstValueFrom(
       this.httpService.delete('/payments/'+id

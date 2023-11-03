@@ -120,6 +120,11 @@ export class ProcessoDeAluguelController {
     );
   }
 
+  @Post("cobranca")
+  getCobranca(@Body() webHook){
+    return this.processoDeAluguelService.cobrancaConcluida(webHook);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.processoDeAluguelService.remove(+id);
