@@ -1,6 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import {
+  Observable,
+  ReplaySubject,
+  catchError,
+  debounceTime,
+  take,
+} from 'rxjs';
 import {
   Avaliacao,
   Categoria,
@@ -8,6 +14,7 @@ import {
   TipoPreco,
   UpdateCategoria,
 } from '../entities/machinery-paths.interface';
+import { Account } from '@agroloc/account/data-acess';
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +67,7 @@ export class MachineryService {
   createMainImage(machineryId: string, image: File): Observable<any> {
     const formData = new FormData();
     formData.append('Imagem', image);
+    console.log(formData);
 
     return this.http.post<any>(
       `/api/maquina/imagem/principal/${machineryId}`,
@@ -75,9 +83,10 @@ export class MachineryService {
 
   createSecondaryImages(machineryId: string, images: File[]): Observable<any> {
     const formData = new FormData();
-    images.forEach((image, index) => {
-      formData.append(`Imagens[${index}]`, image);
+    images.forEach((image) => {
+      formData.append(`Imagens`, image);
     });
+    console.log(formData);
 
     return this.http.post<any>(
       `/api/maquina/imagem/secundaria/${machineryId}`,
@@ -115,6 +124,10 @@ export class MachineryService {
 
   findCategories(searchData: Categoria): Observable<any[]> {
     return this.http.post<any[]>(`/api/categoria`, searchData);
+  }
+
+  findAllCategories(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`/api/categoria`);
   }
 
   createCategory(categoryData: Categoria): Observable<any> {

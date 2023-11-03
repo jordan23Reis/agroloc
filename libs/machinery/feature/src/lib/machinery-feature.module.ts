@@ -17,6 +17,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatTableModule,
     MatStepperModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
   ],
   declarations: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
   exports: [MachineryRegisterComponent, SearchComponent, DetailsComponent],

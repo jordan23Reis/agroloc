@@ -260,6 +260,132 @@
       // }
     }
 
+    mat-list {
+      width: 100%;
+      height: auto;
+    }
+
+    mat-selection-list {
+      max-height: 300px;
+      height: auto;
+    }
+
+    .formContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .formContainer > p {
+      align-self: flex-start;
+      margin-left: 15%;
+      margin-right: 15%;
+    }
+
+    .formEndereco {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+
+      p {
+        text-align: justify;
+        align-self: center;
+      }
+    }
+
+    .footerList {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      justify-content: center;
+      margin-top: 30px;
+      button {
+        margin-left: 5px;
+        margin-right: 7px;
+      }
+    }
+
+    .listEndereco {
+      display: flex;
+      flex-direction: column;
+      width: 70%;
+      height: auto;
+      margin-bottom: 60px;
+    }
+
+    .titleEnd {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      justify-content: center;
+      button {
+        margin-left: 5px;
+        margin-right: 7px;
+      }
+    }
+
+    .logNum {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #log {
+        width: 85%;
+      }
+
+      #num {
+        width: 15%;
+      }
+    }
+
+    .baiCom {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #bai {
+        width: 20%;
+      }
+
+      #com {
+        width: 80%;
+      }
+    }
+
+    .cidCEstCep {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #cid {
+        width: 60%;
+      }
+
+      #est {
+        width: 10%;
+      }
+
+      #cep {
+        width: 30%;
+      }
+    }
+
+    .form {
+      width: 70%;
+      height: auto;
+      margin-left: 5px;
+    }
+
     // .container {
     //   display: flex;
     //   height: 100%;

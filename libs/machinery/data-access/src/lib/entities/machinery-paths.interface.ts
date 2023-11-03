@@ -4,6 +4,7 @@ export interface Preco {
 }
 
 export interface Machinery {
+  _id?: string;
   Nome: string;
   Descricao: string;
   Peso: number;
@@ -21,6 +22,7 @@ export interface TipoPreco {
 }
 
 export interface Categoria {
+  _id?: string;
   Nome: string;
   Tipo: string;
 }

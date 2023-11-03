@@ -7,6 +7,7 @@ import {
   ReplaySubject,
   Subject,
   catchError,
+  debounceTime,
   map,
   take,
 } from 'rxjs';
@@ -18,6 +19,7 @@ import {
   ImagensSecundarias,
   NovoEndereco,
   UpdatePassword,
+  CepType,
 } from '../entities/others-paths.interface';
 import { AccountData } from '../entities/register-account.interface';
 import { Automovel, EditAutomovel } from '../entities/car-path.interface';
@@ -107,7 +109,7 @@ export class AccountService {
   };
 
   userAccount = new ReplaySubject<Account>(1);
-  userAccount$ = this.userAccount.asObservable();
+  userAccount$ = this.userAccount.asObservable().pipe(debounceTime(1));
 
   nextAccount(userId: string) {
     this.http
@@ -310,5 +312,18 @@ export class AccountService {
 
   removeMaquinaFavorita(accountId: string, maquinaId: string): Observable<any> {
     return this.http.delete(`/api/favorito/maquina/${accountId}/${maquinaId}`);
+  }
+
+  findCepEndereco(Cep: string) {
+    return this.http
+      .get<CepType>('https://viacep.com.br/ws/' + Cep + '/json')
+      .pipe(
+        catchError((error) => {
+          this.snackBar.open('CEP Incorreto', 'Fechar', {
+            duration: 3000,
+          });
+          throw new Error(error);
+        })
+      );
   }
 }

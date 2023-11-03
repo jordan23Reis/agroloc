@@ -1,10 +1,10 @@
 import {
   AuthService,
-  AccountService,
   AuthStorage,
+  AccountService,
   NovoEndereco,
 } from '@agroloc/account/data-acess';
-import { Machinery, MachineryService } from '@agroloc/machinery/data-access';
+import { MachineryService, Machinery } from '@agroloc/machinery/data-access';
 import { LoaderFacade } from '@agroloc/shared/data-access';
 import {
   MaquinaSchemaDtoRestraints,
@@ -13,24 +13,24 @@ import {
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Platform } from '@angular/cdk/platform';
 import { StepperOrientation } from '@angular/cdk/stepper';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
+  debounceTime,
+  map,
   BehaviorSubject,
   Observable,
   combineLatest,
-  debounceTime,
-  map,
   take,
 } from 'rxjs';
 
 @Component({
-  selector: 'agroloc-machinery-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'],
+  selector: 'agroloc-automobile',
+  templateUrl: './automobile.component.html',
+  styleUrls: ['./automobile.component.scss'],
 })
-export class MachineryRegisterComponent implements OnInit {
+export class AutomobileComponent {
   platform = inject(Platform);
   breakpointObserver = inject(BreakpointObserver);
   formBuilder = inject(FormBuilder);
@@ -72,24 +72,6 @@ export class MachineryRegisterComponent implements OnInit {
 
   imageUrl: string | ArrayBuffer | null | undefined = null;
   listImageUrl: string[] | null | undefined = null;
-  categoryList = [
-    {
-      value: 'Categoria 1',
-      name: 'Categoria 1',
-    },
-    {
-      value: 'Categoria 1',
-      name: 'Categoria 1',
-    },
-    {
-      value: 'Categoria 1',
-      name: 'Categoria 1',
-    },
-    {
-      value: 'Categoria 1',
-      name: 'Categoria 1',
-    },
-  ];
 
   ImagemPrincipalType: File | null | undefined = null;
   ImagemSecundariasType: File[] = [];

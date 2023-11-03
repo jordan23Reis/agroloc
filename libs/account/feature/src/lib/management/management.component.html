@@ -533,6 +533,12 @@
                       <div class="titleEnd">
                         <p>Adicionar Endereço</p>
                         <span class="example-spacer"></span>
+                        <mat-spinner
+                          *ngIf="loadingRequest | async"
+                          style="justify-self: center; margin-right: 10px"
+                          [diameter]="35"
+                          mode="indeterminate"
+                        ></mat-spinner>
                         <button
                           *ngIf="!disableEndereco"
                           [disabled]="loadingRequest | async"
@@ -548,14 +554,10 @@
                           (click)="swtichStateEditEndereco()"
                         >
                           <mat-icon>{{
-                            disableEndereco ? 'edit' : 'close'
+                            disableEndereco ? 'add' : 'close'
                           }}</mat-icon>
                         </button>
                       </div>
-                      <mat-progress-bar
-                        *ngIf="loadingRequest | async"
-                        mode="indeterminate"
-                      ></mat-progress-bar>
 
                       <div class="logNum">
                         <mat-form-field id="log" class="form">
@@ -602,6 +604,7 @@
                             type="text"
                             matInput
                             formControlName="Cidade"
+                            [readonly]="disableForCep"
                           />
                         </mat-form-field>
                         <mat-form-field id="est" class="form">
@@ -610,11 +613,19 @@
                             type="text"
                             matInput
                             formControlName="Estado"
+                            [readonly]="disableForCep"
                           />
                         </mat-form-field>
                         <mat-form-field id="cep" class="form">
                           <mat-label>CEP</mat-label>
-                          <input type="text" matInput formControlName="Cep" />
+                          <input
+                            type="number"
+                            matInput
+                            formControlName="Cep"
+                            minlength="8"
+                            maxlength="8"
+                            (blur)="findCep()"
+                          />
                         </mat-form-field>
                       </div>
                     </div>
@@ -635,12 +646,13 @@
                         <mat-icon matPrefix>delete</mat-icon>
                       </button>
                     </div>
-                    <mat-progress-bar
-                      *ngIf="loadingRequest | async"
-                      mode="indeterminate"
-                    ></mat-progress-bar>
+
                     <div class="listEndereco">
-                      <mat-selection-list #ListEndereco [multiple]="false">
+                      <mat-selection-list
+                        #ListEndereco
+                        [multiple]="false"
+                        [ngStyle]="{'overflow-y': (userDate | async)?.CadastroComum?.Enderecos?.[0] ? 'scroll' : 'hidden'}"
+                      >
                         <mat-list-option
                           *ngFor="
                             let item of (userDate | async)?.CadastroComum
@@ -674,13 +686,25 @@
                             >{{ item.Complemento }}</span
                           >
                         </mat-list-option>
-                        <div class="opList"></div>
+                        <mat-list
+                          *ngIf="
+                    !(userDate | async)?.CadastroComum?.Enderecos?.[0]
+                  "
+                        >
+                          <mat-list-item matListItemTitle>
+                            Você não possui endereços Registrado
+                          </mat-list-item>
+                        </mat-list>
                       </mat-selection-list>
                     </div>
                   </div>
                 </form>
 
                 <span class="example-spacer"></span>
+                <mat-progress-bar
+                  *ngIf="loadingRequest | async"
+                  mode="indeterminate"
+                ></mat-progress-bar>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
             </mat-accordion>
@@ -716,37 +740,54 @@
                     <div class="formEndereco">
                       <form class="formEndereco" [formGroup]="infoBancarias">
                         <div class="titleEnd">
-                          <p>Adicionar Conta Bancária</p>
+                          <p
+                            *ngIf="
+                              !(userDate | async)?.InformacoesBancarias
+                                ?.ContaBancaria?.Agencia
+                            "
+                          >
+                            Adicionar Conta Bancária
+                          </p>
+                          <p
+                            *ngIf="
+                              (userDate | async)?.InformacoesBancarias
+                                ?.ContaBancaria?.Agencia
+                            "
+                          >
+                            Alterar Conta Bancária
+                          </p>
                           <span class="example-spacer"></span>
+                          <mat-spinner
+                            *ngIf="loadingRequest | async"
+                            style="justify-self: center; margin-right: 10px"
+                            [diameter]="35"
+                            mode="indeterminate"
+                          ></mat-spinner>
                           <button
-                            *ngIf="!disableEndereco"
+                            *ngIf="!disableBancarias"
                             [disabled]="loadingRequest | async"
                             mat-mini-fab
                             color="primary"
-                            (click)="setInfoEndereco()"
+                            (click)="setInfoBancarias()"
                           >
                             <mat-icon> done</mat-icon>
                           </button>
                           <button
                             mat-mini-fab
-                            [color]="!disableEndereco ? 'warn' : 'primary'"
-                            (click)="swtichStateEditEndereco()"
+                            [color]="!disableBancarias ? 'warn' : 'primary'"
+                            (click)="swtichStateEditBancarias()"
                           >
                             <mat-icon>{{
-                              disableEndereco ? 'edit' : 'close'
+                              disableBancarias ? 'edit' : 'close'
                             }}</mat-icon>
                           </button>
                         </div>
-                        <mat-progress-bar
-                          *ngIf="loadingRequest | async"
-                          mode="indeterminate"
-                        ></mat-progress-bar>
 
                         <div class="ageNume">
                           <mat-form-field id="nume" class="form">
                             <mat-label>Número da Conta</mat-label>
                             <input
-                              type="number"
+                              type="text"
                               matInput
                               formControlName="Conta"
                             />
@@ -767,29 +808,44 @@
                         <div class="titleEnd">
                           <p>Adicionar Chave Pix</p>
                           <span class="example-spacer"></span>
+                          <mat-spinner
+                            *ngIf="loadingRequest | async"
+                            style="justify-self: center; margin-right: 10px"
+                            [diameter]="35"
+                            mode="indeterminate"
+                          ></mat-spinner>
                           <button
-                            *ngIf="!disableEndereco"
+                            *ngIf="
+                              (userDate | async)?.InformacoesBancarias?.Pix
+                                ?.Chave
+                            "
+                            [disabled]="loadingRequest | async"
+                            mat-mini-fab
+                            color="warn"
+                            (click)="remInfoPix()"
+                          >
+                            <mat-icon> delete</mat-icon>
+                          </button>
+                          <button
+                            *ngIf="!disablePix"
                             [disabled]="loadingRequest | async"
                             mat-mini-fab
                             color="primary"
-                            (click)="setInfoEndereco()"
+                            (click)="setInfoBancarias()"
                           >
                             <mat-icon> done</mat-icon>
                           </button>
                           <button
                             mat-mini-fab
-                            [color]="!disableEndereco ? 'warn' : 'primary'"
-                            (click)="swtichStateEditEndereco()"
+                            [color]="!disablePix ? 'warn' : 'primary'"
+                            (click)="swtichStateEditPix()"
                           >
                             <mat-icon>{{
-                              disableEndereco ? 'edit' : 'close'
+                              disablePix ? 'edit' : 'close'
                             }}</mat-icon>
                           </button>
                         </div>
-                        <mat-progress-bar
-                          *ngIf="loadingRequest | async"
-                          mode="indeterminate"
-                        ></mat-progress-bar>
+
                         <div class="chaTip">
                           <mat-form-field id="cha" class="form">
                             <mat-label>Chave Pix</mat-label>
@@ -797,16 +853,84 @@
                               type="text"
                               matInput
                               formControlName="Chave"
+                              [value]="
+                                (userDate | async)?.InformacoesBancarias?.Pix
+                                  ?.Chave
+                                  ? (userDate | async)?.InformacoesBancarias
+                                      ?.Pix?.Chave
+                                  : null
+                              "
                             />
                           </mat-form-field>
                           <mat-form-field id="tip" class="form">
                             <mat-label>Tipo de Pix</mat-label>
-                            <input
-                              type="text"
-                              matInput
+                            <mat-select
                               formControlName="Tipo"
-                            />
+                              [value]="
+                                (userDate | async)?.InformacoesBancarias?.Pix
+                                  ?.Tipo
+                                  ? (userDate | async)?.InformacoesBancarias
+                                      ?.Pix?.Tipo
+                                  : undefined
+                              "
+                            >
+                              <mat-option value="CPF/CNPJ">CPF/CNPJ</mat-option>
+                              <mat-option value="Email">Email</mat-option>
+                              <mat-option value="Telefone">Telefone</mat-option>
+                              <mat-option value="Aleatorio"
+                                >Aleatorio</mat-option
+                              >
+                            </mat-select>
                           </mat-form-field>
+                        </div>
+
+                        <div
+                          class="myCard"
+                          *ngIf="
+                            (userDate | async)?.InformacoesBancarias
+                              ?.ContaBancaria?.Agencia
+                          "
+                        >
+                          <p>Cartão Cadastrado</p>
+                          <div class="container">
+                            <div class="card">
+                              <mat-icon class="logo">space_dashboard</mat-icon>
+
+                              <span class="remove" (click)="remInfoBancarias()"
+                                ><svg
+                                  viewBox="0 0 16 16"
+                                  class="bi bi-trash-fill"
+                                  fill="currentColor"
+                                  height="16"
+                                  width="16"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"
+                                  ></path>
+                                </svg>
+                              </span>
+
+                              <span class="number"
+                                >**** **** ****
+                                {{
+                                  (
+                                    (userDate | async)?.InformacoesBancarias
+                                      ?.ContaBancaria?.Agencia || ''
+                                  ).slice(-4)
+                                }}</span
+                              >
+                              <span class="owner">{{
+                                (userDate | async)?.CadastroComum?.Nome +
+                                  ' ' +
+                                  ((userDate | async)?.CadastroComum
+                                    ?.Sobrenome || 'Carregando')[0]
+                                    .charAt(0)
+                                    .toUpperCase() +
+                                  '.'
+                              }}</span>
+                            </div>
+                          </div>
                         </div>
                       </form>
                     </div>

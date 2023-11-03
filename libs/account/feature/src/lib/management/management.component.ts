@@ -9,6 +9,9 @@ import {
   NovoEndereco,
   Login,
   AuthStorage,
+  ContaBancaria,
+  InformacoesBancarias,
+  Pix,
 } from '@agroloc/account/data-acess';
 import { combineLatest, debounceTime, map, take } from 'rxjs';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -62,6 +65,7 @@ export class ManagementComponent implements OnInit {
   disableEndereco = true;
   disableBancarias = true;
   disablePix = true;
+  disableForCep = false;
 
   ImageType: File | null | undefined = null;
   imagePreview: string | ArrayBuffer | null | undefined = null;
@@ -490,6 +494,8 @@ export class ManagementComponent implements OnInit {
       this.infoBancarias.controls['Agencia'].enable();
       this.infoBancarias.controls['Conta'].enable();
       this.disableBancarias = !this.disableBancarias;
+      this.disableAllInfoPix();
+      this.resetDisableInfoPix();
     } else {
       this.infoBancarias.controls['Agencia'].disable();
       this.infoBancarias.controls['Conta'].disable();
@@ -502,6 +508,8 @@ export class ManagementComponent implements OnInit {
       this.infoPix.controls['Chave'].enable();
       this.infoPix.controls['Tipo'].enable();
       this.disablePix = !this.disablePix;
+      this.disableAllInfoBancarias();
+      this.resetDisableInfoBancarias();
     } else {
       this.infoPix.controls['Chave'].disable();
       this.infoPix.controls['Tipo'].disable();
@@ -660,6 +668,7 @@ export class ManagementComponent implements OnInit {
         if (this.infoEndereco.valid) {
           console.log('passei');
           novoEndereco = this.infoEndereco.value as unknown as NovoEndereco;
+          novoEndereco.Cep = novoEndereco.Cep.toString();
           this.accountService
             .addEndereco(profile.IdUsuario, novoEndereco)
             .subscribe((response) => {
@@ -690,26 +699,156 @@ export class ManagementComponent implements OnInit {
   }
 
   setInfoBancarias() {
-    let novoEndereco: NovoEndereco;
-    console.log(this.infoEndereco.value);
-
     combineLatest([this.userDate, this.userProfile])
       .pipe(take(1), debounceTime(1000))
       .subscribe(([account, profile]) => {
-        if (this.infoEndereco.valid) {
-          console.log('passei');
-          novoEndereco = this.infoEndereco.value as unknown as NovoEndereco;
+        let addCount = 0;
+        if (account.InformacoesBancarias) {
+          if (this.infoBancarias.valid) {
+            account.InformacoesBancarias.ContaBancaria = this.infoBancarias
+              .value as unknown as ContaBancaria;
+            addCount += 1;
+          }
+          if (this.infoPix.valid) {
+            account.InformacoesBancarias.Pix = this.infoPix
+              .value as unknown as Pix;
+            addCount += 1;
+          }
+        } else {
+          let informacoesBancarias: InformacoesBancarias;
+          if (this.infoBancarias.valid) {
+            informacoesBancarias = {
+              ContaBancaria: this.infoBancarias
+                .value as unknown as ContaBancaria,
+            };
+            account.InformacoesBancarias = informacoesBancarias;
+            addCount += 1;
+          }
+          if (this.infoPix.valid) {
+            informacoesBancarias = {
+              Pix: this.infoPix.value as unknown as Pix,
+            };
+            account.InformacoesBancarias = informacoesBancarias;
+            addCount += 1;
+          }
+        }
+
+        if (addCount) {
+          console.log(addCount);
+
           this.accountService
-            .addEndereco(profile.IdUsuario, novoEndereco)
+            .updateInformacoesBancarias(
+              profile.IdUsuario,
+              account.InformacoesBancarias as InformacoesBancarias
+            )
             .subscribe((response) => {
-              this.snackBar.open(`Endereço Adicionado`, undefined, {
-                duration: 3000,
-              });
-              this.disableAllInfoEndereco();
-              this.resetDisableInfoEndereco();
+              this.snackBar.open(
+                `Informações Bancárias Adicionado`,
+                undefined,
+                {
+                  duration: 3000,
+                }
+              );
+              this.disableAllInfoBancarias();
+              this.disableAllInfoPix();
+              this.resetDisableInfoBancarias();
+              this.resetDisableInfoPix();
               this.accountService.nextAccount(profile.IdUsuario);
             });
+        } else {
+          this.snackBar.open(
+            `Erro ao adicionar Informações Bancárias`,
+            undefined,
+            {
+              duration: 3000,
+            }
+          );
         }
+      });
+  }
+
+  remInfoBancarias() {
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {
+        let remCont = 0;
+        if (account.InformacoesBancarias) {
+          if (account.InformacoesBancarias.ContaBancaria) {
+            account.InformacoesBancarias.ContaBancaria = undefined;
+            remCont += 1;
+          }
+        }
+
+        if (remCont === 1) {
+          this.accountService
+            .updateInformacoesBancarias(
+              profile.IdUsuario,
+              account.InformacoesBancarias as InformacoesBancarias
+            )
+            .subscribe((response) => {
+              this.snackBar.open(`Informações Bancárias Removido`, undefined, {
+                duration: 3000,
+              });
+              this.accountService.nextAccount(profile.IdUsuario);
+            });
+        } else {
+          this.snackBar.open(
+            `Erro ao remover Informações Bancárias`,
+            undefined,
+            {
+              duration: 3000,
+            }
+          );
+        }
+      });
+  }
+
+  remInfoPix() {
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {
+        let remCont = 0;
+        if (account.InformacoesBancarias) {
+          if (account.InformacoesBancarias.Pix) {
+            account.InformacoesBancarias.Pix = undefined;
+            remCont += 1;
+          }
+        }
+
+        if (remCont === 1) {
+          this.accountService
+            .updateInformacoesBancarias(
+              profile.IdUsuario,
+              account.InformacoesBancarias as InformacoesBancarias
+            )
+            .subscribe((response) => {
+              this.snackBar.open(`Pix Removido`, undefined, {
+                duration: 3000,
+              });
+              this.accountService.nextAccount(profile.IdUsuario);
+            });
+        } else {
+          this.snackBar.open(`Erro ao remover o Pix`, undefined, {
+            duration: 3000,
+          });
+        }
+      });
+  }
+
+  findCep() {
+    const cepValue = this.infoEndereco.value.Cep?.toString();
+    this.accountService
+      .findCepEndereco(cepValue as string)
+      .pipe(debounceTime(1000))
+      .subscribe((response) => {
+        this.infoEndereco.patchValue({
+          Cidade: response.localidade,
+          Estado: response.uf,
+        });
+        this.snackBar.open('Cep Encontrado', 'Fechar', {
+          duration: 3000,
+        });
+        this.disableForCep = true;
       });
   }
 }

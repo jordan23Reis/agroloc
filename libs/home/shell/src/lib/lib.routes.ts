@@ -49,6 +49,10 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'machinery',
             component: MachineryRegisterComponent,
+            canActivate: [AuthGuard],
+            data: {
+              roles: ['Administrador', 'Comum', 'Freteiro'],
+            },
             children: [],
           },
           {
@@ -66,7 +70,7 @@ export const homeShellRoutes: Route[] = [
             component: ManagementComponent,
             canActivate: [AuthGuard],
             data: {
-              roles: ['Admin', 'Comum', 'Freteiro'],
+              roles: ['Administrador', 'Comum', 'Freteiro'],
             },
             children: [],
           },

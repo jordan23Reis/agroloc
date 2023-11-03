@@ -112,7 +112,6 @@
     mat-selection-list {
       max-height: 300px;
       height: auto;
-      overflow-y: scroll;
     }
 
     .conteudo {
@@ -270,6 +269,7 @@
       flex-direction: row;
       width: 70%;
       height: auto;
+      margin-bottom: 60px;
       #cha {
         width: 70%;
       }
@@ -311,6 +311,85 @@
       width: 70%;
       height: 80px;
       margin-top: 15px;
+    }
+
+    .myCard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 70%;
+      margin-top: 15px;
+      margin-bottom: 120px;
+    }
+
+    .logo svg {
+      height: 48px;
+      width: 54px;
+    }
+
+    ::selection {
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    .container {
+    }
+
+    .card {
+      background: radial-gradient(circle, white 0%, #d5d5d5 100%);
+      width: 350px;
+      height: 200px;
+      border-radius: 20px;
+      position: relative;
+      box-shadow: 3px 3px 17px 0px rgba(0, 0, 0, 0.55);
+    }
+
+    .card .remove,
+    .card .logo {
+      position: absolute;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .card .remove {
+      top: 30px;
+      right: 30px;
+      opacity: 0.9;
+      color: black;
+    }
+
+    .card .remove:hover {
+      color: #f06b5d;
+    }
+
+    .card .logo {
+      top: 30px;
+      left: 30px;
+      width: 4em;
+      height: 3em;
+      font-size: 3em;
+      opacity: 1;
+      color: black;
+    }
+
+    .card .number,
+    .card .owner {
+      display: block;
+      position: absolute;
+      left: 30px;
+      cursor: default;
+      color: black;
+      opacity: 0.9;
+      transition: color 0.7s ease-out;
+    }
+
+    .card .number {
+      bottom: 60px;
+      letter-spacing: 4px;
+    }
+
+    .card .owner {
+      bottom: 30px;
+      letter-spacing: 1px;
     }
   }
 }

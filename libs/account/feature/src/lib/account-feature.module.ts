@@ -27,6 +27,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AutomobileComponent } from './automobile/automobile.component';
 
 @NgModule({
   imports: [
@@ -54,18 +56,21 @@ import { MatTableModule } from '@angular/material/table';
     MatListModule,
     MatProgressBarModule,
     MatTableModule,
+    MatProgressSpinnerModule,
   ],
   declarations: [
     AccountRegisterComponent,
     AccountLoginComponent,
     FavoriteComponent,
     ManagementComponent,
+    AutomobileComponent,
   ],
   exports: [
     AccountRegisterComponent,
     AccountLoginComponent,
     FavoriteComponent,
     ManagementComponent,
+    AutomobileComponent,
   ],
 })
 export class AccountFeatureModule {}

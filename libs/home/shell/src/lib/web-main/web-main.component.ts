@@ -42,7 +42,6 @@ export class WebMainComponent {
 
   links = [
     { nome: 'Home', url: 'home' },
-    { nome: 'Cadastrar', url: 'machinery' },
     { nome: 'Pesquisa', url: 'search' },
     { nome: 'Detalhes', url: 'details' },
   ];

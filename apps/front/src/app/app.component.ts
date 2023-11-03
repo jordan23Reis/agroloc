@@ -50,8 +50,6 @@ export class AppComponent implements OnInit {
       .IsLogged()
       .pipe(take(1))
       .subscribe((isLogged) => {
-        console.log(isLogged);
-
         if (isLogged) {
           this.authService.nextProfile();
           this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
@@ -63,15 +61,17 @@ export class AppComponent implements OnInit {
           });
         }
 
-        this.accountService.userAccount$.pipe(debounceTime(1000), take(1)).subscribe((response) => {
-          this.snackBar.open(
-            `Seja Bem-Vindo, ${response?.CadastroComum?.Nome}`,
-            undefined,
-            {
-              duration: 3000,
-            }
-          );
-        });
+        this.accountService.userAccount$
+          .pipe(debounceTime(1000), take(1))
+          .subscribe((response) => {
+            this.snackBar.open(
+              `Seja Bem-Vindo, ${response?.CadastroComum?.Nome}`,
+              undefined,
+              {
+                duration: 3000,
+              }
+            );
+          });
       });
   }
 

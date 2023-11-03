@@ -82,13 +82,13 @@ export interface InformacoesBancarias {
 }
 
 // Representa os dados de conta bancária
-interface ContaBancaria {
+export interface ContaBancaria {
   Agencia: string;
   Conta: string;
 }
 
 // Representa os dados de PIX
-interface Pix {
+export interface Pix {
   Chave: string;
   Tipo: string;
 }

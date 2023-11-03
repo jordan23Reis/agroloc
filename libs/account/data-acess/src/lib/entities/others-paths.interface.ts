@@ -33,3 +33,16 @@ export interface EditarEndereco {
   Complemento?: string;
   Numero?: number;
 }
+
+export interface CepType {
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  ibge: string;
+  gia: string;
+  ddd: string;
+  siafi: string;
+}

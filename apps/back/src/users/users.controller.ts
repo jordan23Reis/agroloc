@@ -25,7 +25,12 @@ import { Enderecos, InformacoesBancarias } from './dto/full-user.dto';
 import { UsuarioFreteiroGuard } from './guards/UsuarioFreteiro';
 import { Automovel } from './dto/automovel.dto';
 import { Senha } from './dto/senha.dto';
-import { UsuarioImagemConfigs, UsuarioImagemLimites, VeiculoImagemConfigs, VeiculoImagemLimites } from '@agroloc/shared/util';
+import {
+  UsuarioImagemConfigs,
+  UsuarioImagemLimites,
+  VeiculoImagemConfigs,
+  VeiculoImagemLimites,
+} from '@agroloc/shared/util';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import { AutomovelExisteGuard } from './guards/AutomovelExisteGuard';
@@ -45,7 +50,7 @@ export class UsersController {
     }
   }
 
-  @Get("freteiros")
+  @Get('freteiros')
   findAll(@Query() query) {
     try {
       return this.usersService.findFreteiros(query);
@@ -64,13 +69,9 @@ export class UsersController {
     }
   }
 
-  
-
-
-
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
-  @Get("cadastro/:id")
-  findCadastroUsuario(@Param("id") id: string) {
+  @Get('cadastro/:id')
+  findCadastroUsuario(@Param('id') id: string) {
     try {
       return this.usersService.findCadastro(id);
     } catch (e) {
@@ -79,8 +80,11 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
-  @Put("cadastro/:id")
-  updateCadastroUsuario(@Param("id") id: string, @Body() cadastro: CadastroDto) {
+  @Put('cadastro/:id')
+  updateCadastroUsuario(
+    @Param('id') id: string,
+    @Body() cadastro: CadastroDto
+  ) {
     try {
       return this.usersService.updateCadastro(id, cadastro);
     } catch (e) {
@@ -88,9 +92,17 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard)
-  @Put("enderecofreteiro/:id/:idEndereco")
-  updateEnderecoFreteiro(@Param("id") id: string, @Param("idEndereco") idEndereco: mongoose.Schema.Types.ObjectId) {
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioExisteGuard,
+    UsuarioCorretoGuard,
+    UsuarioFreteiroGuard
+  )
+  @Put('enderecofreteiro/:id/:idEndereco')
+  updateEnderecoFreteiro(
+    @Param('id') id: string,
+    @Param('idEndereco') idEndereco: mongoose.Schema.Types.ObjectId
+  ) {
     try {
       return this.usersService.atualizarEnderecoFreteiro(id, idEndereco);
     } catch (e) {
@@ -98,9 +110,14 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard)
-  @Delete("enderecofreteiro/:id")
-  deleteEnderecoFreteiro(@Param("id") id: string) {
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioExisteGuard,
+    UsuarioCorretoGuard,
+    UsuarioFreteiroGuard
+  )
+  @Delete('enderecofreteiro/:id')
+  deleteEnderecoFreteiro(@Param('id') id: string) {
     try {
       return this.usersService.deleteEnderecoFreteiro(id);
     } catch (e) {
@@ -109,18 +126,18 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
-  @Put("senha/:id")
-  updateSenhaUsuario(@Param("id") id: string, @Body() senha: Senha) {
+  @Put('senha/:id')
+  updateSenhaUsuario(@Param('id') id: string, @Body() senha: Senha) {
     try {
       return this.usersService.updateSenha(id, senha);
     } catch (e) {
       return e;
     }
   }
-  
+
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
-  @Get("informacoesbancarias/:id")
-  findInformacaoBancariaUsuario(@Param("id") id: string) {
+  @Get('informacoesbancarias/:id')
+  findInformacaoBancariaUsuario(@Param('id') id: string) {
     try {
       return this.usersService.findInformacoesBancarias(id);
     } catch (e) {
@@ -129,18 +146,32 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
-  @Put("informacoesbancarias/:id/:idAutomovel")
-  updateInformacaoBancariaUsuario(@Param("id") id: string, @Body() informacoesBancarias: InformacoesBancarias) {
+  @Put('informacoesbancarias/:id')
+  updateInformacaoBancariaUsuario(
+    @Param('id') id: string,
+    @Body() informacoesBancarias: InformacoesBancarias
+  ) {
     try {
-      return this.usersService.updateInformacoesBancarias(id, informacoesBancarias);
+      return this.usersService.updateInformacoesBancarias(
+        id,
+        informacoesBancarias
+      );
     } catch (e) {
       return e;
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard)
-  @Post("automovel/:id")
-  adicionarAutomovelUsuario(@Param("id") id: string, @Body() automovel: Automovel) {
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioExisteGuard,
+    UsuarioCorretoGuard,
+    UsuarioFreteiroGuard
+  )
+  @Post('automovel/:id')
+  adicionarAutomovelUsuario(
+    @Param('id') id: string,
+    @Body() automovel: Automovel
+  ) {
     try {
       return this.usersService.adicionarAutomovel(id, automovel);
     } catch (e) {
@@ -148,19 +179,36 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard)
-  @Put("automovel/:id/:idAutomovel")
-  editarAutomovelUsuario(@Param("id") id: string, @Param("idAutomovel") idAutomovel: string, @Body() automovel: Automovel) {
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioExisteGuard,
+    UsuarioCorretoGuard,
+    UsuarioFreteiroGuard
+  )
+  @Put('automovel/:id/:idAutomovel')
+  editarAutomovelUsuario(
+    @Param('id') id: string,
+    @Param('idAutomovel') idAutomovel: string,
+    @Body() automovel: Automovel
+  ) {
     try {
-      return this.usersService.editarAutomovel(id,idAutomovel,automovel);
+      return this.usersService.editarAutomovel(id, idAutomovel, automovel);
     } catch (e) {
       return e;
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard)
-  @Delete("automovel/:id/:idAutomovel")
-  removerAutomovelUsuario(@Param("id") id: string, @Param("idAutomovel") idAutomovel: string) {
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioExisteGuard,
+    UsuarioCorretoGuard,
+    UsuarioFreteiroGuard
+  )
+  @Delete('automovel/:id/:idAutomovel')
+  removerAutomovelUsuario(
+    @Param('id') id: string,
+    @Param('idAutomovel') idAutomovel: string
+  ) {
     try {
       return this.usersService.removerAutomovel(id, idAutomovel);
     } catch (e) {
@@ -169,8 +217,11 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
-  @Post("endereco/:id")
-  adicionarEnderecoUsuario(@Param("id") id: string, @Body() automovel: Enderecos) {
+  @Post('endereco/:id')
+  adicionarEnderecoUsuario(
+    @Param('id') id: string,
+    @Body() automovel: Enderecos
+  ) {
     try {
       return this.usersService.adicionarEndereco(id, automovel);
     } catch (e) {
@@ -179,18 +230,25 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
-  @Put("endereco/:id/:idEndereco")
-  editarEnderecoUsuario(@Param("id") id: string, @Param("idEndereco") idEndereco: string, @Body() endereco: Enderecos) {
+  @Put('endereco/:id/:idEndereco')
+  editarEnderecoUsuario(
+    @Param('id') id: string,
+    @Param('idEndereco') idEndereco: string,
+    @Body() endereco: Enderecos
+  ) {
     try {
-      return this.usersService.editarEndereco(id,idEndereco,endereco);
+      return this.usersService.editarEndereco(id, idEndereco, endereco);
     } catch (e) {
       return e;
     }
   }
 
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
-  @Delete("endereco/:id/:idEndereco")
-  removerEnderecoUsuario(@Param("id") id: string, @Param("idEndereco") idEndereco: string) {
+  @Delete('endereco/:id/:idEndereco')
+  removerEnderecoUsuario(
+    @Param('id') id: string,
+    @Param('idEndereco') idEndereco: string
+  ) {
     try {
       return this.usersService.removerEndereco(id, idEndereco);
     } catch (e) {
@@ -232,7 +290,13 @@ export class UsersController {
     return this.usersService.removerFotoPerfil(id);
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard, AutomovelExisteGuard)
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioExisteGuard,
+    UsuarioCorretoGuard,
+    UsuarioFreteiroGuard,
+    AutomovelExisteGuard
+  )
   @Post('automovel/imagem/principal/:id/:idAutomovel')
   @UseInterceptors(
     FileInterceptor('Imagem', {
@@ -256,19 +320,31 @@ export class UsersController {
     )
     imagem: Express.Multer.File,
     @Param('id') id: string,
-    @Param("idAutomovel") idAutomovel: string
+    @Param('idAutomovel') idAutomovel: string
   ) {
-    return this.usersService.createImagemPrincipalAutomovel(imagem, id, idAutomovel);
+    return this.usersService.createImagemPrincipalAutomovel(
+      imagem,
+      id,
+      idAutomovel
+    );
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard, UsuarioFreteiroGuard, AutomovelExisteGuard)
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioExisteGuard,
+    UsuarioCorretoGuard,
+    UsuarioFreteiroGuard,
+    AutomovelExisteGuard
+  )
   @Delete('automovel/imagem/principal/:id/:idAutomovel')
-  deleteImagemPrincipalVeiculo(@Param('id') id: string, @Param('idAutomovel') idAutomovel: string) {
+  deleteImagemPrincipalVeiculo(
+    @Param('id') id: string,
+    @Param('idAutomovel') idAutomovel: string
+  ) {
     return this.usersService.deleteImagemPrincipalAutomovel(id, idAutomovel);
   }
 
- 
-  @UseGuards(JwtAuthGuard, )
+  @UseGuards(JwtAuthGuard)
   @Post('automovel/imagem/secundaria/:id/:idAutomovel')
   @UseInterceptors(
     FilesInterceptor('Imagens', VeiculoImagemLimites.maxImagemsACriar, {
@@ -300,8 +376,7 @@ export class UsersController {
     return this.usersService.createImagemsSecundarias(imagens, id, idAutomovel);
   }
 
-
-  @UseGuards(JwtAuthGuard, )
+  @UseGuards(JwtAuthGuard)
   @Delete('automovel/imagem/secundaria/:id/:idAutomovel/:filename')
   deleteImagemSecundaria(
     @Param('id') id: string,
@@ -310,5 +385,4 @@ export class UsersController {
   ) {
     return this.usersService.deleteImagemSecundaria(id, idAutomovel, filename);
   }
-
 }
