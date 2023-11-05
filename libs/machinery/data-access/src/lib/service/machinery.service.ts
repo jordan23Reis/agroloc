@@ -15,6 +15,7 @@ import {
   UpdateCategoria,
 } from '../entities/machinery-paths.interface';
 import { Account } from '@agroloc/account/data-acess';
+import { Maquina } from '../entities';
 
 @Injectable({
   providedIn: 'root',
@@ -26,31 +27,8 @@ export class MachineryService {
     return this.http.post<Machinery>(`/api/maquina/`, machineryData);
   }
 
-  getMachinery(machineryId: string): Observable<Machinery> {
-    return this.http.get<Machinery>(`/api/maquina/${machineryId}`);
-  }
-
-  getMachineries(
-    quantidadePorPagina: number,
-    page: number,
-    busca: string,
-    categoria: string,
-    tipoPreco: string,
-    precoMin: number,
-    precoMax: number,
-    ordernarPor: string
-  ): Observable<any[]> {
-    const params = new HttpParams()
-      .set('quantidadePorPagina', quantidadePorPagina.toString())
-      .set('page', page.toString())
-      .set('busca', busca)
-      .set('categoria', categoria)
-      .set('tipoPreco', tipoPreco)
-      .set('precoMin', precoMin.toString())
-      .set('precoMax', precoMax.toString())
-      .set('ordernarPor', ordernarPor);
-
-    return this.http.get<any[]>(`/api/maquina/`, { params });
+  getMachinery(machineryId: string): Observable<Maquina> {
+    return this.http.get<Maquina>(`/api/maquina/${machineryId}`);
   }
 
   deleteMachinery(machineryId: string): Observable<any> {
@@ -67,7 +45,6 @@ export class MachineryService {
   createMainImage(machineryId: string, image: File): Observable<any> {
     const formData = new FormData();
     formData.append('Imagem', image);
-    console.log(formData);
 
     return this.http.post<any>(
       `/api/maquina/imagem/principal/${machineryId}`,
@@ -86,7 +63,6 @@ export class MachineryService {
     images.forEach((image) => {
       formData.append(`Imagens`, image);
     });
-    console.log(formData);
 
     return this.http.post<any>(
       `/api/maquina/imagem/secundaria/${machineryId}`,

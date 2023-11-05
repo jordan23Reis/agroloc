@@ -103,7 +103,7 @@ export class MaquinaService {
           throw new BadRequestException('Categoria não existe!');
         }
       } else {
-        maquinaDtoComIdUsuario.Categoria = undefined;
+        throw new BadRequestException('Esta sem Categoria!');
       }
 
       const tipoPreco = await this.tipoPreco.findOne(

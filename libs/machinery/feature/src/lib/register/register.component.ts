@@ -22,6 +22,7 @@ import {
   combineLatest,
   debounceTime,
   map,
+  retry,
   take,
 } from 'rxjs';
 
@@ -72,24 +73,6 @@ export class MachineryRegisterComponent implements OnInit {
 
   imageUrl: string | ArrayBuffer | null | undefined = null;
   listImageUrl: string[] | null | undefined = null;
-  categoryList = [
-    {
-      value: 'Categoria 1',
-      name: 'Categoria 1',
-    },
-    {
-      value: 'Categoria 1',
-      name: 'Categoria 1',
-    },
-    {
-      value: 'Categoria 1',
-      name: 'Categoria 1',
-    },
-    {
-      value: 'Categoria 1',
-      name: 'Categoria 1',
-    },
-  ];
 
   ImagemPrincipalType: File | null | undefined = null;
   ImagemSecundariasType: File[] = [];
@@ -286,13 +269,11 @@ export class MachineryRegisterComponent implements OnInit {
 
   setInfoEndereco() {
     let novoEndereco: NovoEndereco;
-    console.log(this.infoEndereco.value);
 
     combineLatest([this.userDate, this.userProfile])
       .pipe(take(1), debounceTime(1000))
       .subscribe(([account, profile]) => {
         if (this.infoEndereco.valid) {
-          console.log('passei');
           novoEndereco = this.infoEndereco.value as unknown as NovoEndereco;
           novoEndereco.Cep = novoEndereco.Cep.toString();
           this.accountService
@@ -385,7 +366,7 @@ export class MachineryRegisterComponent implements OnInit {
             Largura: this.secondFormGroup.value.Largura as unknown as number,
             Altura: this.secondFormGroup.value.Altura as unknown as number,
             EstaAtiva: true,
-            IdCategoria: this.firstFormGroup.value
+            idCategoria: this.firstFormGroup.value
               .Categoria as unknown as string,
             IdEndereco: this.secondFormGroupEnd.value
               .IdEndereco as unknown as string,
@@ -399,16 +380,19 @@ export class MachineryRegisterComponent implements OnInit {
           this.machineryService
             .createMachinery(machineryData)
             .subscribe((response) => {
-              this.snackBar.open(`Informações Alterada`, undefined, {
+              this.snackBar.open(`Cadastro efetuado com Sucesso!!`, undefined, {
                 duration: 3000,
               });
 
               if (this.firstFormGroup.value.ImagemPrincipal) {
+                console.log(response);
+
                 this.machineryService
                   .createMainImage(
                     response._id as string,
                     this.firstFormGroup.value.ImagemPrincipal as File
                   )
+                  .pipe(retry(3), debounceTime(1000))
                   .subscribe((response) => {
                     this.accountService.nextAccount(profile.IdUsuario);
                   });
@@ -420,6 +404,7 @@ export class MachineryRegisterComponent implements OnInit {
                     response._id as string,
                     this.thirdFormGroup.value.ImagemSecundarias as File[]
                   )
+                  .pipe(retry(3), debounceTime(1000))
                   .subscribe((response) => {
                     this.accountService.nextAccount(profile.IdUsuario);
                   });

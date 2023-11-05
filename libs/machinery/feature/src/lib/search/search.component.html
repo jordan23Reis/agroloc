@@ -3,67 +3,75 @@
   <div class="search">
     <div class="chips">
       <span class="example-spacer"></span>
-      <mat-chip-listbox
-        aria-label="Fish selection"
-        *ngFor="let item of categories"
-      >
-        <mat-chip-option>{{ item }}</mat-chip-option>
-      </mat-chip-listbox>
+      <div class="category">
+        <mat-chip-listbox aria-label="Fish selection">
+          <mat-chip-option
+            *ngFor="let item of allCategories | async"
+            (selectionChange)="onChipSelectionChange($event, item.Nome)"
+            >{{ item.Nome }}</mat-chip-option
+          >
+        </mat-chip-listbox>
+      </div>
+      <div class="filter">
+        <button
+          mat-fab
+          extended
+          style="background-color: inherit; color: inherit"
+          (click)="toggleSidenav()"
+        >
+          <mat-icon>tune</mat-icon>
+          <h3>Filtro</h3>
+        </button>
+      </div>
       <span class="example-spacer"></span>
     </div>
     <div class="content">
-      <mat-divider></mat-divider>
-      <div class="item" *ngFor="let item of packages">
-        <mat-divider [vertical]="true"></mat-divider>
+      <div class="item" *ngFor="let item of searchData | async">
         <div class="foto">
-          <mat-divider></mat-divider>
           <span class="example-spacer"></span>
-          <img
-            src="https://http2.mlstatic.com/D_NQ_NP_768125-MLA71783090116_092023-F.webp"
-          />
+          <img [src]="item.ImagemPrincipal.Url" />
           <span class="example-spacer"></span>
-          <mat-divider></mat-divider>
         </div>
         <div class="informacoes">
-          <mat-divider></mat-divider>
+          <span class="example-spacer"></span>
           <div class="head">
-            <h3>{{ item.titulo }}</h3>
+            <h2>{{ item.Nome }}</h2>
             <span class="example-spacer"></span>
-            <button
-              mat-icon-button
-              class="example-icon favoriteIcon"
-              aria-label="Example icon-button with favorite border icon"
-            >
-              <mat-icon>favorite_border</mat-icon>
-            </button>
-          </div>
-          <div class="section">
-            <h2>{{ item.preco }}</h2>
-            <span class="example-spacer"></span>
-          </div>
-          <div class="footer">
-            <p>{{ item.locatario }}</p>
-            <span class="example-spacer"></span>
-            <h3>{{ item.avaliacao }}</h3>
             <button
               mat-icon-button
               class="example-icon"
-              aria-label="Example icon-button with star rate icon"
+              aria-label="Example icon-button with favorite border icon"
             >
-              <mat-icon>star</mat-icon>
+              <mat-icon class="favorite">favorite</mat-icon>
             </button>
           </div>
-          <mat-divider></mat-divider>
+          <div class="section">
+            <h1>R${{ item.Preco.ValorPorTipo }}</h1>
+            <h4 style="margin-left: 15px">{{ item.Preco.Tipo.Nome }}</h4>
+            <span class="example-spacer"></span>
+          </div>
+          <div class="footer">
+            <p>{{ item.DonoDaMaquina.Nome }}</p>
+            <span class="example-spacer"></span>
+            <button
+              mat-button
+              class="example-icon"
+              aria-label="Example icon-button with star rate icon"
+            >
+              <mat-icon class="star">star</mat-icon>
+              <h2>{{ calculateAverageRating(item.Avaliacoes) }}</h2>
+            </button>
+          </div>
+          <span class="example-spacer"></span>
         </div>
-        <mat-divider [vertical]="true"></mat-divider>
       </div>
-      <mat-divider></mat-divider>
     </div>
     <mat-paginator
-      [length]="100"
-      [pageSize]="10"
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page"
+      [length]="paginatorLength(searchData | async)"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25]"
+      (page)="onPageChange($event)"
+      style="margin-bottom: 60px"
     >
     </mat-paginator>
   </div>

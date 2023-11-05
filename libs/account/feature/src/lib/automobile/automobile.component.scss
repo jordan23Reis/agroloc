@@ -1,0 +1,389 @@
+:host {
+  .mobForm {
+  }
+
+  .webForm {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+
+    .example-spacer {
+      flex: 1 1 auto;
+    }
+
+    .spacer {
+      width: 100%;
+      min-height: 80px;
+    }
+
+    .example-stepper {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .mat-mdc-form-field {
+      margin-top: 16px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      height: auto;
+      margin-top: 30px;
+      align-items: center;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+    }
+
+    .formImgMain {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      min-height: 300px;
+      align-items: center;
+      justify-content: center;
+      border-style: ridge none ridge none;
+      padding-top: 15px;
+      padding-bottom: 30px;
+      margin-top: 15px;
+    }
+
+    .formTitle {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      min-height: 300px;
+      align-items: center;
+      justify-content: center;
+      border-style: none none ridge none;
+      padding-top: 15px;
+      padding-bottom: 30px;
+    }
+
+    .formDesc {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      min-height: 300px;
+      align-items: center;
+      justify-content: center;
+      border-style: none none ridge none;
+      padding-top: 15px;
+      padding-bottom: 30px;
+    }
+
+    .headFicha {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    .formFicha {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      min-height: 300px;
+      align-items: center;
+      justify-content: center;
+      border-style: ridge none ridge none;
+      padding-top: 15px;
+      padding-bottom: 30px;
+      margin-top: 15px;
+    }
+
+    .formCategory {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      min-height: 300px;
+      align-items: center;
+      justify-content: center;
+      border-style: none none ridge none;
+      padding-top: 15px;
+      padding-bottom: 30px;
+    }
+
+    .menuButtons {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      height: 80px;
+      padding-right: 5%;
+    }
+
+    #Titulo {
+      width: 70%;
+      height: auto;
+    }
+
+    #Descricao {
+      width: 70%;
+      height: 150px;
+
+      textarea {
+        height: 90px;
+      }
+    }
+
+    #Peso {
+      width: 70%;
+    }
+
+    #Comprimento {
+      width: 70%;
+    }
+
+    #Largura {
+      width: 70%;
+    }
+
+    #Altura {
+      width: 70%;
+    }
+
+    #imagemSecundarias {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .arquivos {
+      display: flex;
+      flex-direction: row;
+      overflow-y: hidden;
+      overflow-x: scroll;
+      max-width: 80%;
+      img {
+        margin-right: 15px;
+      }
+    }
+
+    .custum-file-upload {
+      height: 200px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: space-between;
+      gap: 20px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #cacaca;
+      background-color: rgba(255, 255, 255, 1);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+    }
+
+    .custum-file-upload .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .custum-file-upload .icon svg {
+      height: 80px;
+      fill: rgba(75, 85, 99, 1);
+    }
+
+    .custum-file-upload .text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .custum-file-upload .text span {
+      font-weight: 400;
+      color: rgba(75, 85, 99, 1);
+    }
+
+    .custum-file-upload input {
+      display: none;
+    }
+
+    .preview {
+      width: 350px;
+      height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 10px;
+      border-color: rgba($color: #000000, $alpha: 0.2);
+      border-style: ridge;
+      box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+
+      img {
+        max-width: 350px;
+        max-height: 250px;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+      }
+
+      input {
+        display: none;
+        max-width: 350px;
+        max-height: 250px;
+        width: 100%;
+        height: 100%;
+      }
+
+      // .arquivos {
+      //   width: 100%;
+      //   max-width: 100%;
+      //   overflow-x: scroll;
+      //   white-space: nowrap;
+      //   display: flex;
+      //   margin-left: 20px;
+      //   margin-right: 20px;
+      // }
+    }
+
+    mat-list {
+      width: 100%;
+      height: auto;
+    }
+
+    mat-selection-list {
+      max-height: 300px;
+      height: auto;
+    }
+
+    .formContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .formContainer > p {
+      align-self: flex-start;
+      margin-left: 15%;
+      margin-right: 15%;
+    }
+
+    .formEndereco {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+
+      p {
+        text-align: justify;
+        align-self: center;
+      }
+    }
+
+    .footerList {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      justify-content: center;
+      margin-top: 30px;
+      button {
+        margin-left: 5px;
+        margin-right: 7px;
+      }
+    }
+
+    .listEndereco {
+      display: flex;
+      flex-direction: column;
+      width: 70%;
+      height: auto;
+      margin-bottom: 60px;
+    }
+
+    .titleEnd {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      justify-content: center;
+      button {
+        margin-left: 5px;
+        margin-right: 7px;
+      }
+    }
+
+    .logNum {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #log {
+        width: 85%;
+      }
+
+      #num {
+        width: 15%;
+      }
+    }
+
+    .baiCom {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #bai {
+        width: 20%;
+      }
+
+      #com {
+        width: 80%;
+      }
+    }
+
+    .cidCEstCep {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #cid {
+        width: 60%;
+      }
+
+      #est {
+        width: 10%;
+      }
+
+      #cep {
+        width: 30%;
+      }
+    }
+
+    .form {
+      width: 70%;
+      height: auto;
+      margin-left: 5px;
+    }
+  }
+}

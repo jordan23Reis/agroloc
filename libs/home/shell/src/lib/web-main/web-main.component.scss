@@ -16,15 +16,35 @@
   }
 
   .example-sidenav-content {
-    height: 100%;
-    align-items: center;
-
     display: flex;
     flex-direction: column;
+    align-items: center;
+    height: 100%;
   }
 
   .example-sidenav {
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    height: 100%;
+    .head {
+      display: flex;
+      flex-direction: row;
+    }
+    .containerFilters {
+      display: flex;
+      flex-direction: row;
+      margin-top: 30px;
+    }
+    .filters {
+      display: flex;
+      flex-direction: column;
+    }
+
+    mat-form-field {
+      margin-bottom: 15px;
+      width: 300px;
+    }
   }
 
   .example-form-field {
@@ -37,8 +57,12 @@
   }
 
   mat-toolbar {
+    position: sticky;
+    position: -webkit-sticky; /* For macOS/iOS Safari */
+    top: 0; /* Sets the sticky toolbar to be on top */
+    z-index: 1000; /* Ensure that your app's content doesn't overlap the toolbar */
     width: 100%;
-
+    box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.4);
     mat-toolbar-row {
       min-height: 70px;
     }

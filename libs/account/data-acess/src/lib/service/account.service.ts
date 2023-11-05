@@ -222,10 +222,10 @@ export class AccountService {
   updateAutomovelImagemPrincipal(
     accountId: string,
     automovelId: string,
-    imagemData: ImagemPrincipal
+    imagemData: File
   ): Observable<any> {
     const formData = new FormData();
-    formData.append('Imagem', imagemData.Imagem);
+    formData.append('Imagem', imagemData);
 
     return this.http.post(
       `/api/usuario/automovel/imagem/principal/${accountId}/${automovelId}`,
@@ -245,10 +245,10 @@ export class AccountService {
   addOrUpdateAutomovelImagensSecundarias(
     accountId: string,
     automovelId: string,
-    imagensData: ImagensSecundarias
+    imagensData: File[]
   ): Observable<any> {
     const formData = new FormData();
-    for (const imagem of imagensData.Imagens) {
+    for (const imagem of imagensData) {
       formData.append('Imagens', imagem);
     }
 

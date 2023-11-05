@@ -430,7 +430,7 @@ export class UsersService {
       const categoriaAchada = await this.categoriaService.findOne(
         automovel.idCategoria.toString()
       );
-      if (categoriaAchada.Tipo != CategoriaTipos.Automovel) {
+      if (categoriaAchada?.Tipo != CategoriaTipos.Automovel) {
         throw new BadRequestException('Categoria não é de Automovel!');
       }
       if (categoriaAchada) {

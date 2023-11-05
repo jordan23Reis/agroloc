@@ -12,7 +12,7 @@ export interface Machinery {
   Largura: number;
   Altura: number;
   EstaAtiva: boolean;
-  IdCategoria: string;
+  idCategoria: string;
   IdEndereco: string;
   Preco: Preco;
 }
