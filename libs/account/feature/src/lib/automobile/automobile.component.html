@@ -1,0 +1,340 @@
+<div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
+  <div class="container">
+    <h2>Cadastrar Automóvel</h2>
+
+    <mat-stepper
+      linear
+      #stepper
+      class="example-stepper"
+      [orientation]="(stepperOrientation | async)!"
+    >
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>Informações Basicas</ng-template>
+          <div class="content">
+            <div class="headFicha">
+              <h4>Adicione a Foto do Anúncio, Titulo e Descrição</h4>
+
+              <p style="width: 70%; text-align: center">
+                Essas informações estará disponivel para os locatários te
+                selecionar para uma entregua, esteja atento em apresentar o
+                maximo possivel de detalhes sobre seu automovel para ser
+                encontrado.
+              </p>
+            </div>
+
+            <div class="formImgMain">
+              <p>
+                <strong>1.</strong> Comece escolhendo uma foto incrível que
+                chame a atenção dos locatarios.
+              </p>
+
+              <div class="mainImgUpload">
+                <label
+                  class="custum-file-upload"
+                  for="file"
+                  *ngIf="!imagemPrincipalPreview"
+                >
+                  <div>
+                    <div class="icon">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill=""
+                        viewBox="0 0 24 24"
+                      >
+                        <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
+                        <g
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                          id="SVGRepo_tracerCarrier"
+                        ></g>
+                        <g id="SVGRepo_iconCarrier">
+                          <path
+                            fill=""
+                            d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
+                            clip-rule="evenodd"
+                            fill-rule="evenodd"
+                          ></path>
+                        </g>
+                      </svg>
+                    </div>
+                    <div class="text">
+                      <span>Imagem do Anuncio</span>
+                    </div>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png"
+                    id="file"
+                    (change)="onImagemPrincipalSelected($event)"
+                    required
+                  />
+                </label>
+
+                <label
+                  class="preview"
+                  for="file"
+                  *ngIf="imagemPrincipalPreview"
+                >
+                  <img
+                    [src]="imagemPrincipalPreview"
+                    alt="Prévia da Imagem Principal"
+                    *ngIf="imagemPrincipalPreview"
+                  />
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png"
+                    id="file"
+                    (change)="onImagemPrincipalSelected($event)"
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div class="formTitle">
+              <p>
+                <strong>2.</strong> Em seguida, dê um nome ao seu automóvel no
+                campo "Título"
+              </p>
+
+              <mat-form-field id="Titulo">
+                <mat-label>Titulo do Anuncio</mat-label>
+                <input type="text" formControlName="Nome" matInput required />
+              </mat-form-field>
+            </div>
+
+            <div class="formCategory">
+              <p>
+                <strong>3.</strong> Além disso, selecione a categoria adequada
+                para o seu automóvel, para que os locatários possam encontrá-lo
+                facilmente
+              </p>
+
+              <mat-form-field id="Titulo" required>
+                <mat-label>Categoria</mat-label>
+                <mat-select formControlName="Categoria">
+                  <mat-option
+                    *ngFor="let category of allCategories | async"
+                    [value]="category._id"
+                    >{{ category.Nome }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="formDesc">
+              <p>
+                <strong>4.</strong> Finalmente, descreva seu automóvel no campo
+                "Descrição"
+              </p>
+              <p>
+                Isso vai garantir que os locatários entendam todos os detalhes e
+                vantagens do seu automóvel.
+              </p>
+              <mat-form-field id="Descricao">
+                <mat-label>Descricão</mat-label>
+                <textarea
+                  matInput
+                  formControlName="Descricao"
+                  required
+                ></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="menuButtons">
+            <span class="example-spacer"></span>
+            <button
+              class="nextButton"
+              mat-raised-button
+              color="primary"
+              matStepperNext
+              [disabled]="!firstFormGroup.valid"
+            >
+              Proximo
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="secondFormGroup" [optional]="isOptional">
+        <form [formGroup]="secondFormGroup">
+          <ng-template matStepLabel>Ficha Tecnica</ng-template>
+
+          <div class="headFicha">
+            <h4>
+              Agora é a hora de compartilhar informações técnicas importantes
+              sobre seu automóvel
+            </h4>
+            <p>
+              Preencha os campos com o peso, comprimento, largura e altura em
+              kilogramas e metros
+            </p>
+          </div>
+
+          <div class="formFicha">
+            <mat-form-field id="Peso">
+              <mat-label>Peso do Automóvel</mat-label>
+              <input type="number" formControlName="Peso" matInput required />
+              <mat-icon matPrefix>line_weight</mat-icon>
+            </mat-form-field>
+            <mat-form-field id="Comprimento">
+              <mat-label>Comprimento do Automóvel</mat-label>
+              <input
+                type="number"
+                formControlName="Comprimento"
+                matInput
+                required
+              />
+              <mat-icon matPrefix>straighten</mat-icon>
+            </mat-form-field>
+            <mat-form-field id="Largura">
+              <mat-label>Largura do Automóvel</mat-label>
+              <input
+                type="number"
+                formControlName="Largura"
+                matInput
+                required
+              />
+              <mat-icon matPrefix>width_normal</mat-icon>
+            </mat-form-field>
+            <mat-form-field id="Altura">
+              <mat-label>Altura do Automóvel</mat-label>
+              <input type="number" formControlName="Altura" matInput required />
+              <mat-icon matPrefix>height</mat-icon>
+            </mat-form-field>
+
+            <p>
+              Isso vai ajudar os locatários a entenderem as especificações
+              técnicas do automóvel.
+            </p>
+          </div>
+
+          <div class="menuButtons">
+            <span class="example-spacer"></span>
+            <button mat-button matStepperPrevious>Voltar</button>
+            <button
+              class="nextButton"
+              mat-raised-button
+              color="primary"
+              matStepperNext
+              [disabled]="!secondFormGroup.valid"
+            >
+              Proximo
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="thirdFormGroup" [optional]="isOptional">
+        <form [formGroup]="thirdFormGroup">
+          <ng-template matStepLabel>Outros Arquivos</ng-template>
+
+          <div class="headFicha">
+            <h4>
+              Dê um toque pessoal ao seu anúncio adicionando mais fotos do seu
+              automóvel
+            </h4>
+            <p>
+              Quanto mais imagens você adicionar, mais os locatários poderão
+              visualizar o seu automóvel de todos os ângulos.
+            </p>
+          </div>
+
+          <div id="imagemSecundarias">
+            <div class="arquivos">
+              <img
+                class="preview"
+                *ngFor="let imagem of imagensSecundarias | async"
+                [src]="imagem"
+              />
+              <label class="custum-file-upload" for="OthersImages">
+                <div class="icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill=""
+                    viewBox="0 0 24 24"
+                  >
+                    <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
+                    <g
+                      stroke-linejoin="round"
+                      stroke-linecap="round"
+                      id="SVGRepo_tracerCarrier"
+                    ></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <path
+                        fill=""
+                        d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
+                        clip-rule="evenodd"
+                        fill-rule="evenodd"
+                      ></path>
+                    </g>
+                  </svg>
+                </div>
+                <div class="text">
+                  <span>Outras Imagens</span>
+                </div>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png"
+                  id="OthersImages"
+                  multiple
+                  (change)="onImagensSecundariasSelected($event)"
+                />
+              </label>
+            </div>
+          </div>
+
+          <div class="menuButtons">
+            <span class="example-spacer"></span>
+            <button mat-button matStepperPrevious>Voltar</button>
+            <button
+              class="nextButton"
+              mat-raised-button
+              color="primary"
+              matStepperNext
+              [disabled]="!thirdFormGroup.valid"
+            >
+              Proximo
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step>
+        <ng-template matStepLabel>Finalizar Cadastro</ng-template>
+        <div class="headFicha">
+          <h4>Parabéns, você esta preste a concluir o seu cadastro!</h4>
+          <p>
+            Revise todas as informações cuidadosamente para garantir que tudo
+            esteja perfeito
+          </p>
+          <p>
+            Depois de confirmar, seu anúncio estará pronto para ser publicado e
+            alcançar locatários interessados em seu atumóvel
+          </p>
+          <p>
+            Boa sorte com o seu anúncio e estamos ansioso para ajudá-lo a
+            encontrar novas entregas
+          </p>
+        </div>
+
+        <div class="menuButtons">
+          <button mat-button (click)="stepper.reset()">Resetar</button>
+          <span class="example-spacer"></span>
+          <button mat-button matStepperPrevious>Voltar</button>
+          <button
+            class="nextButton"
+            mat-raised-button
+            color="primary"
+            matStepperNext
+            (click)="registerMachiney()"
+          >
+            Confirmar
+          </button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+
+    <div class="spacer"></div>
+  </div>
+</div>

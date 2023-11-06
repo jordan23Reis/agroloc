@@ -7,9 +7,23 @@
     flex-direction: row;
     width: 100%;
     height: auto;
+
+    .scrollTopButton {
+      position: fixed;
+      bottom: 60px;
+      right: 50px;
+      z-index: 1000;
+      animation: notFind 1.5s;
+    }
+
     mat-chip-listbox {
       margin-top: 20px;
     }
+
+    .favorite {
+      color: rgb(225, 67, 68);
+    }
+
     .search {
       display: flex;
       flex-direction: column;
@@ -21,14 +35,35 @@
     .chips {
       display: flex;
       flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      max-width: 100%;
+      min-height: 120px;
     }
-    mat-chip-listbox {
-      margin-right: 10px;
+
+    .category {
+      flex-wrap: wrap; /* Permite quebrar a linha */
+      align-content: flex-start; /* Alinha os elementos na parte superior do contêiner */
+      max-width: 50%;
+      min-height: 120px;
     }
+
+    .filter {
+      display: flex;
+      flex: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    mat-chip-option {
+      margin-right: 15px;
+      margin-top: 10px;
+    }
+
     .content {
       display: flex;
       flex-direction: column;
-      width: 80%;
+      width: 100%;
       margin-top: 30px;
       margin-bottom: 30px;
     }
@@ -36,50 +71,209 @@
       display: flex;
       flex-direction: row;
       width: 100%;
-      height: auto;
-      margin-bottom: 10px;
+      height: 300px;
+      margin-bottom: 20px;
+      animation: backwards 10s ease;
+      box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.4);
     }
     .foto {
       display: flex;
-      flex-direction: column;
-      width: 20%;
+      flex-direction: row;
+      width: 40%;
       height: 100%;
+      align-items: center;
+      justify-content: center;
       img {
-        max-width: 75%;
-        height: 75%;
+        max-width: 90%;
+        max-height: 90%;
+        min-width: 90%;
+        min-height: 90%;
         width: auto;
         height: auto;
-        image-resolution: inherit;
-        align-self: center;
-        justify-self: center;
+        object-fit: contain;
       }
     }
     .informacoes {
-      width: 80%;
+      width: 60%;
       height: 100%;
+      margin-left: 15px;
     }
     .head {
       display: flex;
       flex-direction: row;
-      justify-content: center;
-      align-items: center;
+      h2 {
+        justify-self: center;
+        align-self: center;
+      }
+      button {
+        margin-right: 1%;
+        margin-top: 1%;
+      }
+      height: 40%;
+      max-height: 40%;
     }
     .section {
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
+      height: 30%;
+      max-height: 30%;
     }
 
     .footer {
       display: flex;
       flex-direction: row;
+      p {
+        justify-self: center;
+        align-self: center;
+      }
+      h3 {
+        align-self: flex-end;
+        justify-self: flex-end;
+      }
+      button {
+        align-self: flex-end;
+        justify-self: flex-end;
+        margin-right: 1%;
+        margin-bottom: 1%;
+      }
+      height: 30%;
+      max-height: 30%;
+    }
+
+    .star {
+      width: 24px;
+      height: 24px;
+      font-size: 24px;
+      color: #ffa723;
+    }
+
+    .message {
+      display: flex;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
+      width: 80%;
+      height: 400px;
+      opacity: 0;
+      animation: notFind 4s infinite;
+      .searchIcon {
+        width: 48px;
+        height: 48px;
+        font-size: 48px;
+        margin-right: 10px;
+        margin-top: 5px;
+      }
+    }
+
+    @keyframes notFind {
+      100% {
+        opacity: 1;
+      }
+      0% {
+        opacity: 0;
+      }
     }
   }
 
   .example-spacer {
     flex: 1 1 auto;
   }
+
+  .card_skeleton {
+    background-image: linear-gradient(
+      90deg,
+      #ccc 0px,
+      rgb(229 229 229 / 90%) 40px,
+      #ccc 80px
+    );
+    background-size: 250%;
+    border-radius: inherit;
+    animation: shimmer 2s infinite;
+  }
+
+  .card_title {
+    width: 80%;
+    height: 20px;
+    align-self: center;
+  }
+
+  .card_image {
+    max-width: 80%;
+    max-height: 80%;
+    min-width: 80%;
+    min-height: 80%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    align-self: center;
+  }
+
+  .card_section_price {
+    width: 20%;
+    height: 40px;
+    align-self: center;
+  }
+
+  .card_section_type {
+    width: 20%;
+    height: 20px;
+    align-self: center;
+  }
+
+  @keyframes shimmer {
+    100% {
+      background-position: -100% 0;
+    }
+    0% {
+      background-position: 100% 0;
+    }
+  }
 }
+
+// <div class="rating">
+//               <input value="5" name="rate" id="star5" type="radio" />
+//               <label title="text" for="star5"></label>
+//               <input value="4" name="rate" id="star4" type="radio" />
+//               <label title="text" for="star4"></label>
+//               <input value="3" name="rate" id="star3" type="radio" checked="" />
+//               <label title="text" for="star3"></label>
+//               <input value="2" name="rate" id="star2" type="radio" />
+//               <label title="text" for="star2"></label>
+//               <input value="1" name="rate" id="star1" type="radio" />
+//               <label title="text" for="star1"></label>
+//             </div>
+
+// .rating:not(:checked) > input {
+//   position: absolute;
+//   appearance: none;
+// }
+
+// .rating:not(:checked) > label {
+//   float: right;
+//   cursor: pointer;
+//   font-size: 30px;
+//   color: #666;
+// }
+
+// .rating:not(:checked) > label:before {
+//   content: '★';
+// }
+
+// .rating > input:checked + label:hover,
+// .rating > input:checked + label:hover ~ label,
+// .rating > input:checked ~ label:hover,
+// .rating > input:checked ~ label:hover ~ label,
+// .rating > label:hover ~ input:checked ~ label {
+//   color: #e58e09;
+// }
+
+// .rating:not(:checked) > label:hover,
+// .rating:not(:checked) > label:hover ~ label {
+//   color: #ff9e0b;
+// }
+
+// .rating > input:checked ~ label {
+//   color: #ffa723;
+// }

@@ -31,11 +31,13 @@
       width: 100%;
       height: auto;
       align-items: center;
+
       img {
         width: 120px;
         height: 120px;
         border-radius: 100%;
         margin-top: 80px;
+        object-fit: cover;
       }
     }
 
@@ -55,6 +57,15 @@
       align-items: center;
     }
 
+    .titulo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 30px;
+    }
+
     .painel {
       display: flex;
       flex-direction: column;
@@ -63,22 +74,322 @@
       margin-top: 30px;
     }
 
-    .titulo {
+    .alert {
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-direction: row;
+      width: 70%;
       justify-content: center;
+      color: inherit;
+      mat-icon {
+        color: rgb(253, 253, 0);
+        align-self: center;
+        justify-self: center;
+        margin-right: 5%;
+      }
+      p {
+        display: flex;
+        width: 90%;
+      }
     }
 
-    mat-accordion {
-    }
     mat-expansion-panel {
       margin-bottom: 15px;
     }
 
+    mat-expansion-panel-header {
+      height: 70px;
+
+      h3 {
+        margin-right: 26px;
+      }
+    }
+
+    mat-list {
+      width: 100%;
+      height: auto;
+    }
+
+    mat-selection-list {
+      max-height: 300px;
+      height: auto;
+    }
+
     .conteudo {
       display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .formContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .formContainer > p {
+      align-self: flex-start;
+      margin-left: 15%;
+      margin-right: 15%;
+    }
+
+    .formEndereco {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      align-items: center;
+
+      p {
+        text-align: justify;
+        align-self: center;
+      }
+    }
+
+    .listEndereco {
+      display: flex;
+      flex-direction: column;
+      width: 70%;
+      height: auto;
+      margin-bottom: 60px;
+    }
+
+    .option {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    // mat-list-option {
+    //   height: auto;
+    //   align-items: center;
+    //   justify-content: center;
+    //   padding-top: 15px;
+    //   padding-left: 15px;
+    // }
+
+    // .mdc-list-item__content {
+    //   display: flex;
+    //   flex-direction: column;
+    //   justify-content: center;
+    // }
+
+    .titleEnd {
+      display: flex;
       flex-direction: row;
+      width: 70%;
+      height: auto;
+      justify-content: center;
+      button {
+        margin-left: 5px;
+        margin-right: 7px;
+      }
+    }
+
+    .footerList {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      justify-content: center;
+      margin-top: 30px;
+      button {
+        margin-left: 5px;
+        margin-right: 7px;
+      }
+    }
+
+    .logNum {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #log {
+        width: 85%;
+      }
+
+      #num {
+        width: 15%;
+      }
+    }
+
+    .baiCom {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #bai {
+        width: 20%;
+      }
+
+      #com {
+        width: 80%;
+      }
+    }
+
+    .cidCEstCep {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #cid {
+        width: 60%;
+      }
+
+      #est {
+        width: 10%;
+      }
+
+      #cep {
+        width: 30%;
+      }
+    }
+
+    .ageNume {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+
+      #age {
+        width: 30%;
+      }
+      #nume {
+        width: 70%;
+      }
+    }
+
+    .chaTip {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      margin-bottom: 60px;
+      #cha {
+        width: 70%;
+      }
+      #tip {
+        width: 30%;
+      }
+    }
+
+    .form {
+      width: 70%;
+      height: auto;
+    }
+
+    .containerFoto {
+      display: flex;
+      flex-direction: row;
+      width: 70%;
+      height: auto;
+      align-items: center;
+      justify-content: center;
+      margin-top: 30px;
+      margin-bottom: 15px;
+
+      img {
+        width: 120px;
+        height: 120px;
+        padding: 5px;
+        border-radius: 100%;
+        border-style: groove;
+        border-color: inherit;
+        object-fit: cover;
+      }
+    }
+
+    .menuButtons {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 70%;
+      height: 80px;
+      margin-top: 15px;
+    }
+
+    .myCard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 70%;
+      margin-top: 15px;
+      margin-bottom: 120px;
+    }
+
+    .logo svg {
+      height: 48px;
+      width: 54px;
+    }
+
+    ::selection {
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    .container {
+    }
+
+    .card {
+      background: radial-gradient(circle, white 0%, #d5d5d5 100%);
+      width: 350px;
+      height: 200px;
+      border-radius: 20px;
+      position: relative;
+      box-shadow: 3px 3px 17px 0px rgba(0, 0, 0, 0.55);
+    }
+
+    .card .remove,
+    .card .logo {
+      position: absolute;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .card .remove {
+      top: 30px;
+      right: 30px;
+      opacity: 0.9;
+      color: black;
+    }
+
+    .card .remove:hover {
+      color: #f06b5d;
+    }
+
+    .card .logo {
+      top: 30px;
+      left: 30px;
+      width: 4em;
+      height: 3em;
+      font-size: 3em;
+      opacity: 1;
+      color: black;
+    }
+
+    .card .number,
+    .card .owner {
+      display: block;
+      position: absolute;
+      left: 30px;
+      cursor: default;
+      color: black;
+      opacity: 0.9;
+      transition: color 0.7s ease-out;
+    }
+
+    .card .number {
+      bottom: 60px;
+      letter-spacing: 4px;
+    }
+
+    .card .owner {
+      bottom: 30px;
+      letter-spacing: 1px;
     }
   }
 }

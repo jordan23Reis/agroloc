@@ -15,6 +15,8 @@ import { MobMainComponent } from './mob-main/mob-main.component';
 import { HomeComponent } from '@agroloc/home/feature';
 import { DetailsComponent } from '@agroloc/machinery/feature';
 import { ManagementComponent } from '@agroloc/account/feature';
+import { AuthGuard } from '@agroloc/account/data-acess';
+import { AutomobileComponent } from 'libs/account/feature/src/lib/automobile/automobile.component';
 
 export const homeShellRoutes: Route[] = [
   {
@@ -22,8 +24,12 @@ export const homeShellRoutes: Route[] = [
     component: WebComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'main',
+        pathMatch: 'full',
+      },
+      {
         path: 'login',
-
         component: WebLoginComponent,
         children: [],
       },
@@ -44,6 +50,19 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'machinery',
             component: MachineryRegisterComponent,
+            canActivate: [AuthGuard],
+            data: {
+              roles: ['Administrador', 'Comum', 'Freteiro'],
+            },
+            children: [],
+          },
+          {
+            path: 'automobile',
+            component: AutomobileComponent,
+            canActivate: [AuthGuard],
+            data: {
+              roles: ['Administrador', 'Freteiro'],
+            },
             children: [],
           },
           {
@@ -59,6 +78,10 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'management',
             component: ManagementComponent,
+            canActivate: [AuthGuard],
+            data: {
+              roles: ['Administrador', 'Comum', 'Freteiro'],
+            },
             children: [],
           },
         ],

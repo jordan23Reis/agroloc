@@ -6,6 +6,7 @@
     "declaration": false,
     "moduleResolution": "node",
     "strictPropertyInitialization": false,
+    "noPropertyAccessFromIndexSignature": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -30,6 +31,7 @@
       ],
       "@agroloc/machinery/feature": ["libs/machinery/feature/src/index.ts"],
       "@agroloc/machinery/ui": ["libs/machinery/ui/src/index.ts"],
+      "@agroloc/shared/data-access": ["libs/shared/data-access/src/index.ts"],
       "@agroloc/shared/util": ["libs/shared/util/src/index.ts"]
     }
   },

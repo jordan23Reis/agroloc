@@ -118,8 +118,9 @@
   <mat-form-field class="matClass">
     <mat-label>Senha</mat-label>
     <input
-      id="password"
+      class="password"
       matInput
+      formControlName="Senha"
       [type]="firstPassword ? 'password' : 'text'"
     />
     <button
@@ -136,7 +137,8 @@
   <mat-form-field class="matClass">
     <mat-label>Confirmar Senha</mat-label>
     <input
-      id="password"
+      class="password"
+      formControlName="ConfSenha"
       matInput
       [type]="secondPassword ? 'password' : 'text'"
     />
@@ -173,7 +175,7 @@
     </p>
   </div>
   <div class="registerOrLogin">
-    <button mat-raised-button color="accent" (click)="doubloNext()">Não</button>
+    <button mat-raised-button color="accent" (click)="isComum()">Não</button>
     <button mat-raised-button color="primary" (click)="isFreteiro()">
       Sim
     </button>

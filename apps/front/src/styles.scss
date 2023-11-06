@@ -69,5 +69,43 @@ body {
 .cdk-overlay-pane {
   div.mat-mdc-menu-panel {
     max-width: none;
+    min-width: 200px;
   }
+}
+
+.menuAccount {
+  .mat-mdc-menu-item-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.mdc-list-item--with-trailing-radio.mdc-list-item--with-three-lines
+  .mdc-list-item__end.ng-star-inserted {
+  align-self: center;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

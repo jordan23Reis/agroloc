@@ -6,6 +6,16 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
 import { Platform } from '@angular/cdk/platform';
 import { Router } from '@angular/router';
+import {
+  Account,
+  AccountService,
+  accountTypes,
+} from '@agroloc/account/data-acess';
+import {
+  AvaliacaoSchemaDtoRestraints,
+  UsuarioSchemaDtoRestraints,
+} from '@agroloc/shared/util';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'agroloc-users-register',
@@ -14,46 +24,77 @@ import { Router } from '@angular/router';
 })
 export class AccountRegisterComponent {
   _formBuilder = inject(FormBuilder);
-  breakpointObserver = inject(BreakpointObserver);
   http = inject(HttpClient);
   platform = inject(Platform);
   router = inject(Router);
+  accountService = inject(AccountService);
+  snackBar = inject(MatSnackBar);
 
   firstFormGroup = this._formBuilder.group({
-    Nome: ['', Validators.required],
-    Sobrenome: ['', Validators.required],
-    Email: ['', Validators.required, Validators.email],
-    Senha: ['', Validators.required],
-    ConfSenha: ['', Validators.required],
+    Nome: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinNome),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxNome),
+      ],
+    ],
+    Sobrenome: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSobrenome),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSobrenome),
+      ],
+    ],
+    Email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinEmail),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxEmail),
+      ],
+    ],
+    Senha: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSenha),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSenha),
+      ],
+    ],
+    ConfSenha: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSenha),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSenha),
+      ],
+    ],
     Freteiro: [false, Validators.required],
     Nascimento: [null, Validators.required],
-    Sexo: ['', Validators.required],
-    CNH: [''],
+    Sexo: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSexo),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSexo),
+      ],
+    ],
+    CNH: [
+      '',
+      [
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinCnh),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxCnh),
+      ],
+    ],
   });
 
-  stepperOrientation: Observable<StepperOrientation>;
   firstPassword = true;
   secondPassword = true;
   container = 1;
   isMobile = this.platform.ANDROID || this.platform.IOS;
-
-  // applyStyle() {
-  //   this.styleUrls = this.getStyleUrl();
-  // }
-
-  // getStyleUrl() {
-  //   if (this.isMobile) {
-  //     return ['./register.component.scss'];
-  //   } else {
-  //     return ['./register.component.scss'];
-  //   }
-  // }
-
-  constructor() {
-    this.stepperOrientation = this.breakpointObserver
-      .observe('(min-width: 800px)')
-      .pipe(map(({ matches }) => (matches ? 'horizontal' : 'vertical')));
-  }
 
   next() {
     this.container += 1;
@@ -75,9 +116,18 @@ export class AccountRegisterComponent {
     this.firstFormGroup.patchValue({ Freteiro: true });
   }
 
+  comum() {
+    this.firstFormGroup.patchValue({ Freteiro: false });
+  }
+
   isFreteiro() {
     this.freteiro();
     this.next();
+  }
+
+  isComum() {
+    this.comum();
+    this.doubloNext();
   }
 
   login() {
@@ -85,7 +135,62 @@ export class AccountRegisterComponent {
   }
 
   register() {
-    this.http.post('/api/users', this.firstFormGroup.value);
-    this.login();
+    if (
+      this.firstFormGroup.valid &&
+      this.firstFormGroup.value.Senha === this.firstFormGroup.value.ConfSenha
+    ) {
+      let comumUserData;
+      let driveUserData;
+      if (this.firstFormGroup.value.Freteiro) {
+        driveUserData = {
+          Login: {
+            Email: this.firstFormGroup.value.Email,
+            Senha: this.firstFormGroup.value.Senha,
+            Tipo: accountTypes.Freteiro,
+          },
+          CadastroComum: {
+            Nome: this.firstFormGroup.value.Nome,
+            Sobrenome: this.firstFormGroup.value.Sobrenome,
+            DataDeNascimento: this.firstFormGroup.value.Nascimento,
+            Sexo: this.firstFormGroup.value.Sexo,
+          },
+          CadastroFreteiro: {
+            CNH: this.firstFormGroup.value.CNH,
+          },
+        };
+      } else {
+        comumUserData = {
+          Login: {
+            Email: this.firstFormGroup.value.Email,
+            Senha: this.firstFormGroup.value.Senha,
+            Tipo: accountTypes.Comum,
+          },
+          CadastroComum: {
+            Nome: this.firstFormGroup.value.Nome,
+            Sobrenome: this.firstFormGroup.value.Sobrenome,
+            DataDeNascimento: this.firstFormGroup.value.Nascimento,
+            Sexo: this.firstFormGroup.value.Sexo,
+          },
+        };
+      }
+
+      const registerSubscribe = this.accountService
+        .register(
+          this.firstFormGroup.value.Freteiro ? driveUserData : comumUserData
+        )
+        .subscribe((response) => {
+          this.snackBar.open('Conta criada com Sucesso!!', 'Fechar', {
+            duration: 3000,
+          });
+          setTimeout(() => {
+            this.login();
+            this.snackBar.open('Agora efetue o Login da sua Conta', 'Fechar', {
+              duration: 3000,
+            });
+          }, 4000);
+
+          registerSubscribe.unsubscribe();
+        });
+    }
   }
 }

@@ -1,9 +1,17 @@
-import { AuthService, AuthStorage, Login } from '@agroloc/account/data-acess';
+import {
+  AccountService,
+  AuthService,
+  AuthStorage,
+  Login,
+} from '@agroloc/account/data-acess';
+import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { Platform } from '@angular/cdk/platform';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { take, takeLast, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'agroloc-login',
@@ -16,14 +24,28 @@ export class AccountLoginComponent {
   platform = inject(Platform);
   router = inject(Router);
   authService = inject(AuthService);
+  accountService = inject(AccountService);
   authStorage = inject(AuthStorage);
-
-  accountError = false;
-  date: Login;
+  snackBar = inject(MatSnackBar);
 
   account = this._formBuilder.group({
-    email: ['', Validators.required, Validators.email],
-    password: ['', Validators.required],
+    Email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinEmail),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxEmail),
+      ],
+    ],
+    Senha: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(UsuarioSchemaDtoRestraints.tamMinSenha),
+        Validators.maxLength(UsuarioSchemaDtoRestraints.tamMaxSenha),
+      ],
+    ],
   });
 
   firstPassword = true;
@@ -34,30 +56,15 @@ export class AccountLoginComponent {
   }
 
   SingIn() {
-    this.date = {
-      Email: this.account.value.email,
-      Senha: this.account.value.password,
-    };
-    this.authService.SingIn(this.date);
-    if (this.authStorage.getAcessToken()) {
-      this.router.navigate(['web', 'home']);
-    } else {
-      this.accountError = true;
+    if (this.account.valid) {
+      this.authService.SingIn(this.account.value).subscribe((response) => {
+        this.authStorage.setAcessToken(response.access_token);
+        this.authService.nextProfile();
+        this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
+          this.accountService.nextAccount(response.IdUsuario);
+        });
+        this.router.navigate(['web', 'main']);
+      });
     }
-  }
-
-  invalidAccount(control: AbstractControl): { [key: string]: boolean } | null {
-    if (this.accountError) {
-      return { required: true }; // Senha obrigatória
-    } else {
-      return null; // A validação passou
-    }
-  }
-
-  getErrorMessage() {
-    if (this.account.hasError('required')) {
-      return 'You must enter a value';
-    }
-    return this.account.hasError('account') ? 'Not a valid email' : '';
   }
 }
