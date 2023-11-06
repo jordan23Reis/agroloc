@@ -29,31 +29,69 @@
       <div class="item" *ngFor="let item of searchData | async">
         <div class="foto">
           <span class="example-spacer"></span>
-          <img [src]="item.ImagemPrincipal.Url" />
+          <div
+            *ngIf="(loadingRequest | async) === true || intervalLoading"
+            class="card_skeleton card_image"
+          ></div>
+          <img
+            *ngIf="(loadingRequest | async) === false && !intervalLoading"
+            [src]="item.ImagemPrincipal.Url"
+          />
           <span class="example-spacer"></span>
         </div>
         <div class="informacoes">
           <span class="example-spacer"></span>
           <div class="head">
-            <h2>{{ item.Nome }}</h2>
+            <div
+              *ngIf="(loadingRequest | async) === true || intervalLoading"
+              class="card_skeleton card_title"
+            ></div>
+            <h2 *ngIf="(loadingRequest | async) === false && !intervalLoading">
+              {{ item.Nome }}
+            </h2>
             <span class="example-spacer"></span>
             <button
+              *ngIf="(loadingRequest | async) === false && !intervalLoading"
               mat-icon-button
               class="example-icon"
               aria-label="Example icon-button with favorite border icon"
+              (click)="addFavorite(item._id)"
             >
               <mat-icon class="favorite">favorite</mat-icon>
             </button>
           </div>
           <div class="section">
-            <h1>R${{ item.Preco.ValorPorTipo }}</h1>
-            <h4 style="margin-left: 15px">{{ item.Preco.Tipo.Nome }}</h4>
+            <div
+              *ngIf="(loadingRequest | async) === true || intervalLoading"
+              class="card_skeleton card_section_price"
+            ></div>
+            <h1 *ngIf="(loadingRequest | async) === false && !intervalLoading">
+              R${{ item.Preco.ValorPorTipo }}
+            </h1>
+            <div
+              *ngIf="(loadingRequest | async) === true || intervalLoading"
+              style="margin-left: 15px"
+              class="card_skeleton card_section_type"
+            ></div>
+            <h4
+              *ngIf="(loadingRequest | async) === false && !intervalLoading"
+              style="margin-left: 15px"
+            >
+              {{ item.Preco.Tipo.Nome }}
+            </h4>
             <span class="example-spacer"></span>
           </div>
           <div class="footer">
-            <p>{{ item.DonoDaMaquina.Nome }}</p>
+            <div
+              *ngIf="(loadingRequest | async) === true || intervalLoading"
+              class="card_skeleton card_section_type"
+            ></div>
+            <p *ngIf="(loadingRequest | async) === false && !intervalLoading">
+              {{ item.DonoDaMaquina.Nome }}
+            </p>
             <span class="example-spacer"></span>
             <button
+              *ngIf="(loadingRequest | async) === false && !intervalLoading"
               mat-button
               class="example-icon"
               aria-label="Example icon-button with star rate icon"
@@ -65,7 +103,56 @@
           <span class="example-spacer"></span>
         </div>
       </div>
+
+      <ng-container
+        *ngIf="(loadingRequest | async) === true || intervalLoading"
+      >
+        <div class="item" *ngFor="let item of arrayDeItensPreview">
+          <div class="foto">
+            <span class="example-spacer"></span>
+            <div class="card_skeleton card_image"></div>
+            <span class="example-spacer"></span>
+          </div>
+          <div class="informacoes">
+            <span class="example-spacer"></span>
+            <div class="head">
+              <div class="card_skeleton card_title"></div>
+              <span class="example-spacer"></span>
+            </div>
+            <div class="section">
+              <div class="card_skeleton card_section_price"></div>
+              <div
+                style="margin-left: 15px"
+                class="card_skeleton card_section_type"
+              ></div>
+              <span class="example-spacer"></span>
+            </div>
+            <div class="footer">
+              <div class="card_skeleton card_section_type"></div>
+              <span class="example-spacer"></span>
+            </div>
+            <span class="example-spacer"></span>
+          </div>
+        </div>
+      </ng-container>
     </div>
+    <div
+      *ngIf="(searchData | async)?.[0] === undefined && (loadingRequest | async) === false "
+      class="message"
+    >
+      <mat-icon class="searchIcon">search</mat-icon>
+      <h2>Nenhum maquinário Encontrado</h2>
+    </div>
+
+    <button
+      mat-fab
+      color="primary"
+      class="scrollTopButton"
+      (click)="scrollToTop()"
+      *ngIf="showButton$ | async"
+    >
+      <mat-icon>expand_less</mat-icon>
+    </button>
     <mat-paginator
       [length]="paginatorLength(searchData | async)"
       [pageSize]="pageSize"
@@ -74,6 +161,10 @@
       style="margin-bottom: 60px"
     >
     </mat-paginator>
+    <mat-progress-bar
+      *ngIf="loadingRequest | async"
+      mode="indeterminate"
+    ></mat-progress-bar>
   </div>
   <span class="example-spacer"></span>
 </div>

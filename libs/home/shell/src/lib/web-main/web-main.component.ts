@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   OnInit,
@@ -10,12 +11,17 @@ import { Location } from '@angular/common';
 import { Platform } from '@angular/cdk/platform';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { AccountService, AuthService } from '@agroloc/account/data-acess';
-import { Observable, map, startWith } from 'rxjs';
-import { MatSidenav } from '@angular/material/sidenav';
-import { SearchService, SidenavService } from '@agroloc/shared/data-access';
+import { Observable, map, startWith, take } from 'rxjs';
+import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
+import {
+  LoaderFacade,
+  SearchService,
+  SidenavService,
+} from '@agroloc/shared/data-access';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MachineryService } from '@agroloc/machinery/data-access';
 import { MatSelect } from '@angular/material/select';
+import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'agroloc-web-main',
@@ -32,6 +38,8 @@ export class WebMainComponent {
   formBuilder = inject(FormBuilder);
   searchService = inject(SearchService);
   machineryService = inject(MachineryService);
+  loader = inject(LoaderFacade);
+  scrollDispatcher = inject(ScrollDispatcher);
 
   @ViewChild('drawer') sidenav: MatSidenav;
   @ViewChild('valorMaximo') valorMaximoInput: ElementRef;
@@ -65,6 +73,7 @@ export class WebMainComponent {
   filteredOptionsSubscribe = this.myControl.valueChanges.pipe(
     map((value) => {
       if (value) {
+        this.loader.intervalLoading();
         this.searchService.setBusca(value);
       }
       return this.filter(value || '');
@@ -187,27 +196,70 @@ export class WebMainComponent {
     }
   }
 
+  // ngAfterViewInit() {
+  //   this.scrollDispatcher.scrolled().subscribe((response) => {
+  //     if (response instanceof CdkScrollable) {
+  //       const scrollPosition = response.getElementRef().nativeElement.scrollTop;
+  //       console.log('Scroll Position:', scrollPosition);
+  //     }
+
+  //     const toolbar = document.querySelector('.toolbar');
+  //     window.addEventListener('scroll', () => {
+  //       const currentScrollPosition = window.scrollY;
+
+  //       if (currentScrollPosition > this.lastScrollPosition) {
+  //         // Rolagem para baixo
+  //         toolbar?.classList.add('toolbar-hidden');
+  //         toolbar?.classList.remove('toolbar-visible');
+  //       } else {
+  //         // Rolagem para cima
+  //         toolbar?.classList.remove('toolbar-hidden');
+  //         toolbar?.classList.add('toolbar-visible');
+  //       }
+
+  //       this.lastScrollPosition = currentScrollPosition;
+  //     });
+  //   });
+  // }
+
   setValorMaximo() {
+    this.loader.intervalLoading();
     const valorMaximo = this.valorMaximoInput.nativeElement.value;
     this.valorMaximo.setValue(valorMaximo);
   }
   setValorMinimo() {
+    this.loader.intervalLoading();
     const valorMinimo = this.valorMinimoInput.nativeElement.value;
     this.valorMinimo.setValue(valorMinimo);
   }
   setTipoPreco() {
+    this.loader.intervalLoading();
     const tipoPreco = this.tipoPrecoInput.value;
     this.tipoPreco.patchValue(tipoPreco);
   }
   setOrdenadoPor() {
+    this.loader.intervalLoading();
     const ordenadoPor = this.ordenadoPorInput.value;
     this.ordenadoPor.patchValue(ordenadoPor);
   }
 
   clearSearch(element: HTMLInputElement) {
+    this.loader.intervalLoading();
+
     if (element.value === '') {
+      this.searchService.setBusca('');
       this.myControl.patchValue('');
     }
+  }
+
+  enterPress(event: KeyboardEvent) {
+    if (event.key == 'Enter') {
+      this.router.navigate(['web', 'main', 'search']);
+    }
+  }
+
+  onSelectecSearch() {
+    this.router.navigate(['web', 'main', 'search']);
   }
 
   filter(value: string): string[] {

@@ -39,20 +39,26 @@ export class SearchService {
   searchFilter = new ReplaySubject<SearchFilter>(1);
   searchFilter$ = this.searchFilter.asObservable();
 
-  searchControlSubscribe = this.searchFilter$.subscribe((response) => {
-    this.searchMachineries(
-      response.Quantidade,
-      response.Pagina,
-      response.Busca,
-      response.Categoria,
-      response.TipoPreco,
-      response.PrecoMin,
-      response.PrecoMax,
-      response.Ordem
-    ).subscribe((response) => {
-      this.searchData.next(response);
+  searchControlSubscribe = this.searchFilter$
+    .pipe(debounceTime(1000))
+    .subscribe((response) => {
+      console.log(response);
+
+      this.searchMachineries(
+        response.Quantidade,
+        response.Pagina,
+        response.Busca,
+        response.Categoria,
+        response.TipoPreco,
+        response.PrecoMin,
+        response.PrecoMax,
+        response.Ordem
+      )
+        .pipe(take(1))
+        .subscribe((response) => {
+          this.searchData.next(response);
+        });
     });
-  });
 
   constructor() {
     this.searchFilter.next(this.initialFilter);
@@ -106,10 +112,13 @@ export class SearchService {
   }
 
   setPrecoMin(precoMin: number) {
+    console.log('min: ', precoMin);
     this.updateSearchFilter({ PrecoMin: precoMin });
   }
 
   setPrecoMax(precoMax: number) {
+    console.log('max: ', precoMax);
+
     this.updateSearchFilter({ PrecoMax: precoMax });
   }
 
@@ -118,15 +127,13 @@ export class SearchService {
   }
 
   private updateSearchFilter(updatedValues: Partial<SearchFilter>) {
-    this.searchFilter
-      .pipe(take(1), debounceTime(1000))
-      .subscribe((currentFilter) => {
-        const updatedFilter: SearchFilter = {
-          ...currentFilter,
-          ...updatedValues,
-        };
+    this.searchFilter.pipe(take(1)).subscribe((currentFilter) => {
+      const updatedFilter: SearchFilter = {
+        ...currentFilter,
+        ...updatedValues,
+      };
 
-        this.searchFilter.next(updatedFilter);
-      });
+      this.searchFilter.next(updatedFilter);
+    });
   }
 }

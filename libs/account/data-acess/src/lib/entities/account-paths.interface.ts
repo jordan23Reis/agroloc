@@ -11,7 +11,8 @@ export interface Account {
   CadastroComum?: CadastroComum;
   CadastroFreteiro?: CadastroFreteiro;
   Maquinas?: string[];
-  Favoritos?: string[];
+  MaquinasFavoritas?: string[];
+  FreteirosFavoritos?: string[];
   MaquinasAlugadas?: string[];
   MaquinasLocadas?: string[];
   FretesRealizados?: string[];

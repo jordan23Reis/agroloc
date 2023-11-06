@@ -19,4 +19,16 @@ export class LoaderFacade {
       this.active$.next(false);
     }
   }
+
+  intervalLoading() {
+    this.requestCount += 1;
+    this.active$.next(true);
+
+    setTimeout(() => {
+      this.requestCount -= 1;
+      if (!this.requestCount) {
+        this.active$.next(false);
+      }
+    }, 2000);
+  }
 }

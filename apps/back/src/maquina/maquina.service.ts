@@ -169,6 +169,7 @@ export class MaquinaService {
         ? {
             'Preco.ValorPorTipo': {
               $gte: Number(query.precoMin),
+              $lte: Number(query.precoMax ? query.precoMax : 999999999),
             },
           }
         : {};
@@ -177,6 +178,7 @@ export class MaquinaService {
         ? {
             'Preco.ValorPorTipo': {
               $lte: Number(query.precoMax),
+              $gte: Number(query.precoMin ? query.precoMin : 0),
             },
           }
         : {};
@@ -228,8 +230,8 @@ export class MaquinaService {
           // ...busca,
           ...categoria,
           ...tipoPreco,
-          ...precoMin,
           ...precoMax,
+          ...precoMin,
         })
         .limit(resPerPage)
         .skip(skip)
@@ -256,6 +258,7 @@ export class MaquinaService {
       return e;
     }
   }
+
   async findOneSafe(id: string) {
     try {
       const select = {

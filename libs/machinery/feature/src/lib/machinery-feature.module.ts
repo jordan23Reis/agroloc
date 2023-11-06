@@ -18,6 +18,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   imports: [
@@ -36,6 +38,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatStepperModule,
     MatSelectModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
+    ScrollingModule,
   ],
   declarations: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
   exports: [MachineryRegisterComponent, SearchComponent, DetailsComponent],

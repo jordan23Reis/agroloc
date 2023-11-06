@@ -10,21 +10,19 @@
       <mat-divider [vertical]="true"></mat-divider>
     </div>
     <mat-divider></mat-divider>
-    <div class="item" *ngFor="let item of favoriteList">
+    <div class="item" *ngFor="let item of favoriteMachinery$ | async">
       <mat-divider [vertical]="true"></mat-divider>
       <div class="foto" routerLink="">
         <mat-divider></mat-divider>
         <span class="example-spacer"></span>
-        <img
-          src="https://http2.mlstatic.com/D_NQ_NP_768125-MLA71783090116_092023-F.webp"
-        />
+        <img [src]="item.ImagemPrincipal.Url" />
         <span class="example-spacer"></span>
         <mat-divider></mat-divider>
       </div>
       <div class="dividerInfo">
         <mat-divider></mat-divider>
         <div class="informacoes">
-          <h4 class="favoriteName" routerLink="">{{ item.titulo }}</h4>
+          <h4 class="favoriteName" routerLink="">{{ item.Nome }}</h4>
           <span class="example-spacer"></span>
           <button
             mat-icon-button
