@@ -392,9 +392,7 @@ export class UsersService {
     ) {
       return foundUser.InformacoesBancarias;
     } else {
-      return {
-        message: 'Não há Informações bancarias registradas para este usuário',
-      };
+        throw new Error("Não há Informações bancarias registradas para este usuário")
     }
   }
 
