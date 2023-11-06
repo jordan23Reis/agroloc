@@ -13,5 +13,5 @@ export class TransferenciaPix {
     pixAddressKeyType: string;
     @IsOptional()
     @IsString()
-    description: string;
+    description?: string;
 }

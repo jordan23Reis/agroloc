@@ -11,6 +11,7 @@ import { FavoritoModule } from '../favorito/favorito.module';
 import { CategoriaModule } from '../categoria/categoria.module';
 import { AvaliacaoModule } from '../avaliacao/avaliacao.module';
 import { AsaasModule } from '../asaas/asaas.module';
+import { ProcessoDeAluguelModule } from '../processo-de-aluguel/processo-de-aluguel.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { AsaasModule } from '../asaas/asaas.module';
     FavoritoModule,
     CategoriaModule,
     AvaliacaoModule,
-    AsaasModule
+    AsaasModule,
+    ProcessoDeAluguelModule
   ],
   controllers: [AppController],
   providers: [AppService],

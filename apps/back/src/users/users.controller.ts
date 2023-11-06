@@ -129,7 +129,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, UsuarioExisteGuard, UsuarioCorretoGuard)
-  @Put("informacoesbancarias/:id/:idAutomovel")
+  @Put("informacoesbancarias/:id/")
   updateInformacaoBancariaUsuario(@Param("id") id: string, @Body() informacoesBancarias: InformacoesBancarias) {
     try {
       return this.usersService.updateInformacoesBancarias(id, informacoesBancarias);
