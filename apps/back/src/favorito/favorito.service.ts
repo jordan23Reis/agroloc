@@ -93,7 +93,7 @@ export class FavoritoService {
   }
 
   async findFavoritosPorIdItemFavorito(idItemFavorito:string){
-    const usuarioAchado = await this.favoritoModel.find({"ItemFavorito.idItemFavorito": idItemFavorito});
+    const usuarioAchado = await this.favoritoModel.find({"_id": idItemFavorito});    
     return usuarioAchado;
   }
 

@@ -93,7 +93,7 @@ export class FavoritoController {
   }
 
   @Get(':id')
-  findFavorito(@Param('id') idFavorito: string) {
+  findFavorito(@Param('id') idFavorito: string) {    
     return this.favoritoService.findFavoritosPorIdItemFavorito(idFavorito);
   }
 }
