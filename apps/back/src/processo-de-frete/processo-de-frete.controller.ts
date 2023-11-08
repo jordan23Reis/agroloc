@@ -2,13 +2,15 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ProcessoDeFreteService } from './processo-de-frete.service';
-import { CreateProcessoDeFreteDto } from './dto/create-processo-de-frete.dto';
+import { JwtAuthGuard } from '../auth-user/guards/jwt.auth-user.guard';
+import { VeiculoGuard } from './guards/VeiculoGuard';
+import { FreteiroSolicitanteGuard } from './guards/FreteiroSolicitanteGuard';
+import { ProcessoAAceitarJaExisteGuard } from './guards/ProcessoAAceitarJaExisteGuard';
 
 @Controller('processo-de-frete')
 export class ProcessoDeFreteController {
@@ -16,9 +18,14 @@ export class ProcessoDeFreteController {
     private readonly processoDeFreteService: ProcessoDeFreteService
   ) {}
 
-  @Post()
-  create(@Body() createProcessoDeFreteDto: CreateProcessoDeFreteDto) {
-    return this.processoDeFreteService.create(createProcessoDeFreteDto);
+  // @UseGuards(JwtAuthGuard, VeiculoGuard, FreteiroSolicitanteGuard, ProcessoAAceitarJaExisteGuard, TipoPrecoGuard, InformacoesBancariasLocadorGuard )
+  @Post(":idVeiculo/:idLocador/:idLocatario")
+  create(@Param('idVeiculo') idVeiculo: string, @Param('idFreteiro') idFreteiro: string, @Param('idSolicitante') idSolicitante: string) {
+    try{
+    return this.processoDeFreteService.create(idVeiculo, idFreteiro, idSolicitante);
+    }catch(e){
+      return new Error(e.message);
+    }
   }
 
   @Get()
@@ -28,7 +35,7 @@ export class ProcessoDeFreteController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.processoDeFreteService.findOne(+id);
+    return this.processoDeFreteService.findOne(id);
   }
 
   // @Patch(':id')

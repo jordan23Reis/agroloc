@@ -237,23 +237,9 @@ export class ProcessoDeAluguelService {
     }
   }
 
-
-
-  
-  findAll() {
-    return `This action returns all processoDeAluguel`;
-  }
-
   async findOne(id: string) {
     const foundUser = await this.processoDeAluguelModel.findById(id);
     return foundUser;
   }
 
-  update(id: number, updateProcessoDeAluguelDto: UpdateProcessoDeAluguelDto) {
-    return `This action updates a #${id} processoDeAluguel`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} processoDeAluguel`;
-  }
 }
