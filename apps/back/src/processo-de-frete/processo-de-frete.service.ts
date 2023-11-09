@@ -29,77 +29,85 @@ export class ProcessoDeFreteService {
     return processoDeAluguel;
   }
 
-  async create(idMaquina: string, idLocador:string, idLocatario) {
-    const maquina = await this.maquinaService.findOne(idMaquina);
-    const locador = await this.usersService.findOne(idLocador);
-    const locatario = await this.usersService.findOne(idLocatario);
-    const tipoPreco = await this.tipoPrecoService.findOne(maquina.Preco.Tipo.idTipo);
-    const informacoesBancariasLocador = await this.usersService.findInformacoesBancarias(idLocador);
+  async create(idMaquina: string, idFreteiro:string, idSolicitante, enderecoSolicitanteSelecionado: string, valorProposto: number) {
+    const solicitante = await this.usersService.findOne(idSolicitante);
+    const freteiro = await this.usersService.findOne(idFreteiro);
+    // const veiculo = freteiro.CadastroFreteiro.Automovel.find(aut => aut._id.toString() == idVeiculo);
+    const informacoesBancariasFreteiro = await this.usersService.findInformacoesBancarias(idFreteiro);
+    const enderecoSolicitante = solicitante.CadastroComum.Enderecos.find(end => end._id.toString() == enderecoSolicitanteSelecionado);
+    const maquinaSolicitante = await this.maquinaService.findOne(idMaquina);
 
-    const ProcessoDeAluguel = {
+    const ProcessoDeFrete = {
       Status: "A aceitar",
-      Maquina: {
-        idMaquina: maquina.id,
-        Nome: maquina.Nome,
-        ImagemPrincipal: {
-          Url: maquina?.ImagemPrincipal?.Url,
-          NomeArquivo: maquina?.ImagemPrincipal?.NomeArquivo
-        }
-      },
+      CepOrigem: freteiro.CadastroFreteiro.EnderecoAtivo.Cep,
+      CepDestino: enderecoSolicitante.Cep,
+      // Veiculo: {
+      //   idVeiculo: veiculo._id,
+      //   Nome: veiculo.Nome,
+      //   ImagemPrincipal: {
+      //     Url: veiculo?.ImagemPrincipal?.Url,
+      //     NomeArquivo: veiculo?.ImagemPrincipal?.NomeArquivo
+      //   }
+      // },
 
       Pagamento: { 
         Status: "Pra Pagar",
-        Preco: {  
-          ValorPorTipo: maquina.Preco.ValorPorTipo,
-          Tipo:{
-            idTipo: tipoPreco.id,
-            Nome: tipoPreco.Nome
-          }
-        },
+        Valor: valorProposto,
         PixRecebedor: {
-          Chave: informacoesBancariasLocador.Pix.Chave,
-          Tipo: informacoesBancariasLocador.Pix.Tipo
+          Chave: informacoesBancariasFreteiro.Pix.Chave,
+          Tipo: informacoesBancariasFreteiro.Pix.Tipo
         },
         ContaBancariaRecebedor:{
-          Agencia: informacoesBancariasLocador.ContaBancaria.Agencia,
-          Conta: informacoesBancariasLocador.ContaBancaria.Conta
+          Agencia: informacoesBancariasFreteiro.ContaBancaria.Agencia,
+          Conta: informacoesBancariasFreteiro.ContaBancaria.Conta
         }
 
       },
-
+      Maquina: {
+        idMaquina: maquinaSolicitante.id,
+        Nome: maquinaSolicitante.Nome,
+        ImagemPrincipal: {
+          Url: maquinaSolicitante.Url,
+          NomeArquivo: maquinaSolicitante.NomeArquivo
+        }
+      },
       Envolvidos:{
-        Locador: {
-          idLocador: locador._id.toString(),
-          Nome: locador.CadastroComum.Nome,
+        Freteiro: {
+          idFreteiro: freteiro._id.toString(),
+          Nome: freteiro.CadastroComum.Nome,
           Foto: {
-            Url: locador?.CadastroComum?.Foto?.Url,
-            NomeArquivo: locador?.CadastroComum?.Foto?.NomeArquivo
+            Url: freteiro?.CadastroComum?.Foto?.Url,
+            NomeArquivo: freteiro?.CadastroComum?.Foto?.NomeArquivo
           }
         },
-        Locatario: {
-          idLocatario: locatario._id.toString(),
-          Nome: locatario.CadastroComum.Nome,
+        Solicitante: {
+          idSolicitante: solicitante._id.toString(),
+          Nome: solicitante.CadastroComum.Nome,
           Foto: {
-            Url: locatario?.CadastroComum?.Foto?.Url,
-            NomeArquivo: locatario?.CadastroComum?.Foto?.NomeArquivo
+            Url: solicitante?.CadastroComum?.Foto?.Url,
+            NomeArquivo: solicitante?.CadastroComum?.Foto?.NomeArquivo
           }
       }
     }
   }
 
-  if(!locatario?.CadastroComum?.Foto){
-    delete ProcessoDeAluguel.Envolvidos.Locatario.Foto;
+  if(!solicitante?.CadastroComum?.Foto){
+    delete ProcessoDeFrete.Envolvidos.Solicitante.Foto;
   }
 
-  if(!locador?.CadastroComum?.Foto){
-    delete ProcessoDeAluguel.Envolvidos.Locador.Foto;
+  if(!freteiro?.CadastroComum?.Foto){
+    delete ProcessoDeFrete.Envolvidos.Freteiro.Foto;
   }
 
-  if(!maquina?.ImagemPrincipal){
-    delete ProcessoDeAluguel.Maquina.ImagemPrincipal;
+  // if(!veiculo?.ImagemPrincipal){
+  //   delete ProcessoDeAluguel.Veiculo.ImagemPrincipal;
+  // }
+
+  if(!maquinaSolicitante.ImagemPrincipal) {
+    delete ProcessoDeFrete.Maquina.ImagemPrincipal;
   }
 
-  const createdProcessoDeAluguel = this.processoDeFreteModel.create(ProcessoDeAluguel);
+  const createdProcessoDeAluguel = this.processoDeFreteModel.create(ProcessoDeFrete);
   return createdProcessoDeAluguel;
   }
 

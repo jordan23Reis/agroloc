@@ -11,6 +11,8 @@ import { JwtAuthGuard } from '../auth-user/guards/jwt.auth-user.guard';
 import { VeiculoGuard } from './guards/VeiculoGuard';
 import { FreteiroSolicitanteGuard } from './guards/FreteiroSolicitanteGuard';
 import { ProcessoAAceitarJaExisteGuard } from './guards/ProcessoAAceitarJaExisteGuard';
+import { MaquinaGuard } from './guards/MaquinaGuard';
+import { InformacoesBancariasFreteiroGuard } from './guards/InformacoesBancariasFreteiroGuard';
 
 @Controller('processo-de-frete')
 export class ProcessoDeFreteController {
@@ -18,11 +20,16 @@ export class ProcessoDeFreteController {
     private readonly processoDeFreteService: ProcessoDeFreteService
   ) {}
 
-  // @UseGuards(JwtAuthGuard, VeiculoGuard, FreteiroSolicitanteGuard, ProcessoAAceitarJaExisteGuard, TipoPrecoGuard, InformacoesBancariasLocadorGuard )
-  @Post(":idVeiculo/:idLocador/:idLocatario")
-  create(@Param('idVeiculo') idVeiculo: string, @Param('idFreteiro') idFreteiro: string, @Param('idSolicitante') idSolicitante: string) {
+  @UseGuards(JwtAuthGuard, VeiculoGuard, MaquinaGuard, FreteiroSolicitanteGuard, ProcessoAAceitarJaExisteGuard, InformacoesBancariasFreteiroGuard )
+  @Post(":idVeiculo/:idFreteiro/:idSolicitante/:enderecoSolicitanteSelecionado/:valorFrete")
+  create(
+    @Param('idVeiculo') idVeiculo: string, 
+    @Param('idFreteiro') idFreteiro: string, 
+    @Param('idSolicitante') idSolicitante: string, 
+    @Param('enderecoSolicitanteSelecionado') enderecoSolicitanteSelecionado: string, 
+    @Param('valorFrete') valorFrete: number) {
     try{
-    return this.processoDeFreteService.create(idVeiculo, idFreteiro, idSolicitante);
+    return this.processoDeFreteService.create(idVeiculo, idFreteiro, idSolicitante, enderecoSolicitanteSelecionado, valorFrete);
     }catch(e){
       return new Error(e.message);
     }
