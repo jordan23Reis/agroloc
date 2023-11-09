@@ -1,5 +1,6 @@
 export * from './account-paths.interface';
 export * from './car-path.interface';
+export * from './favorite-paths.interface';
 export * from './login.interface';
 export * from './others-paths.interface';
 export * from './profile.interface';

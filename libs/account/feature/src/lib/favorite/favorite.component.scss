@@ -19,6 +19,7 @@
     .list {
       display: flex;
       flex-direction: column;
+      min-width: 600px;
       width: 100%;
       height: auto;
       align-items: center;
@@ -48,6 +49,7 @@
         height: 75%;
         align-self: center;
         justify-self: center;
+        object-fit: contain;
       }
     }
     .dividerInfo {

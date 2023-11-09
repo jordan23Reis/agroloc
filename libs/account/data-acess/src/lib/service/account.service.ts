@@ -24,6 +24,7 @@ import {
 import { AccountData } from '../entities/register-account.interface';
 import { Automovel, EditAutomovel } from '../entities/car-path.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Favorito } from '../entities';
 
 @Injectable({
   providedIn: 'root',
@@ -311,8 +312,8 @@ export class AccountService {
     );
   }
 
-  removeMaquinaFavorita(accountId: string, maquinaId: string): Observable<any> {
-    return this.http.delete(`/api/favorito/maquina/${accountId}/${maquinaId}`);
+  removeMaquinaFavorita(accountId: string, maquinaId: string): Observable<any> {    
+    return this.http.delete(`/api/favorito/maquina/${accountId}/${maquinaId}`)
   }
 
   findCepEndereco(Cep: string) {
@@ -326,5 +327,9 @@ export class AccountService {
           throw new Error(error);
         })
       );
+  }
+
+  findFavoritos(idFavorito: string){
+    return this.http.get<Favorito[]>(`/api/favorito/${idFavorito}`)
   }
 }

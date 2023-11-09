@@ -15,19 +15,20 @@
       <div class="foto" routerLink="">
         <mat-divider></mat-divider>
         <span class="example-spacer"></span>
-        <img [src]="item.ImagemPrincipal.Url" />
+        <img [src]="item.ItemFavorito.ImagemPrincipal.Url" />
         <span class="example-spacer"></span>
         <mat-divider></mat-divider>
       </div>
       <div class="dividerInfo">
         <mat-divider></mat-divider>
         <div class="informacoes">
-          <h4 class="favoriteName" routerLink="">{{ item.Nome }}</h4>
+          <h4 class="favoriteName" routerLink="details" (click)="selectItem(item.ItemFavorito.idItemFavorito)">{{ item.ItemFavorito.Nome }}</h4>
           <span class="example-spacer"></span>
           <button
             mat-icon-button
             class="example-icon"
             aria-label="Example icon-button with delete border icon"
+            (click)="removeFavorite(item._id)"
           >
             <mat-icon>delete</mat-icon>
           </button>
