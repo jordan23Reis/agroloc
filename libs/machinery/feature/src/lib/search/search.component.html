@@ -36,6 +36,8 @@
           <img
             *ngIf="(loadingRequest | async) === false && !intervalLoading"
             [src]="item.ImagemPrincipal.Url"
+            style="cursor: pointer"
+            (click)="selectItem(item._id)"
           />
           <span class="example-spacer"></span>
         </div>
@@ -46,7 +48,11 @@
               *ngIf="(loadingRequest | async) === true || intervalLoading"
               class="card_skeleton card_title"
             ></div>
-            <h2 *ngIf="(loadingRequest | async) === false && !intervalLoading">
+            <h2
+              *ngIf="(loadingRequest | async) === false && !intervalLoading"
+              style="cursor: pointer"
+              (click)="selectItem(item._id)"
+            >
               {{ item.Nome }}
             </h2>
             <span class="example-spacer"></span>
@@ -65,7 +71,8 @@
               *ngIf="(loadingRequest | async) === true || intervalLoading"
               class="card_skeleton card_section_price"
             ></div>
-            <h1 *ngIf="(loadingRequest | async) === false && !intervalLoading">
+            <h1 *ngIf="(loadingRequest | async) === false && !intervalLoading"  style="cursor: pointer"
+            (click)="selectItem(item._id)">
               R${{ item.Preco.ValorPorTipo }}
             </h1>
             <div
@@ -75,7 +82,8 @@
             ></div>
             <h4
               *ngIf="(loadingRequest | async) === false && !intervalLoading"
-              style="margin-left: 15px"
+              style="margin-left: 15px; cursor: pointer"
+              (click)="selectItem(item._id)"
             >
               {{ item.Preco.Tipo.Nome }}
             </h4>

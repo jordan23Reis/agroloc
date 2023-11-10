@@ -199,4 +199,8 @@ export class SearchComponent implements OnInit {
         }
       });
   }
+
+  selectItem(idItem: string) {
+    this.searchService.onSelectItem(idItem);
+  }
 }

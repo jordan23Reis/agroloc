@@ -21,7 +21,7 @@ export interface SearchFilter {
 export class SearchService {
   http = inject(HttpClient);
   router = inject(Router);
-  machineryService = inject(MachineryService)
+  machineryService = inject(MachineryService);
 
   initialFilter: SearchFilter = {
     Quantidade: 10,
@@ -34,11 +34,12 @@ export class SearchService {
     Ordem: '',
   };
 
-  searchData = new ReplaySubject<Maquina[]>(1);
-  searchData$ = this.searchData.asObservable();
 
   itemSelect = new ReplaySubject<Maquina>(1);
-  itemSelect$ = this.searchData.asObservable();
+  itemSelect$ = this.itemSelect.asObservable();
+
+  searchData = new ReplaySubject<Maquina[]>(1);
+  searchData$ = this.searchData.asObservable();
 
   searchFilter = new ReplaySubject<SearchFilter>(1);
   searchFilter$ = this.searchFilter.asObservable();
@@ -141,10 +142,13 @@ export class SearchService {
     });
   }
 
-  onSelectItem(idItem: string){
-    this.machineryService.getMachinery(idItem).pipe(take(1)).subscribe((response) => {
-      this.itemSelect.next(response)
-      this.router.navigate(['web','main','details'])
-    })
+  onSelectItem(idItem: string) {
+    this.machineryService
+      .getMachinery(idItem)
+      .pipe(take(1))
+      .subscribe((response) => {
+        this.itemSelect.next(response);
+        this.router.navigate(['web', 'main', 'details']);
+      });
   }
 }

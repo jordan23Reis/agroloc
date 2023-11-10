@@ -1,12 +1,10 @@
+import { Maquina } from '@agroloc/machinery/data-access';
+import { SearchService } from '@agroloc/shared/data-access';
 import { Platform } from '@angular/cdk/platform';
 import { Component, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
 
-const ELEMENT_DATA: any[] = [
-  { informacao: 'Peso', valor: 10.5 },
-  { informacao: 'Comprimento', valor: 8.6 },
-  { informacao: 'Largura', valor: 9.5 },
-  { informacao: 'Altura', valor: 25.9 },
-];
+
 
 @Component({
   selector: 'agroloc-details',
@@ -15,11 +13,28 @@ const ELEMENT_DATA: any[] = [
 })
 export class DetailsComponent {
   platform = inject(Platform);
+  searchService = inject(SearchService)
+
+  ELEMENT_DATA: any[] = [
+    { informacao: 'Peso', valor: 10.5 },
+    { informacao: 'Comprimento', valor: 8.6 },
+    { informacao: 'Largura', valor: 9.5 },
+    { informacao: 'Altura', valor: 25.9 },
+  ];
 
   isMobile = this.platform.ANDROID || this.platform.IOS;
   displayedColumns: string[] = ['informacao', 'valor'];
-  dataSource = ELEMENT_DATA;
+  dataSource = this.ELEMENT_DATA;
   clickedRows = new Set<any>();
+
+  searchItem = this.searchService.itemSelect$
+
+  searchItemSubscribe = this.searchService.itemSelect$.subscribe((response) => {
+    this.ELEMENT_DATA[0].valor = response.Peso
+    this.ELEMENT_DATA[1].valor = response.Comprimento
+    this.ELEMENT_DATA[2].valor = response.Largura
+    this.ELEMENT_DATA[3].valor = response.Altura
+  })
 
   arquivos = [
     'https://th.bing.com/th/id/OIP.q2eACHR4I3LNquamNg3u4wHaEP?w=314&h=180&c=7&r=0&o=5&pid=1.7',

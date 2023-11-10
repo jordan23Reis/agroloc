@@ -7,6 +7,7 @@ import { MachineryService, Maquina } from '@agroloc/machinery/data-access';
 import { SearchService } from '@agroloc/shared/data-access';
 import { Platform } from '@angular/cdk/platform';
 import { Component, inject } from '@angular/core';
+import { MatChipSelectionChange } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReplaySubject, catchError, debounceTime, map, take } from 'rxjs';
 
@@ -20,11 +21,24 @@ export class FavoriteComponent {
   accountService = inject(AccountService);
   machineryService = inject(MachineryService);
   authService = inject(AuthService);
-  searchService = inject(SearchService)
+  searchService = inject(SearchService);
   snackbar = inject(MatSnackBar);
 
+  filter: string;
+
   favoriteMachinery = new ReplaySubject<Favorito[]>(1);
-  favoriteMachinery$ = this.favoriteMachinery.asObservable();
+  favoriteMachinery$ = this.favoriteMachinery.asObservable().pipe(
+    map((response) => {
+      if (this.filter) {
+        console.log(response);
+
+        console.log(response[1]);
+
+        return response;
+      }
+      return response;
+    })
+  );
 
   userData = this.accountService.userAccount$
     .pipe(debounceTime(1000))
@@ -51,19 +65,32 @@ export class FavoriteComponent {
 
   removeFavorite(idMaquina: string) {
     console.log('passei');
-    
+
     this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
-      const idUser = response.IdUsuario
-      this.accountService.removeMaquinaFavorita(response.IdUsuario, idMaquina).subscribe((response) => {
-        this.accountService.nextAccount(idUser)
-        this.snackbar.open('Maquina removida!', undefined, {
-          duration: 3000
-        })
-      });
+      const idUser = response.IdUsuario;
+      this.accountService
+        .removeMaquinaFavorita(response.IdUsuario, idMaquina)
+        .subscribe((response) => {
+          this.accountService.nextAccount(idUser);
+          this.snackbar.open('Maquina removida!', undefined, {
+            duration: 3000,
+          });
+        });
     });
   }
 
   selectItem(idItem: string) {
-    this.searchService.onSelectItem(idItem)
+    this.searchService.onSelectItem(idItem);
+  }
+
+  favoriteFilter(event: MatChipSelectionChange) {
+    if (event.selected) {
+      this.filter = event.source.value;
+    } else {
+      this.filter = '';
+    }
+    this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
+      this.accountService.nextAccount(response.IdUsuario);
+    });
   }
 }

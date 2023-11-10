@@ -3,11 +3,13 @@
   <div class="list">
     <mat-divider></mat-divider>
     <div class="head">
-      <mat-divider [vertical]="true"></mat-divider>
       <span class="example-spacer"></span>
       <h3>Lista de Favoritos</h3>
       <span class="example-spacer"></span>
-      <mat-divider [vertical]="true"></mat-divider>
+      <mat-chip-listbox aria-label="Fish selection">
+        <mat-chip-option [value]="'Maquina'" (selectionChange)="favoriteFilter($event)">Maquina</mat-chip-option>
+        <mat-chip-option [value]="'Freteiro'" (selectionChange)="favoriteFilter($event)">Freteiro</mat-chip-option>
+      </mat-chip-listbox>
     </div>
     <mat-divider></mat-divider>
     <div class="item" *ngFor="let item of favoriteMachinery$ | async">
