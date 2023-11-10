@@ -114,7 +114,7 @@ export class ProcessoDeAluguelService {
     const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
     const maquinaAtreladaAprocesso = await this.maquinaService.findOne(processoDeAluguel.Maquina.idMaquina.toString());
 
-    maquinaAtreladaAprocesso.EstaAtiva = true;
+    maquinaAtreladaAprocesso.EstaAtiva = false;
     processoDeAluguel.Status = "Aguardando Frete";
 
     await processoDeAluguel.save();

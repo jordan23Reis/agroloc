@@ -226,11 +226,11 @@ class Pagamento {
     })
     Status: string;
 
-    @Prop({
-        type: Preco, 
-        required: true
-    })
-    Preco: Preco;
+    // @Prop({
+    //     type: Preco, 
+    //     required: true
+    // })
+    // Preco: Preco;
 
     @Prop({
         type: String, 
@@ -340,7 +340,7 @@ export class ProcessoDeFrete {
 
     @Prop({
         type: Veiculo,
-        required: true
+        required: false
     })
     Veiculo: Veiculo
 }

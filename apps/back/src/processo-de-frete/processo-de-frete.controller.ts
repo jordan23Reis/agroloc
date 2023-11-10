@@ -20,25 +20,21 @@ export class ProcessoDeFreteController {
     private readonly processoDeFreteService: ProcessoDeFreteService
   ) {}
 
-  @UseGuards(JwtAuthGuard, VeiculoGuard, MaquinaGuard, FreteiroSolicitanteGuard, ProcessoAAceitarJaExisteGuard, InformacoesBancariasFreteiroGuard )
-  @Post(":idVeiculo/:idFreteiro/:idSolicitante/:enderecoSolicitanteSelecionado/:valorFrete")
+  @UseGuards(JwtAuthGuard, MaquinaGuard, FreteiroSolicitanteGuard, ProcessoAAceitarJaExisteGuard, InformacoesBancariasFreteiroGuard )
+  @Post(":idMaquina/:idFreteiro/:idSolicitante/:enderecoSolicitanteSelecionado/:valorFrete")
   create(
-    @Param('idVeiculo') idVeiculo: string, 
+    @Param('idMaquina') idMaquina: string, 
     @Param('idFreteiro') idFreteiro: string, 
     @Param('idSolicitante') idSolicitante: string, 
     @Param('enderecoSolicitanteSelecionado') enderecoSolicitanteSelecionado: string, 
     @Param('valorFrete') valorFrete: number) {
     try{
-    return this.processoDeFreteService.create(idVeiculo, idFreteiro, idSolicitante, enderecoSolicitanteSelecionado, valorFrete);
+    return this.processoDeFreteService.create(idMaquina, idFreteiro, idSolicitante, enderecoSolicitanteSelecionado, valorFrete);
     }catch(e){
       return new Error(e.message);
     }
   }
 
-  @Get()
-  findAll() {
-    return this.processoDeFreteService.findAll();
-  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -53,8 +49,4 @@ export class ProcessoDeFreteController {
   //   return this.processoDeFreteService.update(+id, updateProcessoDeFreteDto);
   // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.processoDeFreteService.remove(+id);
-  }
 }

@@ -10,8 +10,9 @@ export class InformacoesBancariasFreteiroGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const infoBancarias = await this.usuarioService.findInformacoesBancarias(request.params.idFreteiro);
+    
     if(!infoBancarias){
-        throw new BadRequestException(`Locador não possui informações bancárias registradas!`);
+        throw new UnauthorizedException(`Freteiro não possui informações bancárias registradas!`);
     }
 
     return true;

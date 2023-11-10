@@ -63,7 +63,7 @@ export class MaquinaService {
       const maquinaDtoComIdUsuario = {
         ...createMaquinaDto,
         Categoria: {
-          idCategoria: createMaquinaDto.idCategoria,
+          idCategoria: createMaquinaDto.IdCategoria,
           Nome: undefined,
         },
         Preco: {
@@ -83,9 +83,9 @@ export class MaquinaService {
         },
       };
 
-      if (createMaquinaDto.idCategoria) {
+      if (createMaquinaDto.IdCategoria) {
         const categoria = await this.categoriaService.findOne(
-          createMaquinaDto.idCategoria.toString()
+          createMaquinaDto.IdCategoria.toString()
         );
         if (categoria) {
           if (categoria.Tipo == CategoriaTipos.Maquina) {
@@ -103,7 +103,7 @@ export class MaquinaService {
           throw new BadRequestException('Categoria não existe!');
         }
       } else {
-        throw new BadRequestException('Esta sem Categoria!');
+        throw new BadRequestException('Maquina Esta sem Categoria!');
       }
 
       const tipoPreco = await this.tipoPreco.findOne(
@@ -329,9 +329,9 @@ export class MaquinaService {
     maquina.Altura = updateMaquinaDto.Altura;
     maquina.EstaAtiva = updateMaquinaDto.EstaAtiva;
 
-    if (updateMaquinaDto.idCategoria) {
+    if (updateMaquinaDto.IdCategoria) {
       const categoria = await this.categoriaService.findOne(
-        updateMaquinaDto.idCategoria.toString()
+        updateMaquinaDto.IdCategoria.toString()
       );
       if (categoria) {
         if (categoria.Tipo == CategoriaTipos.Maquina) {

@@ -23,7 +23,7 @@ export class ProcessoDeFreteService {
     const processoDeAluguel = await this.processoDeFreteModel.findOne({
       Status: "A aceitar",
       "Envolvidos.Freteiro.idFreteiro": idFreteiro,
-      "Envolvidos.Locatario.idSolicitante": idSolicitante
+      "Envolvidos.Solicitante.idSolicitante": idSolicitante
     });
 
     return processoDeAluguel;
@@ -39,8 +39,8 @@ export class ProcessoDeFreteService {
 
     const ProcessoDeFrete = {
       Status: "A aceitar",
-      CepOrigem: freteiro.CadastroFreteiro.EnderecoAtivo.Cep,
-      CepDestino: enderecoSolicitante.Cep,
+      CepOrigem: freteiro?.CadastroFreteiro?.EnderecoAtivo?.Cep,
+      CepDestino: enderecoSolicitante?.Cep,
       // Veiculo: {
       //   idVeiculo: veiculo._id,
       //   Nome: veiculo.Nome,
@@ -54,35 +54,35 @@ export class ProcessoDeFreteService {
         Status: "Pra Pagar",
         Valor: valorProposto,
         PixRecebedor: {
-          Chave: informacoesBancariasFreteiro.Pix.Chave,
-          Tipo: informacoesBancariasFreteiro.Pix.Tipo
+          Chave: informacoesBancariasFreteiro?.Pix?.Chave,
+          Tipo: informacoesBancariasFreteiro?.Pix?.Tipo
         },
         ContaBancariaRecebedor:{
-          Agencia: informacoesBancariasFreteiro.ContaBancaria.Agencia,
-          Conta: informacoesBancariasFreteiro.ContaBancaria.Conta
+          Agencia: informacoesBancariasFreteiro?.ContaBancaria?.Agencia,
+          Conta: informacoesBancariasFreteiro?.ContaBancaria?.Conta
         }
 
       },
       Maquina: {
-        idMaquina: maquinaSolicitante.id,
-        Nome: maquinaSolicitante.Nome,
+        idMaquina: maquinaSolicitante?.id,
+        Nome: maquinaSolicitante?.Nome,
         ImagemPrincipal: {
-          Url: maquinaSolicitante.Url,
-          NomeArquivo: maquinaSolicitante.NomeArquivo
+          Url: maquinaSolicitante?.Url,
+          NomeArquivo: maquinaSolicitante?.NomeArquivo
         }
       },
       Envolvidos:{
         Freteiro: {
-          idFreteiro: freteiro._id.toString(),
-          Nome: freteiro.CadastroComum.Nome,
+          idFreteiro: freteiro?._id.toString(),
+          Nome: freteiro?.CadastroComum.Nome,
           Foto: {
             Url: freteiro?.CadastroComum?.Foto?.Url,
             NomeArquivo: freteiro?.CadastroComum?.Foto?.NomeArquivo
           }
         },
         Solicitante: {
-          idSolicitante: solicitante._id.toString(),
-          Nome: solicitante.CadastroComum.Nome,
+          idSolicitante: solicitante?._id?.toString(),
+          Nome: solicitante?.CadastroComum?.Nome,
           Foto: {
             Url: solicitante?.CadastroComum?.Foto?.Url,
             NomeArquivo: solicitante?.CadastroComum?.Foto?.NomeArquivo
@@ -99,31 +99,41 @@ export class ProcessoDeFreteService {
     delete ProcessoDeFrete.Envolvidos.Freteiro.Foto;
   }
 
-  // if(!veiculo?.ImagemPrincipal){
-  //   delete ProcessoDeAluguel.Veiculo.ImagemPrincipal;
-  // }
-
   if(!maquinaSolicitante.ImagemPrincipal) {
     delete ProcessoDeFrete.Maquina.ImagemPrincipal;
   }
 
-  const createdProcessoDeAluguel = this.processoDeFreteModel.create(ProcessoDeFrete);
-  return createdProcessoDeAluguel;
+  const createdProcessoDeFrete = this.processoDeFreteModel.create(ProcessoDeFrete);
+  return createdProcessoDeFrete;
+  }
+
+  async aceitarProcessoDeFrete(idProcessoDeFrete: string, idVeiculo: string){
+    const processoDeFrete = await this.processoDeFreteModel.findById(idProcessoDeFrete);
+    const usuarioFreteiroAtreladoAoProcesso = await this.usersService.findOne(processoDeFrete.Envolvidos.Freteiro.idFreteiro.toString());
+
+
+    usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro.EstaAtivo = false;
+    processoDeFrete.Status = "A Comecar";
+    const veiculoAchado = usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro?.Automovel.find((el) => el._id.toString() == idVeiculo);
+    processoDeFrete.Veiculo.idVeiculo = veiculoAchado._id;
+    processoDeFrete.Veiculo.Nome = veiculoAchado.Nome;
+    processoDeFrete.Veiculo.ImagemPrincipal.NomeArquivo = veiculoAchado?.ImagemPrincipal?.NomeArquivo;
+    processoDeFrete.Veiculo.ImagemPrincipal.Url = veiculoAchado?.ImagemPrincipal?.Url;
+
+    if(!veiculoAchado?.ImagemPrincipal){
+      delete processoDeFrete.Veiculo.ImagemPrincipal;
+    }
+
+    await processoDeFrete.save();
+    await usuarioFreteiroAtreladoAoProcesso.save();
+    return processoDeFrete;
   }
 
 
-  findAll() {
-    return `This action returns all processoDeFrete`;
-  }
-
+  
   async findOne(id: string) {
     const foundUser = await this.processoDeFreteModel.findById(id);
     return foundUser;
   }
 
-
-
-  remove(id: number) {
-    return `This action removes a #${id} processoDeFrete`;
-  }
 }

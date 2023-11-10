@@ -84,7 +84,7 @@ export class CreateUpdateMaquinaDto {
 
     @IsOptional()
     @IsString()
-    idCategoria: mongoose.Schema.Types.ObjectId;
+    IdCategoria: mongoose.Schema.Types.ObjectId;
 
     @IsOptional()
     @IsString()
