@@ -115,6 +115,7 @@ export class ProcessoDeFreteService {
     usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro.EstaAtivo = false;
     processoDeFrete.Status = "A Comecar";
     const veiculoAchado = usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro?.Automovel.find((el) => el._id.toString() == idVeiculo);
+
     processoDeFrete.Veiculo.idVeiculo = veiculoAchado._id;
     processoDeFrete.Veiculo.Nome = veiculoAchado.Nome;
     processoDeFrete.Veiculo.ImagemPrincipal.NomeArquivo = veiculoAchado?.ImagemPrincipal?.NomeArquivo;
@@ -128,6 +129,37 @@ export class ProcessoDeFreteService {
     await usuarioFreteiroAtreladoAoProcesso.save();
     return processoDeFrete;
   }
+
+
+  async recusarProcessoDeFrete(idProcessoDeFrete: string){
+    const processoDeFrete = await this.processoDeFreteModel.findById(idProcessoDeFrete);
+    processoDeFrete.Status = "Recusado";
+    await processoDeFrete.save();
+    return processoDeFrete;
+  }
+
+
+  async comecarProcessoDeFrete(idProcessoDeFrete: string){
+    const processoDeFrete = await this.processoDeFreteModel.findById(idProcessoDeFrete);
+    processoDeFrete.Status = "Em Andamento";
+    await processoDeFrete.save();
+    return processoDeFrete;
+  }
+
+  async finalizarProcessoDeFrete(idProcessoDeFrete: string){
+    const processoDeFrete = await this.processoDeFreteModel.findById(idProcessoDeFrete);
+    processoDeFrete.Status = "A Pagar";
+    await processoDeFrete.save();
+    return processoDeFrete;
+  }
+
+  async pagarProcessoDeFrete(idProcessoDeFrete: string){
+    const processoDeFrete = await this.processoDeFreteModel.findById(idProcessoDeFrete);
+    processoDeFrete.Status = "A Avaliar";
+    await processoDeFrete.save();
+    return processoDeFrete;
+  }
+
 
 
   
