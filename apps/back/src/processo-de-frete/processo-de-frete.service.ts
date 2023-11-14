@@ -153,7 +153,7 @@ export class ProcessoDeFreteService {
     return processoDeFrete;
   }
 
-  async pagarProcessoDeFrete(idProcessoDeFrete: string){
+  async confirmarPagamentoProcessoDeFrete(idProcessoDeFrete: string){
     const processoDeFrete = await this.processoDeFreteModel.findById(idProcessoDeFrete);
     processoDeFrete.Status = "A Avaliar";
     await processoDeFrete.save();

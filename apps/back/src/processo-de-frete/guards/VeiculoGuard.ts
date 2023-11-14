@@ -10,7 +10,7 @@ export class VeiculoGuard implements CanActivate {
   ): Promise<boolean>  {
 
     const request = context.switchToHttp().getRequest();
-    const usuarioFreteiro = await this.usuarioService.findOne(request.params.idFreteiro);
+    const usuarioFreteiro = await this.usuarioService.findOne(request.user.IdUsuario);
 
     const veiculoAchado = usuarioFreteiro.CadastroFreteiro?.Automovel.find((el) => el == request.params.idVeiculo);
     
