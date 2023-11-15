@@ -1,10 +1,27 @@
-import { Maquina } from '@agroloc/machinery/data-access';
-import { SearchService } from '@agroloc/shared/data-access';
+import {
+  AuthService,
+  AuthStorage,
+  AccountService,
+} from '@agroloc/account/data-acess';
+import {
+  Avaliacao,
+  MachineryService,
+  Maquina,
+} from '@agroloc/machinery/data-access';
+import {
+  LoaderFacade,
+  SearchService,
+  SidenavService,
+} from '@agroloc/shared/data-access';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { Platform } from '@angular/cdk/platform';
-import { Component, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
-
-
+import { ScrollDispatcher } from '@angular/cdk/scrolling';
+import { ViewportScroller } from '@angular/common';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { Observable, catchError, debounceTime, map, take } from 'rxjs';
 
 @Component({
   selector: 'agroloc-details',
@@ -13,7 +30,21 @@ import { Observable, map } from 'rxjs';
 })
 export class DetailsComponent {
   platform = inject(Platform);
-  searchService = inject(SearchService)
+  searchService = inject(SearchService);
+
+  router = inject(Router);
+  breakpointObserver = inject(BreakpointObserver);
+  formBuilder = inject(FormBuilder);
+  snackBar = inject(MatSnackBar);
+  loader = inject(LoaderFacade);
+  authService = inject(AuthService);
+  authStorage = inject(AuthStorage);
+  accountService = inject(AccountService);
+  machineryService = inject(MachineryService);
+  sidenavService = inject(SidenavService);
+  scrollDispatcher = inject(ScrollDispatcher);
+  viewportScroller = inject(ViewportScroller);
+  changeDetectorRef = inject(ChangeDetectorRef);
 
   ELEMENT_DATA: any[] = [
     { informacao: 'Peso', valor: 10.5 },
@@ -26,32 +57,31 @@ export class DetailsComponent {
   displayedColumns: string[] = ['informacao', 'valor'];
   dataSource = this.ELEMENT_DATA;
   clickedRows = new Set<any>();
+  machineryId: string = '';
+  machineryRate: any;
+  haveMachineryRate = false;
+  urlMainImage = '';
+  focusUrl = '';
 
-  searchItem = this.searchService.itemSelect$
+  searchItem = this.searchService.itemSelect$;
 
   searchItemSubscribe = this.searchService.itemSelect$.subscribe((response) => {
-    this.ELEMENT_DATA[0].valor = response.Peso
-    this.ELEMENT_DATA[1].valor = response.Comprimento
-    this.ELEMENT_DATA[2].valor = response.Largura
-    this.ELEMENT_DATA[3].valor = response.Altura
-  })
+    this.machineryId = response._id;
+    if (response.Avaliacoes[0]) {
+      this.machineryRate = response.Avaliacoes;
+      this.haveMachineryRate = false;
+    } else {
+      this.haveMachineryRate = true;
+    }
 
-  arquivos = [
-    'https://th.bing.com/th/id/OIP.q2eACHR4I3LNquamNg3u4wHaEP?w=314&h=180&c=7&r=0&o=5&pid=1.7',
-    'https://th.bing.com/th/id/OIP.CqVN7Yix_uV5atK919oc0AHaD9?w=308&h=180&c=7&r=0&o=5&pid=1.7',
-    'https://th.bing.com/th/id/OIP.GSCZ95yj_1-oFLy875P7AgHaE8?w=269&h=180&c=7&r=0&o=5&pid=1.7',
-    'https://th.bing.com/th/id/R.3650d5b5c420d04c0892fd1e77932841?rik=%2fZCdDEwdKBlcSQ&pid=ImgRaw&r=0',
-    'https://th.bing.com/th/id/OIP.XCqmJF7rI8ZIifBtwYzrzgHaFj?pid=ImgDet&w=800&h=600&rs=1',
-    'https://static.landwirt.com/3815-8c807013d5e97e5083fa764e4065e16e-3361002-1vb.jpg',
-    'https://th.bing.com/th/id/OIP.UfZqnA8ZmlQs-XyTNSeHmgHaHa?pid=ImgDet&w=600&h=600&rs=1',
-    'https://th.bing.com/th/id/OIP.q2eACHR4I3LNquamNg3u4wHaEP?w=314&h=180&c=7&r=0&o=5&pid=1.7',
-    'https://th.bing.com/th/id/OIP.CqVN7Yix_uV5atK919oc0AHaD9?w=308&h=180&c=7&r=0&o=5&pid=1.7',
-    'https://th.bing.com/th/id/OIP.GSCZ95yj_1-oFLy875P7AgHaE8?w=269&h=180&c=7&r=0&o=5&pid=1.7',
-    'https://th.bing.com/th/id/R.3650d5b5c420d04c0892fd1e77932841?rik=%2fZCdDEwdKBlcSQ&pid=ImgRaw&r=0',
-    'https://th.bing.com/th/id/OIP.XCqmJF7rI8ZIifBtwYzrzgHaFj?pid=ImgDet&w=800&h=600&rs=1',
-    'https://static.landwirt.com/3815-8c807013d5e97e5083fa764e4065e16e-3361002-1vb.jpg',
-    'https://th.bing.com/th/id/OIP.UfZqnA8ZmlQs-XyTNSeHmgHaHa?pid=ImgDet&w=600&h=600&rs=1',
-  ];
+    this.urlMainImage = response.ImagemPrincipal.Url;
+
+    this.ELEMENT_DATA[0].valor = response.Peso;
+    this.ELEMENT_DATA[1].valor = response.Comprimento;
+    this.ELEMENT_DATA[2].valor = response.Largura;
+    this.ELEMENT_DATA[3].valor = response.Altura;
+  });
+
   product = {
     foto: 'foto aqui',
     titulo:
@@ -89,4 +119,54 @@ export class DetailsComponent {
       updated: new Date('1/18/16'),
     },
   ];
+
+  addFavorite(machineryId: string) {
+    this.authService
+      .IsLogged()
+      .pipe(debounceTime(1000), take(1))
+      .subscribe((response) => {
+        if (response) {
+          this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
+            const idUser = response.IdUsuario;
+            this.accountService
+              .addMaquinaFavorita(response.IdUsuario, machineryId)
+              .pipe(
+                catchError((error) => {
+                  this.snackBar.open(
+                    'Ocorreu um erro ao Adicionar Favorito',
+                    undefined,
+                    { duration: 3000 }
+                  );
+                  throw new Error(error);
+                })
+              )
+              .subscribe((response) => {
+                this.snackBar.open('Maquinário adicionado', undefined, {
+                  duration: 3000,
+                });
+                this.accountService.nextAccount(idUser);
+              });
+          });
+        } else {
+          this.snackBar.open('Você precisa ter uma Conta', undefined, {
+            duration: 3000,
+          });
+        }
+      });
+  }
+
+  calculateAverageRating(avaliacoes: any[]) {
+    if (avaliacoes && avaliacoes.length > 0) {
+      const totalNivel = avaliacoes.reduce(
+        (total, avaliacao) => total + avaliacao.Nivel,
+        0
+      );
+      return (totalNivel / avaliacoes.length).toFixed(1);
+    }
+    return 'N/A';
+  }
+
+  onFocus(url: string) {
+    this.focusUrl = url
+  }
 }

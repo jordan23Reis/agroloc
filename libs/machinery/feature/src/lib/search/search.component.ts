@@ -172,7 +172,7 @@ export class SearchComponent implements OnInit {
       .subscribe((response) => {
         if (response) {
           this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
-            const idUser = response.IdUsuario
+            const idUser = response.IdUsuario;
             this.accountService
               .addMaquinaFavorita(response.IdUsuario, machineryId)
               .pipe(
@@ -189,7 +189,7 @@ export class SearchComponent implements OnInit {
                 this.snackBar.open('Maquinário adicionado', undefined, {
                   duration: 3000,
                 });
-                this.accountService.nextAccount(idUser)
+                this.accountService.nextAccount(idUser);
               });
           });
         } else {
@@ -201,6 +201,7 @@ export class SearchComponent implements OnInit {
   }
 
   selectItem(idItem: string) {
+    this.scrollToTop();
     this.searchService.onSelectItem(idItem);
   }
 }

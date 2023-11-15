@@ -9,14 +9,19 @@
         <div class="outrasFotos">
           <div
             class="arquivos"
+          >
+            <img (mouseover)="onFocus(urlMainImage)" [src]="(searchItem | async)?.ImagemPrincipal?.Url" />
+          </div>
+          <div
+            class="arquivos"
             *ngFor="let item of (searchItem | async)?.ImagensSecundarias"
           >
-            <img [src]="item.Url" />
+            <img (mouseover)="onFocus(item.Url)" [src]="item.Url" />
           </div>
         </div>
 
         <div class="fotoPrincipal">
-          <img [src]="(searchItem | async)?.ImagemPrincipal?.Url" />
+          <img [src]=" focusUrl ? focusUrl : (searchItem | async)?.ImagemPrincipal?.Url" />
         </div>
       </div>
 
@@ -27,6 +32,7 @@
             mat-icon-button
             class="example-icon"
             aria-label="Example icon-button with favorite border icon"
+            (click)="addFavorite(machineryId)"
           >
             <mat-icon>favorite_border</mat-icon>
           </button>
@@ -52,7 +58,7 @@
         <div class="person">
           <p>{{ (searchItem | async)?.DonoDaMaquina?.Nome }}</p>
           <span class="example-spacer"></span>
-          <h3>{{ product.avaliacao }}</h3>
+          <h3>{{ calculateAverageRating(machineryRate) }}</h3>
           <button
             mat-icon-button
             class="example-icon"
@@ -91,7 +97,9 @@
 
         <!-- Name Column -->
         <ng-container matColumnDef="valor">
-          <th mat-header-cell *matHeaderCellDef>Medidas (Em Metros e Kilogramas)</th>
+          <th mat-header-cell *matHeaderCellDef>
+            Medidas (Em Metros e Kilogramas)
+          </th>
           <td mat-cell *matCellDef="let element">{{ element.valor }}</td>
         </ng-container>
 
@@ -103,28 +111,69 @@
           *matRowDef="let row; columns: displayedColumns"
         ></tr>
       </table>
-
+      
       <h2>Descrição</h2>
-      <p>{{  (searchItem | async)?.Descricao }}</p>
+      <div class="description">
+        <p >{{ (searchItem | async)?.Descricao }}</p>
+      </div>
     </div>
+
+   
 
     <div class="footer">
       <h2>Comentarios</h2>
-      <mat-list>
-        <div mat-subheader>Folders</div>
-        <mat-list-item *ngFor="let folder of folders">
-          <mat-icon matListItemIcon>folder</mat-icon>
-          <div matListItemTitle>{{ folder.name }}</div>
-          <div matListItemLine>{{ folder.updated | date }}</div>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-        <div mat-subheader>Notes</div>
-        <mat-list-item *ngFor="let note of notes">
-          <mat-icon matListItemIcon>note</mat-icon>
-          <div matListItemTitle>{{ note.name }}</div>
-          <div matListItemLine>{{ note.updated | date }}</div>
-        </mat-list-item>
-      </mat-list>
+      <ol *ngIf="(searchItem | async)?.Avaliacoes" class="comment-list">
+        <li
+          *ngFor="let item of (searchItem | async)?.Avaliacoes"
+          class="comment"
+        >
+          <article class="comment-body">
+            <footer class="comment-meta">
+              <div class="comment-author vcard">
+                <img
+                  data-lazyloaded="1"
+                  data-placeholder-resp="64x64"
+                  [src]="
+                    item.UsuarioAvaliador?.Foto?.Url
+                      ? item.UsuarioAvaliador?.Foto?.Url
+                      : 'https://www.brasilcode.com.br/wp-content/litespeed/avatar/27c6b0c9dda701de1de82244a57ff179.jpg?ver=1699745455'
+                  "
+                  alt=""
+                  data-src="https://www.brasilcode.com.br/wp-content/litespeed/avatar/27c6b0c9dda701de1de82244a57ff179.jpg?ver=1699745455"
+                  data-srcset="https://www.brasilcode.com.br/wp-content/litespeed/avatar/87f5405154301ba8ed1925238d37c2e3.jpg?ver=1699745455 2x"
+                  class="avatar avatar-64 photo entered litespeed-loaded"
+                  height="64"
+                  width="64"
+                  decoding="async"
+                  data-ll-status="loaded"
+                  srcset="
+                    https://www.brasilcode.com.br/wp-content/litespeed/avatar/87f5405154301ba8ed1925238d37c2e3.jpg?ver=1699745455 2x
+                  "
+                />
+                <b class="fn">{{item.UsuarioAvaliador.Nome}}</b>
+                <span class="says">disse:</span>
+              </div>
+              <div class="comment-metadata">
+                <p>item.Nivel</p>
+                <mat-icon>star</mat-icon>
+              </div>
+            </footer>
+            <div class="comment-content">
+              <p>
+                {{item.Comentario}}
+              </p>
+            </div>
+          </article>
+        </li>
+      </ol>
+      <div
+      *ngIf="haveMachineryRate"
+      class="message"
+    >
+      <mat-icon class="searchIcon">search</mat-icon>
+      <h2>Nenhuma Avaliação Encontrado</h2>
+    </div>
+      
     </div>
   </div>
   <span class="example-spacer"></span>
