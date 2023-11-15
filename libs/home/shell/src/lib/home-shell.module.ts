@@ -29,6 +29,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { RentFeatureModule } from '@agroloc/rent/feature';
 
 @NgModule({
   imports: [
@@ -52,6 +53,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     ReactiveFormsModule,
     MatSelectModule,
     ScrollingModule,
+    RentFeatureModule,
   ],
   declarations: [
     WebComponent,

@@ -57,7 +57,7 @@ export class DetailsComponent {
   displayedColumns: string[] = ['informacao', 'valor'];
   dataSource = this.ELEMENT_DATA;
   clickedRows = new Set<any>();
-  machineryId: string = '';
+  machineryId = '';
   machineryRate: any;
   haveMachineryRate = false;
   urlMainImage = '';
@@ -167,6 +167,10 @@ export class DetailsComponent {
   }
 
   onFocus(url: string) {
-    this.focusUrl = url
+    this.focusUrl = url;
+  }
+
+  navNegotiate() {
+    this.router.navigate(['web', 'main', 'negotiate']);
   }
 }

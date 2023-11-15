@@ -18,6 +18,7 @@ import { ManagementComponent } from '@agroloc/account/feature';
 import { AuthGuard } from '@agroloc/account/data-acess';
 import { AutomobileComponent } from '@agroloc/account/feature';
 import { selectItemGuard } from '@agroloc/machinery/data-access';
+import { NegotiateComponent } from 'libs/rent/feature/src/lib/negotiate/negotiate.component';
 
 export const homeShellRoutes: Route[] = [
   {
@@ -80,6 +81,16 @@ export const homeShellRoutes: Route[] = [
             path: 'details',
             component: DetailsComponent,
             canActivate: [selectItemGuard],
+            children: [],
+          },
+          {
+            path: 'negotiate',
+            component: NegotiateComponent,
+            children: [],
+          },
+          {
+            path: 'transport',
+            component: DetailsComponent,
             children: [],
           },
           {

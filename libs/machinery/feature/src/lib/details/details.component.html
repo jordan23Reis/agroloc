@@ -7,10 +7,11 @@
         <span class="example-spacer"></span>
 
         <div class="outrasFotos">
-          <div
-            class="arquivos"
-          >
-            <img (mouseover)="onFocus(urlMainImage)" [src]="(searchItem | async)?.ImagemPrincipal?.Url" />
+          <div class="arquivos">
+            <img
+              (mouseover)="onFocus(urlMainImage)"
+              [src]="(searchItem | async)?.ImagemPrincipal?.Url"
+            />
           </div>
           <div
             class="arquivos"
@@ -21,7 +22,11 @@
         </div>
 
         <div class="fotoPrincipal">
-          <img [src]=" focusUrl ? focusUrl : (searchItem | async)?.ImagemPrincipal?.Url" />
+          <img
+            [src]="
+              focusUrl ? focusUrl : (searchItem | async)?.ImagemPrincipal?.Url
+            "
+          />
         </div>
       </div>
 
@@ -70,7 +75,12 @@
 
         <div class="compra">
           <span class="example-spacer"></span>
-          <button class="negociar" mat-raised-button color="primary">
+          <button
+            (click)="navNegotiate()"
+            class="negociar"
+            mat-raised-button
+            color="primary"
+          >
             Negociar
           </button>
           <span class="example-spacer"></span>
@@ -111,14 +121,12 @@
           *matRowDef="let row; columns: displayedColumns"
         ></tr>
       </table>
-      
+
       <h2>Descrição</h2>
       <div class="description">
-        <p >{{ (searchItem | async)?.Descricao }}</p>
+        <p>{{ (searchItem | async)?.Descricao }}</p>
       </div>
     </div>
-
-   
 
     <div class="footer">
       <h2>Comentarios</h2>
@@ -150,7 +158,7 @@
                     https://www.brasilcode.com.br/wp-content/litespeed/avatar/87f5405154301ba8ed1925238d37c2e3.jpg?ver=1699745455 2x
                   "
                 />
-                <b class="fn">{{item.UsuarioAvaliador.Nome}}</b>
+                <b class="fn">{{ item.UsuarioAvaliador.Nome }}</b>
                 <span class="says">disse:</span>
               </div>
               <div class="comment-metadata">
@@ -160,20 +168,16 @@
             </footer>
             <div class="comment-content">
               <p>
-                {{item.Comentario}}
+                {{ item.Comentario }}
               </p>
             </div>
           </article>
         </li>
       </ol>
-      <div
-      *ngIf="haveMachineryRate"
-      class="message"
-    >
-      <mat-icon class="searchIcon">search</mat-icon>
-      <h2>Nenhuma Avaliação Encontrado</h2>
-    </div>
-      
+      <div *ngIf="haveMachineryRate" class="message">
+        <mat-icon class="searchIcon">search</mat-icon>
+        <h2>Nenhuma Avaliação Encontrado</h2>
+      </div>
     </div>
   </div>
   <span class="example-spacer"></span>
