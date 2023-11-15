@@ -16,10 +16,15 @@ import { HomeComponent } from '@agroloc/home/feature';
 import { DetailsComponent } from '@agroloc/machinery/feature';
 import { ManagementComponent } from '@agroloc/account/feature';
 import { AuthGuard } from '@agroloc/account/data-acess';
-import { AutomobileComponent } from 'libs/account/feature/src/lib/automobile/automobile.component';
+import { AutomobileComponent } from '@agroloc/account/feature';
 import { selectItemGuard } from '@agroloc/machinery/data-access';
 
 export const homeShellRoutes: Route[] = [
+  {
+    path: 'rent-feature',
+    loadChildren: () =>
+      import('@agroloc/rent/feature').then((m) => m.RentFeatureModule),
+  },
   {
     path: 'web',
     component: WebComponent,
