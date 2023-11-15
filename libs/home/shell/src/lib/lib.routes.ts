@@ -17,6 +17,7 @@ import { DetailsComponent } from '@agroloc/machinery/feature';
 import { ManagementComponent } from '@agroloc/account/feature';
 import { AuthGuard } from '@agroloc/account/data-acess';
 import { AutomobileComponent } from 'libs/account/feature/src/lib/automobile/automobile.component';
+import { selectItemGuard } from '@agroloc/machinery/data-access';
 
 export const homeShellRoutes: Route[] = [
   {
@@ -73,6 +74,7 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'details',
             component: DetailsComponent,
+            canActivate: [selectItemGuard],
             children: [],
           },
           {

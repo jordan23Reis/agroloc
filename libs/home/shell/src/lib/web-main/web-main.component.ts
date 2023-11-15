@@ -180,8 +180,6 @@ export class WebMainComponent {
 
   links = [
     { nome: 'Home', url: 'home' },
-    { nome: 'Pesquisa', url: 'search' },
-    { nome: 'Detalhes', url: 'details' },
   ];
 
   constructor() {

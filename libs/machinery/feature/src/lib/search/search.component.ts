@@ -201,7 +201,7 @@ export class SearchComponent implements OnInit {
   }
 
   selectItem(idItem: string) {
-    this.scrollToTop();
     this.searchService.onSelectItem(idItem);
+    this.scrollToTop();
   }
 }
