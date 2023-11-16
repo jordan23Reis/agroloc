@@ -1,4 +1,5 @@
 export * from './automobile';
+export * from './details-automobile';
 export * from './favorite';
 export * from './login';
 export * from './management';

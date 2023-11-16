@@ -50,13 +50,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RentService } from '@agroloc/rent/data-access';
-
 @Component({
-  selector: 'agroloc-details',
-  templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss'],
+  selector: 'agroloc-details-automobile',
+  templateUrl: './details-automobile.component.html',
+  styleUrls: ['./details-automobile.component.scss'],
 })
-export class DetailsComponent {
+export class DetailsAutomobileComponent {
   platform = inject(Platform);
   searchService = inject(SearchService);
 
@@ -92,24 +91,16 @@ export class DetailsComponent {
   urlMainImage = '';
   focusUrl = '';
 
+  automobile = this.accountService.selectedAutomobile$;
   searchItem = this.searchService.itemSelect$;
 
-  searchItemSubscribe = this.searchService.itemSelect$.subscribe((response) => {
-    this.machineryId = response._id;
-    if (response.Avaliacoes[0]) {
-      this.machineryRate = response.Avaliacoes;
-      this.haveMachineryRate = false;
-    } else {
-      this.haveMachineryRate = true;
-    }
-
-    this.urlMainImage = response.ImagemPrincipal.Url;
-
-    this.ELEMENT_DATA[0].valor = response.Peso;
-    this.ELEMENT_DATA[1].valor = response.Comprimento;
-    this.ELEMENT_DATA[2].valor = response.Largura;
-    this.ELEMENT_DATA[3].valor = response.Altura;
-  });
+  selectedAutomobileSubscribe =
+    this.accountService.selectedAutomobile$.subscribe((response) => {
+      this.ELEMENT_DATA[0].valor = response.Peso;
+      this.ELEMENT_DATA[1].valor = response.Comprimento;
+      this.ELEMENT_DATA[2].valor = response.Largura;
+      this.ELEMENT_DATA[3].valor = response.Altura;
+    });
 
   product = {
     foto: 'foto aqui',
@@ -212,59 +203,9 @@ export class DetailsComponent {
 
   animal: string;
   name: string;
-
-  openDialog(): void {
-    const dialogRef = this.dialog.open(ComponentDialogOverviewExampleDialog, {
-      height: '250px',
-      width: '600px',
-      data: { name: this.name, animal: this.animal },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed');
-      this.animal = result;
-    });
-  }
 }
 
 export interface DialogData {
   animal: string;
   name: string;
-}
-
-@Component({
-  selector: 'agroloc-dialog-overview-example-dialog',
-  templateUrl: 'dialog-overview-example-dialog.html',
-  styleUrls: ['./details.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    NgClass,
-  ],
-})
-// eslint-disable-next-line @angular-eslint/component-class-suffix
-export class ComponentDialogOverviewExampleDialog {
-  mode = '';
-  constructor(
-    public dialogRef: MatDialogRef<ComponentDialogOverviewExampleDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {
-    localStorage.getItem('prefers-color-scheme') === 'light'
-      ? (this.mode = '')
-      : (this.mode = 'modoEscuro');
-  }
-  rentService = inject(RentService);
-  router = inject(Router);
-
-  onNoClick(): void {
-    this.dialogRef.close();
-    this.router.navigate(['web', 'main', 'negotiate']);
-  }
-
-  negotiateMachinery(): void {
-    this.rentService.userCreateProcess();
-  }
 }

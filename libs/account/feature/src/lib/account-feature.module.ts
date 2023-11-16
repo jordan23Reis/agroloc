@@ -29,7 +29,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AutomobileComponent } from './automobile/automobile.component';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
+import { DetailsAutomobileComponent } from './details-automobile/details-automobile.component';
+import { ImageModule } from 'primeng/image';
 
 @NgModule({
   imports: [
@@ -59,6 +61,7 @@ import {MatChipsModule} from '@angular/material/chips';
     MatTableModule,
     MatProgressSpinnerModule,
     MatChipsModule,
+    ImageModule,
   ],
   declarations: [
     AccountRegisterComponent,
@@ -66,6 +69,7 @@ import {MatChipsModule} from '@angular/material/chips';
     FavoriteComponent,
     ManagementComponent,
     AutomobileComponent,
+    DetailsAutomobileComponent,
   ],
   exports: [
     AccountRegisterComponent,
@@ -73,6 +77,7 @@ import {MatChipsModule} from '@angular/material/chips';
     FavoriteComponent,
     ManagementComponent,
     AutomobileComponent,
+    DetailsAutomobileComponent,
   ],
 })
 export class AccountFeatureModule {}

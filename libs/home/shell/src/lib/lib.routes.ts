@@ -18,14 +18,11 @@ import { ManagementComponent } from '@agroloc/account/feature';
 import { AuthGuard } from '@agroloc/account/data-acess';
 import { AutomobileComponent } from '@agroloc/account/feature';
 import { selectItemGuard } from '@agroloc/machinery/data-access';
-import { NegotiateComponent } from 'libs/rent/feature/src/lib/negotiate/negotiate.component';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { NegotiateComponent } from '@agroloc/rent/feature';
+import { DetailsAutomobileComponent } from '@agroloc/account/feature';
 
 export const homeShellRoutes: Route[] = [
-  {
-    path: 'rent-feature',
-    loadChildren: () =>
-      import('@agroloc/rent/feature').then((m) => m.RentFeatureModule),
-  },
   {
     path: 'web',
     component: WebComponent,
@@ -72,6 +69,12 @@ export const homeShellRoutes: Route[] = [
             },
             children: [],
           },
+          {
+            path: 'automobiledetails',
+            component: DetailsAutomobileComponent,
+            children: [],
+          },
+
           {
             path: 'search',
             component: SearchComponent,

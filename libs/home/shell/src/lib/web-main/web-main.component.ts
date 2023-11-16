@@ -41,6 +41,8 @@ export class WebMainComponent {
   loader = inject(LoaderFacade);
   scrollDispatcher = inject(ScrollDispatcher);
 
+  userProfile = this.authService.userProfile$;
+
   @ViewChild('drawer') sidenav: MatSidenav;
   @ViewChild('valorMaximo') valorMaximoInput: ElementRef;
   @ViewChild('valorMinimo') valorMinimoInput: ElementRef;

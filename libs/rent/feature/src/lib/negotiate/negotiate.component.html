@@ -1,11 +1,50 @@
 <div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
   <div class="content">
+    <div class="header">
+      <div style="flex: 1 1 auto"></div>
+      <div style="display: flex; width: 40%; height: 100%">
+        <img
+          style="
+            border-radius: 100%;
+            object-fit: cover;
+            height: 80%;
+            width: 200px;
+            align-self: center;
+            justify-self: center;
+          "
+          [src]="(searchItem | async)?.ImagemPrincipal?.Url"
+          alt=""
+        />
+      </div>
+      <div
+        style="display: flex; flex-direction: column; width: 40%; height: 100%"
+      >
+        <div
+          style="
+            display: flex;
+            height: 50%;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <h3>{{ (searchItem | async)?.Nome }}</h3>
+        </div>
+        <div
+          style="
+            display: flex;
+            height: 50%;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <p>Estado do Processo: Em Andamento</p>
+        </div>
+      </div>
+      <div style="flex: 1 1 auto"></div>
+    </div>
     <div class="message">
       <mat-icon class="searchIcon">attach_money</mat-icon>
       <h2>Negociar Maquinário</h2>
-    </div>
-    <div class="itemInfo">
-      <h3>{{ (searchItem | async)?.Nome }}</h3>
     </div>
   </div>
 </div>
