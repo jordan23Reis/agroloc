@@ -20,8 +20,8 @@ class Imagem{
 class Locador {
     @IsNotEmpty()
     @IsString()
-    @MinLength(ProcessoDeAluguelSchemaDtoRestraints.tamMinIdLocatario)
-    @MaxLength(ProcessoDeAluguelSchemaDtoRestraints.tamMaxIdLocatario)
+    @MinLength(ProcessoDeAluguelSchemaDtoRestraints.tamMinIdLocador)
+    @MaxLength(ProcessoDeAluguelSchemaDtoRestraints.tamMaxIdLocador)
     idLocador: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty()

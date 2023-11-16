@@ -12,6 +12,7 @@ import { CategoriaModule } from '../categoria/categoria.module';
 import { AvaliacaoModule } from '../avaliacao/avaliacao.module';
 import { AsaasModule } from '../asaas/asaas.module';
 import { ProcessoDeAluguelModule } from '../processo-de-aluguel/processo-de-aluguel.module';
+import { ProcessoDeFreteModule } from '../processo-de-frete/processo-de-frete.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { ProcessoDeAluguelModule } from '../processo-de-aluguel/processo-de-alug
     CategoriaModule,
     AvaliacaoModule,
     AsaasModule,
-    ProcessoDeAluguelModule
+    ProcessoDeAluguelModule,
+    ProcessoDeFreteModule
   ],
   controllers: [AppController],
   providers: [AppService],

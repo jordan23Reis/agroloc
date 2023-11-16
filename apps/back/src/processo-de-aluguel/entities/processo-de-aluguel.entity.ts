@@ -2,7 +2,7 @@ import { ProcessoDeAluguelSchemaDtoRestraints } from "@agroloc/shared/util";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 
-export type MaquinaDocument = HydratedDocument<ProcessoDeAluguel>;
+export type ProcessoDeAluguelDocument = HydratedDocument<ProcessoDeAluguel>;
 
 @Schema()
 class Imagem{

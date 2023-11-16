@@ -104,29 +104,9 @@ export class ProcessoDeAluguelController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.processoDeAluguelService.findAll();
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateProcessoDeAluguelDto: UpdateProcessoDeAluguelDto
-  ) {
-    return this.processoDeAluguelService.update(
-      +id,
-      updateProcessoDeAluguelDto
-    );
-  }
-
   @Post("cobranca")
   getCobranca(@Body() webHook){
     return this.processoDeAluguelService.cobrancaConcluida(webHook);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.processoDeAluguelService.remove(+id);
-  }
 }

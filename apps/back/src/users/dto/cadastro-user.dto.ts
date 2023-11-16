@@ -66,7 +66,7 @@ class CadastroFreteiro {
     @IsNotEmpty()
     @IsString()
     @MinLength(UsuarioSchemaDtoRestraints.tamMinCnh)
-    @MaxLength(UsuarioSchemaDtoRestraints.tamMinCnh)
+    @MaxLength(UsuarioSchemaDtoRestraints.tamMaxCnh)
     CNH: string;
 
     @IsOptional()

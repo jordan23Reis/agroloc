@@ -15,7 +15,7 @@ export class LocadorLocatarioGuard implements CanActivate {
     const locadorTipo = await this.userService.findLoginTipo(request.params.idLocador);
     const locatarioTipo = await this.userService.findLoginTipo(request.params.idLocatario);
 
-    if(!maquina?.DonoDaMaquina.idDono.toString() === request.params.idLocador){
+    if(maquina?.DonoDaMaquina.idDono.toString() !== request.params.idLocador){
       throw new BadRequestException(`Locador não é dono da máquina!`);
     }
 
