@@ -5,12 +5,13 @@
     <div class="head">
       <span class="example-spacer"></span>
       <h3>Lista de Favoritos</h3>
+
       <span class="example-spacer"></span>
-      <mat-chip-listbox aria-label="Fish selection">
-        <mat-chip-option [value]="'Maquina'" (selectionChange)="favoriteFilter($event)">Maquina</mat-chip-option>
-        <mat-chip-option [value]="'Freteiro'" (selectionChange)="favoriteFilter($event)">Freteiro</mat-chip-option>
-      </mat-chip-listbox>
+      <h3 *ngIf="(favoriteMachinery$ | async)?.[0] === undefined">
+        Nenhum Favorito adicionado
+      </h3>
     </div>
+
     <mat-divider></mat-divider>
     <div class="item" *ngFor="let item of favoriteMachinery$ | async">
       <mat-divider [vertical]="true"></mat-divider>
@@ -24,7 +25,13 @@
       <div class="dividerInfo">
         <mat-divider></mat-divider>
         <div class="informacoes">
-          <h4 class="favoriteName" routerLink="details" (click)="selectItem(item.ItemFavorito.idItemFavorito)">{{ item.ItemFavorito.Nome }}</h4>
+          <h4
+            class="favoriteName"
+            routerLink="details"
+            (click)="selectItem(item.ItemFavorito.idItemFavorito)"
+          >
+            {{ item.ItemFavorito.Nome }}
+          </h4>
           <span class="example-spacer"></span>
           <button
             mat-icon-button
