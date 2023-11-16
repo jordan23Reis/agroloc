@@ -53,6 +53,16 @@ export class ProcessoDeAluguelController {
     }
   }
 
+  @UseGuards(JwtAuthGuard, ProcessoAAceitarGuard, UsuarioLogadoDonoDoProcessoGuard)
+  @Patch("mudarstatus/recusar/:idProcessoDeAluguel")
+  recusarProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){
+    try{
+      return this.processoDeAluguelService.recusarProcessoDeAluguel(idProcessoDeAluguel);
+    }catch(e){
+      return new Error(e.message);
+    }
+  }
+
   @UseGuards(JwtAuthGuard, ProcessoAguardandoFrete, UsuarioLogadoDonoDoProcessoGuard)
   @Patch("mudarstatus/pularfrete/:idProcessoDeAluguel")
   pularProcessoDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){

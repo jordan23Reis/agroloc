@@ -122,6 +122,14 @@ export class ProcessoDeAluguelService {
     return processoDeAluguel;
   }
 
+  async recusarProcessoDeAluguel(idProcessoDeAluguel: string){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    processoDeAluguel.Status = "Recusado";
+
+    await processoDeAluguel.save();
+    return processoDeAluguel;
+  }
+
   async pularFrete(idProcessoDeAluguel: string){
     const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
     processoDeAluguel.Status = "A Comecar";
