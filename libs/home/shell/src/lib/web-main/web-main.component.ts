@@ -178,9 +178,7 @@ export class WebMainComponent {
     this.sidenav.toggle();
   });
 
-  links = [
-    { nome: 'Home', url: 'home' },
-  ];
+  links = [{ nome: 'Home', url: 'search' }];
 
   constructor() {
     this.isDarkMode =
@@ -219,6 +217,10 @@ export class WebMainComponent {
   //     });
   //   });
   // }
+
+  remThema() {
+    document.body.classList.remove('darkMode');
+  }
 
   setValorMaximo() {
     this.loader.intervalLoading();

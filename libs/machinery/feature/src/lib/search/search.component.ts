@@ -116,8 +116,9 @@ export class SearchComponent implements OnInit {
     setTimeout(() => {
       this.changeDetectorRef.detectChanges();
     }, 1000);
-    this.elementScrollRef.scrollTo({ top: 0, behavior: 'smooth' });
-    console.log('passei');
+    if (this.elementScrollRef.scrollTo) {
+      this.elementScrollRef.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   toggleSidenav() {

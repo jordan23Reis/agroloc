@@ -36,5 +36,27 @@
         margin-top: 5px;
       }
     }
+
+    .itemInfo {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      min-height: 200px;
+      height: 200px;
+      max-height: 200px;
+    }
+
+    .leftImg {
+      width: 40%;
+      height: 100%;
+    }
+
+    .rigthInfo {
+      display: flex;
+      flex-direction: column;
+
+      width: 60%;
+      height: 100%;
+    }
   }
 }

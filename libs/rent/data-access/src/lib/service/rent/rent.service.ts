@@ -11,7 +11,7 @@ export class RentService {
   http = inject(HttpClient);
   snackbar = inject(MatSnackBar);
 
-  createProcess(idMachinery, idUser, idLessee) {
+  createProcess(idMachinery: any, idUser: any, idLessee: any) {
     return this.http
       .post(`/api/processo-de-aluguel/${idMachinery}/${idUser}/${idLessee}`, {})
       .pipe(
@@ -21,7 +21,7 @@ export class RentService {
         })
       );
   }
-  acceptProcess(idProcess) {
+  acceptProcess(idProcess: any) {
     return this.http
       .post(`/api/processo-de-aluguel/mudarstatus/aceitar/${idProcess}`, {})
       .pipe(
@@ -31,7 +31,7 @@ export class RentService {
         })
       );
   }
-  skipTransport(idProcess) {
+  skipTransport(idProcess: any) {
     return this.http
       .post(`/api/processo-de-aluguel/mudarstatus/pularfrete/${idProcess}`, {})
       .pipe(
@@ -41,7 +41,7 @@ export class RentService {
         })
       );
   }
-  initProcess(idProcess) {
+  initProcess(idProcess: any) {
     return this.http
       .post(`/api/processo-de-aluguel/mudarstatus/comecar/${idProcess}`, {})
       .pipe(
@@ -53,7 +53,7 @@ export class RentService {
         })
       );
   }
-  finishProcess(idProcess, price: DadosTransacao) {
+  finishProcess(idProcess: any, price: DadosTransacao) {
     return this.http
       .post(`/api/processo-de-aluguel/mudarstatus/concluir/${idProcess}`, price)
       .pipe(
@@ -65,7 +65,7 @@ export class RentService {
         })
       );
   }
-  acceptPrice(idProcess) {
+  acceptPrice(idProcess: any) {
     return this.http
       .post(
         `/api/processo-de-aluguel/mudarstatus/confirmarpreco/${idProcess}`,
@@ -80,7 +80,7 @@ export class RentService {
         })
       );
   }
-  recusePrice(idProcess) {
+  recusePrice(idProcess: any) {
     return this.http
       .post(
         `/api/processo-de-aluguel/mudarstatus/recusarpreco/${idProcess}`,

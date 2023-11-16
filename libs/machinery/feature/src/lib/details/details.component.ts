@@ -17,11 +17,39 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { Platform } from '@angular/cdk/platform';
 import { ScrollDispatcher } from '@angular/cdk/scrolling';
 import { ViewportScroller } from '@angular/common';
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  ViewChild,
+  inject,
+} from '@angular/core';
+import { FormBuilder, FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { Observable, catchError, debounceTime, map, take } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  combineLatest,
+  debounceTime,
+  map,
+  take,
+} from 'rxjs';
+
+import {
+  MatDialog,
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { RentService } from '@agroloc/rent/data-access';
 
 @Component({
   selector: 'agroloc-details',
@@ -45,6 +73,7 @@ export class DetailsComponent {
   scrollDispatcher = inject(ScrollDispatcher);
   viewportScroller = inject(ViewportScroller);
   changeDetectorRef = inject(ChangeDetectorRef);
+  dialog = inject(MatDialog);
 
   ELEMENT_DATA: any[] = [
     { informacao: 'Peso', valor: 10.5 },
@@ -172,5 +201,85 @@ export class DetailsComponent {
 
   navNegotiate() {
     this.router.navigate(['web', 'main', 'negotiate']);
+  }
+
+  @ViewChild('zoom') zoom: any;
+
+  clicarNoZoom() {
+    const previewButton: ElementRef = this.zoom.previewButton;
+    previewButton.nativeElement.click();
+  }
+
+  animal: string;
+  name: string;
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(ComponentDialogOverviewExampleDialog, {
+      height: '250px',
+      width: '600px',
+      data: { name: this.name, animal: this.animal },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+      this.animal = result;
+    });
+  }
+}
+
+export interface DialogData {
+  animal: string;
+  name: string;
+}
+
+@Component({
+  selector: 'agroloc-dialog-overview-example-dialog',
+  templateUrl: 'dialog-overview-example-dialog.html',
+  standalone: true,
+  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class ComponentDialogOverviewExampleDialog {
+  constructor(
+    public dialogRef: MatDialogRef<ComponentDialogOverviewExampleDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
+  ) {}
+  rentService = inject(RentService);
+  searchService = inject(SearchService);
+  authService = inject(AuthService);
+  router = inject(Router);
+  snackBar = inject(MatSnackBar);
+
+  userProfile = this.authService.userProfile$;
+  selectData = this.searchService.itemSelect$;
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  negotiateMachinery() {
+    combineLatest([this.selectData, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([machinery, profile]) => {
+        this.rentService
+          .createProcess(
+            machinery._id,
+            profile.IdUsuario,
+            machinery.DonoDaMaquina._id
+          )
+          .pipe(
+            catchError((error) => {
+              this.snackBar.open('Erro ao criar Processo', undefined, {
+                duration: 3000,
+              });
+              throw new Error(error);
+            })
+          )
+          .subscribe((response) => {
+            this.snackBar.open('Processo Criado', undefined, {
+              duration: 3000,
+            });
+          });
+      });
   }
 }

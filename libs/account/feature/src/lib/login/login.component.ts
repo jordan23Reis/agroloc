@@ -63,7 +63,7 @@ export class AccountLoginComponent {
         this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
           this.accountService.nextAccount(response.IdUsuario);
         });
-        this.router.navigate(['web', 'main']);
+        this.router.navigate(['web', 'main', 'search']);
       });
     }
   }

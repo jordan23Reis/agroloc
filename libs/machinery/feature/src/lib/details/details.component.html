@@ -23,10 +23,21 @@
 
         <div class="fotoPrincipal">
           <img
+            #mainImg
             [src]="
               focusUrl ? focusUrl : (searchItem | async)?.ImagemPrincipal?.Url
             "
+            (click)="clicarNoZoom()"
           />
+          <p-image
+            #zoom
+            [previewImageSrc]="
+              focusUrl ? focusUrl : (searchItem | async)?.ImagemPrincipal?.Url
+            "
+            alt="Image"
+            width="0"
+            [preview]="true"
+          ></p-image>
         </div>
       </div>
 
@@ -76,7 +87,7 @@
         <div class="compra">
           <span class="example-spacer"></span>
           <button
-            (click)="navNegotiate()"
+            (click)="openDialog()"
             class="negociar"
             mat-raised-button
             color="primary"
@@ -129,7 +140,7 @@
     </div>
 
     <div class="footer">
-      <h2>Comentarios</h2>
+      <h2>Avaliações</h2>
       <ol *ngIf="(searchItem | async)?.Avaliacoes" class="comment-list">
         <li
           *ngFor="let item of (searchItem | async)?.Avaliacoes"

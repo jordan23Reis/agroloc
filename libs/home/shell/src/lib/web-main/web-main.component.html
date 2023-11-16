@@ -215,11 +215,11 @@
 
           <mat-menu #noPerson="matMenu" xPosition="before">
             <mat-divider></mat-divider>
-            <button mat-menu-item routerLink="../login">
+            <button mat-menu-item routerLink="../login" (click)="remThema()">
               <mat-icon matPrefix>login</mat-icon>
               <span>Entrar</span>
             </button>
-            <button mat-menu-item routerLink="../register">
+            <button mat-menu-item routerLink="../register" (click)="remThema()">
               <mat-icon>person_add</mat-icon>
               <span>Cadastrar</span>
             </button>
