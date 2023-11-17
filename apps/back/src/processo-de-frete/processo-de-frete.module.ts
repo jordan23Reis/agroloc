@@ -8,6 +8,7 @@ import { AsaasModule } from '../asaas/asaas.module';
 import { TipoPrecoModule } from '../tipo-preco/tipo-preco.module';
 import { UsersModule } from '../users/users.module';
 import { MaquinaModule } from '../maquina/maquina.module';
+import { ProcessoDeAluguelService } from '../processo-de-aluguel/processo-de-aluguel.service';
 
 const modelProcessoDeFrete = MongooseModule.forFeatureAsync([
   {
@@ -17,7 +18,7 @@ const modelProcessoDeFrete = MongooseModule.forFeatureAsync([
 ]);
 
 @Module({
-  imports: [modelProcessoDeFrete, MaquinaModule, UsersModule, TipoPrecoModule, AsaasModule],
+  imports: [modelProcessoDeFrete, ProcessoDeAluguelService, MaquinaModule, UsersModule, TipoPrecoModule, AsaasModule],
   controllers: [ProcessoDeFreteController],
   providers: [ProcessoDeFreteService],
 })

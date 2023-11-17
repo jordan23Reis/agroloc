@@ -5,7 +5,7 @@ import { ProcessoDeAluguelService } from '../processo-de-aluguel.service';
 
 
 @Injectable()
-export class ProcessoAguardandoFrete implements CanActivate {
+export class ProcessoAguardandoSelecaoDeFrete implements CanActivate {
     constructor(private usersService: UsersService, private processoService: ProcessoDeAluguelService){}
   async canActivate(
     context: ExecutionContext,
@@ -14,7 +14,7 @@ export class ProcessoAguardandoFrete implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const processoDeAluguel = await this.processoService.findOne(request.params.idProcessoDeAluguel);
     
-    if(processoDeAluguel?.Status !== "Aguardando Frete"){
+    if(processoDeAluguel?.Status !== "Aguardando Selecao de Frete"){
         throw new UnauthorizedException(`Este processo não esta aguardando frete!`);
     }
 

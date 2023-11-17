@@ -333,6 +333,15 @@ export class ProcessoDeFrete {
     Maquina: Maquina;
 
     @Prop({
+        type: mongoose.Schema.Types.ObjectId, 
+        ref:"ProcessoDeAluguel",
+        required: true,
+        minlength: ProcessoDeFreteSchemaDtoRestraints.tamMinIdProcessoDeAluguel,
+        maxlength: ProcessoDeFreteSchemaDtoRestraints.tamMaxIdProcessoDeAluguel
+    })
+    idProcessoDeAluguel: mongoose.Schema.Types.ObjectId;
+
+    @Prop({
         type: Envolvidos, 
         required: true
     })

@@ -19,6 +19,7 @@ import { ProcessoAAceitarGuard } from './guards/ProcessoAAceitarGuard';
 import { ProcessoAComecarGuard } from './guards/ProcessoAComecarGuard';
 import { ProcessoAFinalizarGuard } from './guards/ProcessoAFinalizarGuard';
 import { ProcessoAPagarGuard } from './guards/ProcessoAPagarGuard';
+import { ProcessoDeAluguelExisteGuard } from './guards/ProcessoDeAluguelExisteGuard';
 
 @Controller('processo-de-frete')
 export class ProcessoDeFreteController {
@@ -26,16 +27,17 @@ export class ProcessoDeFreteController {
     private readonly processoDeFreteService: ProcessoDeFreteService
   ) {}
 
-  @UseGuards(JwtAuthGuard, MaquinaGuard, FreteiroSolicitanteGuard, ProcessoAAceitarJaExisteGuard, InformacoesBancariasFreteiroGuard )
-  @Post(":idMaquina/:idFreteiro/:idSolicitante/:enderecoSolicitanteSelecionado/:valorFrete")
+  @UseGuards(JwtAuthGuard, MaquinaGuard, FreteiroSolicitanteGuard, ProcessoAAceitarJaExisteGuard, InformacoesBancariasFreteiroGuard, ProcessoDeAluguelExisteGuard )
+  @Post(":idProcessoDeAluguel/:idMaquina/:idFreteiro/:idSolicitante/:enderecoSolicitanteSelecionado/:valorFrete")
   create(
+    @Param('idProcessoDeAluguel') idProcessoDeAluguel: string, 
     @Param('idMaquina') idMaquina: string, 
     @Param('idFreteiro') idFreteiro: string, 
     @Param('idSolicitante') idSolicitante: string, 
     @Param('enderecoSolicitanteSelecionado') enderecoSolicitanteSelecionado: string, 
     @Param('valorFrete') valorFrete: number) {
     try{
-    return this.processoDeFreteService.create(idMaquina, idFreteiro, idSolicitante, enderecoSolicitanteSelecionado, valorFrete);
+    return this.processoDeFreteService.create(idProcessoDeAluguel, idMaquina, idFreteiro, idSolicitante, enderecoSolicitanteSelecionado, valorFrete);
     }catch(e){
       return new Error(e.message);
     }

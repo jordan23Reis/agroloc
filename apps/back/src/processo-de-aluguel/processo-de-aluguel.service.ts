@@ -8,11 +8,7 @@ import { ProcessoDeAluguel } from './entities/processo-de-aluguel.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { PagamentoDto } from './dto/pagamento-dto';
-import { AsaasService } from '../asaas/asaas.service';
-import { Cliente } from '../asaas/dto/create-cliente.dto';
-import { CobrancaUnica } from '../asaas/dto/create-cobranca-unica.dto';
-import { TransferenciaPix } from '../asaas/dto/create-transferencia-pix.dto';
-import { TransferenciaConta } from '../asaas/dto/create-transferencia-conta.dto';
+
 
 @Injectable()
 export class ProcessoDeAluguelService {
@@ -21,8 +17,24 @@ export class ProcessoDeAluguelService {
     private usersService: UsersService,
     private maquinaService: MaquinaService,
     private tipoPrecoService: TipoPrecoService,
-    private asaasService: AsaasService
   ) { }
+
+
+  
+  async findAllProcessosDeAluguelNecessitandoFrete(idUsuario: string){
+    const processosNecessitandoDeFrete = await this.processoDeAluguelModel.find(
+      {
+        "Envolvidos.Locador.idLocador": idUsuario,
+        Status: {
+          in: [
+            "Aguardando Selecao de Frete de Ida",
+            "Aguardando Selecao de Frete de Volta"
+          ]
+        }
+      }
+    );
+    return processosNecessitandoDeFrete;
+  }
 
 
   async create(idMaquina: string, idLocador:string, idLocatario) {
@@ -115,7 +127,7 @@ export class ProcessoDeAluguelService {
     const maquinaAtreladaAprocesso = await this.maquinaService.findOne(processoDeAluguel.Maquina.idMaquina.toString());
 
     maquinaAtreladaAprocesso.EstaAtiva = false;
-    processoDeAluguel.Status = "Aguardando Frete";
+    processoDeAluguel.Status = "Aguardando Selecao de Frete de Ida";
 
     await processoDeAluguel.save();
     await maquinaAtreladaAprocesso.save();
@@ -145,8 +157,16 @@ export class ProcessoDeAluguelService {
     await processoDeAluguel.save();
     return processoDeAluguel;
   }
-  
-  async concluirProcessoDeAluguel(idProcessoDeAluguel: string, pagamentoDto: PagamentoDto){
+
+  async concluirProcessoDeAluguel(idProcessoDeAluguel: string){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    processoDeAluguel.Status = "Aguardando Selecao de Frete de Volta";
+    
+    await processoDeAluguel.save();
+    return processoDeAluguel;
+  }
+
+  async selecionarPreco(idProcessoDeAluguel, pagamentoDto: PagamentoDto){
     const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
     processoDeAluguel.Status = "A Confirmar Preco";
     processoDeAluguel.Pagamento.TipoRecebimento = pagamentoDto.TipoRecebimento;
@@ -156,44 +176,11 @@ export class ProcessoDeAluguelService {
     await processoDeAluguel.save();
     return processoDeAluguel;
   }
+  
 
-  async confirmarPrecoProcessoDeAluguel(idProcessoDeAluguel){
+
+  async confirmarPrecoProcessoDeAluguel(idProcessoDeAluguel: string){
     const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
-    const locatario = await this.usersService.findOne(processoDeAluguel.Envolvidos.Locatario.idLocatario.toString());
-    let cliente;
-    if(locatario.CadastroComum.Cpf){
-      cliente = await this.asaasService.recuperarClientePorCpfCnpj(locatario.CadastroComum.Cpf)
-      if(!cliente){
-        const clienteDto: Cliente = {
-          name: locatario.CadastroComum.Nome,
-          cpfCnpj: locatario.CadastroComum.Cpf,
-          externalReference: locatario._id.toString()
-        }
-        console.log(clienteDto);
-        cliente = await this.asaasService.createCliente(clienteDto);
-      }
-    }
-    else if (locatario.CadastroComum.Cnpj){
-      cliente = await this.asaasService.recuperarClientePorCpfCnpj(locatario.CadastroComum.Cnpj)
-      if(!cliente){
-        const clienteDto: Cliente = {
-          name: locatario.CadastroComum.Nome,
-          cpfCnpj: locatario.CadastroComum.Cpf,
-          externalReference: locatario._id.toString()
-        }
-        cliente = await this.asaasService.createCliente(clienteDto);
-      }
-    }
-
-    const cobrancaDto: CobrancaUnica = {
-      customer: cliente.id,
-      value: processoDeAluguel.Pagamento.Valor,
-      description: "Aluguel de "+processoDeAluguel.Maquina.Nome,
-      externalReference: processoDeAluguel._id.toString()
-    }
-    
-    const cobranca = await this.asaasService.criarCobrancaPagamentoUnico(cobrancaDto)
-    processoDeAluguel.Pagamento.LinkPagamento = cobranca.invoiceUrl;
     processoDeAluguel.Pagamento.Status = "PENDING";
     processoDeAluguel.Status = "A Pagar";
     await processoDeAluguel.save();
@@ -211,38 +198,14 @@ export class ProcessoDeAluguelService {
     return processoDeAluguel;
   }
 
-  async cobrancaConcluida(webHook){
-    console.log(webHook);
-    if(webHook.event == "PAYMENT_RECEIVED"){
-      const processoDeAluguel = await this.processoDeAluguelModel.findById(webHook.payment.externalReference);
-      if(processoDeAluguel){
+  async confirmarPagamentoProcessoAluguel(idProcessoDeAluguel: string){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    processoDeAluguel.Pagamento.Status = "RECEIVED";
+    processoDeAluguel.Status = "A Avaliar";
 
-      if(processoDeAluguel.Pagamento.TipoRecebimento == "Pix"){
-        const transacaoPix: TransferenciaPix = {
-          value: processoDeAluguel.Pagamento.Valor,
-          pixAddressKey: processoDeAluguel.Pagamento.PixRecebedor.Chave,
-          pixAddressKeyType: processoDeAluguel.Pagamento.PixRecebedor.Tipo,
-        }
-
-        try{
-          const asaas = await this.asaasService.criarTransferenciaPix(transacaoPix);
-          processoDeAluguel.Status = "Transação Concluida";
-          processoDeAluguel.Pagamento.Status = "RECEIVED";
-        }catch(e){
-          processoDeAluguel.Status = "Transação Falhada";
-          processoDeAluguel.Pagamento.Status = "FAILED";
-        }
-
-      }else if(processoDeAluguel.Pagamento.TipoRecebimento == "ContaBancaria"){
-      //   const transacaoConta: TransferenciaConta = {
-      //     value: processoDeAluguel.Pagamento.Valor,
-      //     bankAccount: processoDeAluguel.Pagamento.ContaBancariaRecebedor.Agencia
-      //   }
-      }
-        await processoDeAluguel.save();
-        return processoDeAluguel;
-      }
-    }
+    await processoDeAluguel.save();
+    return processoDeAluguel;
+    
   }
 
   async findOne(id: string) {
