@@ -21,5 +21,6 @@ const modelProcessoDeAluguel = MongooseModule.forFeatureAsync([
   imports: [modelProcessoDeAluguel, MaquinaModule, UsersModule, TipoPrecoModule, AsaasModule],
   controllers: [ProcessoDeAluguelController],
   providers: [ProcessoDeAluguelService],
+  exports: [ProcessoDeAluguelService]
 })
 export class ProcessoDeAluguelModule {}

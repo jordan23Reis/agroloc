@@ -13,7 +13,7 @@ import { AvaliacaoModule } from '../avaliacao/avaliacao.module';
 import { AsaasModule } from '../asaas/asaas.module';
 import { ProcessoDeAluguelModule } from '../processo-de-aluguel/processo-de-aluguel.module';
 import { ProcessoDeFreteModule } from '../processo-de-frete/processo-de-frete.module';
-
+import "multer";
 @Module({
   imports: [
     ConfigModule.forRoot({

@@ -12,8 +12,8 @@ export class VeiculoGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const usuarioFreteiro = await this.usuarioService.findOne(request.user.IdUsuario);
 
-    const veiculoAchado = usuarioFreteiro.CadastroFreteiro?.Automovel.find((el) => el == request.params.idVeiculo);
-    
+    const veiculoAchado = usuarioFreteiro.CadastroFreteiro?.Automovel.find((el) => el._id == request.params.idVeiculo);
+
     if(!veiculoAchado){
         throw new BadRequestException(`Veículo não existe!`);
     }

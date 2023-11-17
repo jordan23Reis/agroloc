@@ -7,6 +7,7 @@ import { UsersService } from '../users/users.service';
 import { MaquinaService } from '../maquina/maquina.service';
 import { TipoPrecoService } from '../tipo-preco/tipo-preco.service';
 import { AsaasService } from '../asaas/asaas.service';
+import { ProcessoDeAluguelService } from '../processo-de-aluguel/processo-de-aluguel.service';
 
 @Injectable()
 export class ProcessoDeFreteService {
@@ -15,9 +16,57 @@ export class ProcessoDeFreteService {
   private processoDeFreteModel: Model<ProcessoDeFrete>,
   private usersService: UsersService,
   private maquinaService: MaquinaService,
-  private tipoPrecoService: TipoPrecoService,
-  private asaasService: AsaasService
+  private processoDeAluguelService: ProcessoDeAluguelService
   ){}
+
+    async findProcessoDeFrete(idProcessoDeFrete: string){
+      const processoDeFrete = await this.processoDeFreteModel.findById(idProcessoDeFrete);
+      return processoDeFrete;
+    }
+
+    async findProcessosDeFreteFinalizadosDeUsuario(idUsuario: string){
+      const processosDeFreteFinalizados = await this.processoDeFreteModel.find(
+        {
+          Status: {
+            $in: [
+              "A Avaliar",
+              "Avaliado"
+            ]
+          },
+  
+          $or: [
+            {"Envolvidos.Freteiro.idFreteiro": idUsuario},
+            {"Envolvidos.Solicitante.idSolicitante": idUsuario},
+          ]
+  
+        }
+      );
+      return processosDeFreteFinalizados;
+    }
+
+
+    async findProcessosDeFreteAbertosDeUsuario(idUsuario: string){
+      const processosDeFreteFinalizados = await this.processoDeFreteModel.find(
+        {
+          Status: {
+            $nin: [
+              "A Avaliar",
+              "Avaliado"
+            ]
+          },
+  
+          $or: [
+            {"Envolvidos.Freteiro.idFreteiro": idUsuario},
+            {"Envolvidos.Solicitante.idSolicitante": idUsuario},
+          ]
+  
+        }
+      );
+      return processosDeFreteFinalizados;
+    }
+
+
+
 
   async findExistingProcessoDeAluguelAAceitar(idFreteiro: string, idSolicitante: string) {
     const processoDeAluguel = await this.processoDeFreteModel.findOne({
@@ -29,27 +78,27 @@ export class ProcessoDeFreteService {
     return processoDeAluguel;
   }
 
-  async create(idMaquina: string, idFreteiro:string, idSolicitante, enderecoSolicitanteSelecionado: string, valorProposto: number) {
+  async create(idProcessoDeAluguel:string, idMaquina: string, idFreteiro:string, idSolicitante, enderecoSolicitanteSelecionado: string, valorProposto: number) {
     const solicitante = await this.usersService.findOne(idSolicitante);
     const freteiro = await this.usersService.findOne(idFreteiro);
-    // const veiculo = freteiro.CadastroFreteiro.Automovel.find(aut => aut._id.toString() == idVeiculo);
     const informacoesBancariasFreteiro = await this.usersService.findInformacoesBancarias(idFreteiro);
     const enderecoSolicitante = solicitante.CadastroComum.Enderecos.find(end => end._id.toString() == enderecoSolicitanteSelecionado);
     const maquinaSolicitante = await this.maquinaService.findOne(idMaquina);
+    const processoDeAluguel = await this.processoDeAluguelService.findOne(idProcessoDeAluguel);
+
+    if(processoDeAluguel.Status == "Aguardando Selecao de Frete de Ida"){
+      processoDeAluguel.Status = "Aguardando Frete de Ida";
+      await processoDeAluguel.save();
+    }else if(processoDeAluguel.Status == "Aguardando Selecao de Frete de Volta"){
+      processoDeAluguel.Status = "Aguardando Frete de Volta";
+      await processoDeAluguel.save();
+    }
 
     const ProcessoDeFrete = {
       Status: "A aceitar",
       CepOrigem: freteiro?.CadastroFreteiro?.EnderecoAtivo?.Cep,
       CepDestino: enderecoSolicitante?.Cep,
-      // Veiculo: {
-      //   idVeiculo: veiculo._id,
-      //   Nome: veiculo.Nome,
-      //   ImagemPrincipal: {
-      //     Url: veiculo?.ImagemPrincipal?.Url,
-      //     NomeArquivo: veiculo?.ImagemPrincipal?.NomeArquivo
-      //   }
-      // },
-
+      idProcessoDeAluguel: processoDeAluguel,
       Pagamento: { 
         Status: "Pra Pagar",
         Valor: valorProposto,
@@ -103,7 +152,8 @@ export class ProcessoDeFreteService {
     delete ProcessoDeFrete.Maquina.ImagemPrincipal;
   }
 
-  const createdProcessoDeFrete = this.processoDeFreteModel.create(ProcessoDeFrete);
+
+  const createdProcessoDeFrete = await this.processoDeFreteModel.create(ProcessoDeFrete);
   return createdProcessoDeFrete;
   }
 
@@ -114,16 +164,23 @@ export class ProcessoDeFreteService {
 
     usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro.EstaAtivo = false;
     processoDeFrete.Status = "A Comecar";
-    const veiculoAchado = usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro?.Automovel.find((el) => el._id.toString() == idVeiculo);
+    // const veiculoAchado = usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro?.Automovel.find((el) => el._id.toString() == idVeiculo);
 
-    processoDeFrete.Veiculo.idVeiculo = veiculoAchado._id;
-    processoDeFrete.Veiculo.Nome = veiculoAchado.Nome;
-    processoDeFrete.Veiculo.ImagemPrincipal.NomeArquivo = veiculoAchado?.ImagemPrincipal?.NomeArquivo;
-    processoDeFrete.Veiculo.ImagemPrincipal.Url = veiculoAchado?.ImagemPrincipal?.Url;
+    // const Veiculo = {
+    //   idVeiculo: veiculoAchado._id,
+    //   Nome: veiculoAchado.Nome,
+    //   ImagemPrincipal:{
+    //     Url: veiculoAchado?.ImagemPrincipal?.Url,
+    //     NomeArquivo: veiculoAchado?.ImagemPrincipal?.NomeArquivo,
+    //   }
+    // }
 
-    if(!veiculoAchado?.ImagemPrincipal){
-      delete processoDeFrete.Veiculo.ImagemPrincipal;
-    }
+    // processoDeFrete.Veiculo = {...Veiculo};
+
+
+    // if(!veiculoAchado?.ImagemPrincipal){
+    //   delete processoDeFrete.Veiculo.ImagemPrincipal;
+    // }
 
     await processoDeFrete.save();
     await usuarioFreteiroAtreladoAoProcesso.save();
@@ -157,6 +214,17 @@ export class ProcessoDeFreteService {
     const processoDeFrete = await this.processoDeFreteModel.findById(idProcessoDeFrete);
     processoDeFrete.Status = "A Avaliar";
     await processoDeFrete.save();
+    const processoDeAluguel = await this.processoDeAluguelService.findOne(processoDeFrete.idProcessoDeAluguel.toString());
+    
+    if(processoDeAluguel.Status == "Aguardando Frete de Ida"){
+      processoDeAluguel.Status = "A Comecar";
+      await processoDeAluguel.save();
+    }else if(processoDeAluguel.Status == "Aguardando Frete de Volta"){
+      processoDeAluguel.Status = "A Selecionar Preco";
+      await processoDeAluguel.save();
+    }
+
+
     return processoDeFrete;
   }
 

@@ -56,6 +56,9 @@ enum ProcessoDeFreteSchemaDtoRestraints {
     tamMinIdSolicitante=0,
     tamMaxIdSolicitante=150,
 
+    tamMinIdProcessoDeAluguel=0,
+    tamMaxIdProcessoDeAluguel=150,
+
     tamMinNomeArquivoImagem=1,
     tamMaxNomeArquivoImagem=1000,
 
