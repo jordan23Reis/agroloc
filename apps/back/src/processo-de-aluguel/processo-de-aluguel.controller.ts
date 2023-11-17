@@ -26,9 +26,9 @@ import { PagamentoDto } from './dto/pagamento-dto';
 import { UsuarioLogadoLocatarioDoProcessoGuard } from './guards/UsuarioLogadoLocatarioDoProcessoGuard';
 import { ProcessoAConfirmarPreco } from './guards/ProcessoAConfirmarPreco';
 import { ProcessoAPagar } from './guards/ProcessoAPagar';
-import { ProcessoASelecionarPrecoOuRefazerPreco } from './guards/ProcessoASelecionarPreco';
+import { ProcessoASelecionarPrecoOuRefazerPreco } from './guards/ProcessoASelecionarPrecoOuRefazerPreco';
 import { UsuarioLogadoGuard } from './guards/UsuarioLogadoGuard';
-import { UsuarioLogadoComumGuard } from './guards/UsuarioLogadoComum';
+import { UsuarioLogadoComumGuard } from './guards/UsuarioLogadoComumGuard';
 
 @Controller('processo-de-aluguel')
 export class ProcessoDeAluguelController {
@@ -36,7 +36,15 @@ export class ProcessoDeAluguelController {
     private readonly processoDeAluguelService: ProcessoDeAluguelService
   ) {}
 
-
+  @UseGuards(JwtAuthGuard, UsuarioLogadoComumGuard)
+  @Get("/:idProcessoDeAluguel")
+  findProcessosDeAluguel(@Param('idProcessoDeAluguel') idProcessoDeAluguel: string){
+   try{
+     return this.processoDeAluguelService.findProcessoDeAluguel(idProcessoDeAluguel);
+     }catch(e){
+       return new Error(e.message);
+     }
+  } 
 
    @UseGuards(JwtAuthGuard, UsuarioLogadoGuard, UsuarioLogadoComumGuard)
    @Get("/necessitando-frete/:idUsuario")
@@ -48,6 +56,31 @@ export class ProcessoDeAluguelController {
       }
    } 
 
+   @UseGuards(JwtAuthGuard, UsuarioLogadoComumGuard)
+   @Get("/finalizados/:idUsuario")
+   findProcessosDeAluguelFinalizadosDeUsuario(
+    @Param('idUsuario') idUsuario: string
+   )
+    {
+    try{
+      return this.processoDeAluguelService.findProcessoDeAluguelFinalizadosDeUsuario(idUsuario);
+      }catch(e){
+        return new Error(e.message);
+      }
+   } 
+
+   @UseGuards(JwtAuthGuard, UsuarioLogadoComumGuard)
+   @Get("/abertos/:idUsuario")
+   findProcessoDeAluguelAbertosDeUsuario(
+    @Param('idUsuario') idUsuario: string
+   )
+    {
+    try{
+      return this.processoDeAluguelService.findProcessoDeAluguelAbertosDeUsuario(idUsuario);
+      }catch(e){
+        return new Error(e.message);
+      }
+   } 
 
 
   @UseGuards(JwtAuthGuard, MaquinaGuard, LocadorLocatarioGuard, ProcessoAAceitarJaExisteGuard, TipoPrecoGuard, InformacoesBancariasLocadorGuard )

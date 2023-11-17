@@ -19,6 +19,55 @@ export class ProcessoDeFreteService {
   private processoDeAluguelService: ProcessoDeAluguelService
   ){}
 
+    async findProcessoDeFrete(idProcessoDeFrete: string){
+      const processoDeFrete = await this.processoDeFreteModel.findById(idProcessoDeFrete);
+      return processoDeFrete;
+    }
+
+    async findProcessosDeFreteFinalizadosDeUsuario(idUsuario: string){
+      const processosDeFreteFinalizados = await this.processoDeFreteModel.find(
+        {
+          Status: {
+            $in: [
+              "A Avaliar",
+              "Avaliado"
+            ]
+          },
+  
+          $or: [
+            {"Envolvidos.Freteiro.idFreteiro": idUsuario},
+            {"Envolvidos.Solicitante.idSolicitante": idUsuario},
+          ]
+  
+        }
+      );
+      return processosDeFreteFinalizados;
+    }
+
+
+    async findProcessosDeFreteAbertosDeUsuario(idUsuario: string){
+      const processosDeFreteFinalizados = await this.processoDeFreteModel.find(
+        {
+          Status: {
+            $nin: [
+              "A Avaliar",
+              "Avaliado"
+            ]
+          },
+  
+          $or: [
+            {"Envolvidos.Freteiro.idFreteiro": idUsuario},
+            {"Envolvidos.Solicitante.idSolicitante": idUsuario},
+          ]
+  
+        }
+      );
+      return processosDeFreteFinalizados;
+    }
+
+
+
+
   async findExistingProcessoDeAluguelAAceitar(idFreteiro: string, idSolicitante: string) {
     const processoDeAluguel = await this.processoDeFreteModel.findOne({
       Status: "A aceitar",
@@ -115,16 +164,23 @@ export class ProcessoDeFreteService {
 
     usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro.EstaAtivo = false;
     processoDeFrete.Status = "A Comecar";
-    const veiculoAchado = usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro?.Automovel.find((el) => el._id.toString() == idVeiculo);
+    // const veiculoAchado = usuarioFreteiroAtreladoAoProcesso.CadastroFreteiro?.Automovel.find((el) => el._id.toString() == idVeiculo);
 
-    processoDeFrete.Veiculo.idVeiculo = veiculoAchado._id;
-    processoDeFrete.Veiculo.Nome = veiculoAchado.Nome;
-    processoDeFrete.Veiculo.ImagemPrincipal.NomeArquivo = veiculoAchado?.ImagemPrincipal?.NomeArquivo;
-    processoDeFrete.Veiculo.ImagemPrincipal.Url = veiculoAchado?.ImagemPrincipal?.Url;
+    // const Veiculo = {
+    //   idVeiculo: veiculoAchado._id,
+    //   Nome: veiculoAchado.Nome,
+    //   ImagemPrincipal:{
+    //     Url: veiculoAchado?.ImagemPrincipal?.Url,
+    //     NomeArquivo: veiculoAchado?.ImagemPrincipal?.NomeArquivo,
+    //   }
+    // }
 
-    if(!veiculoAchado?.ImagemPrincipal){
-      delete processoDeFrete.Veiculo.ImagemPrincipal;
-    }
+    // processoDeFrete.Veiculo = {...Veiculo};
+
+
+    // if(!veiculoAchado?.ImagemPrincipal){
+    //   delete processoDeFrete.Veiculo.ImagemPrincipal;
+    // }
 
     await processoDeFrete.save();
     await usuarioFreteiroAtreladoAoProcesso.save();

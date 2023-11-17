@@ -23,6 +23,7 @@ import {
   MaquinaImagemLimites,
 } from '@agroloc/shared/util';
 import 'multer';
+import "express";
 import { join } from 'path';
 import { MaquinaService } from './maquina.service';
 import { JwtAuthGuard } from '../auth-user/guards/jwt.auth-user.guard';

@@ -20,6 +20,11 @@ export class ProcessoDeAluguelService {
   ) { }
 
 
+
+  async findProcessoDeAluguel(idProcessoDeAluguel: string){
+    const processoDeAluguel = await this.processoDeAluguelModel.findById(idProcessoDeAluguel);
+    return processoDeAluguel;
+  }
   
   async findAllProcessosDeAluguelNecessitandoFrete(idUsuario: string){
     const processosNecessitandoDeFrete = await this.processoDeAluguelModel.find(
@@ -35,6 +40,49 @@ export class ProcessoDeAluguelService {
     );
     return processosNecessitandoDeFrete;
   }
+
+  async findProcessoDeAluguelFinalizadosDeUsuario(idUsuario: string){
+    const processosDeAluguelFinalizados = await this.processoDeAluguelModel.find(
+      {
+        Status: {
+          $in: [
+            "A Avaliar",
+            "Avaliado"
+          ]
+        },
+
+        $or: [
+          {"Envolvidos.Locador.idLocador": idUsuario},
+          {"Envolvidos.Locatario.idLocatario": idUsuario},
+        ]
+
+      }
+    );
+    return processosDeAluguelFinalizados;
+  }
+
+  async findProcessoDeAluguelAbertosDeUsuario(idUsuario: string){
+    const processosDeAluguelFinalizados = await this.processoDeAluguelModel.find(
+      {
+        Status: {
+          $nin: [
+            "A Avaliar",
+            "Avaliado"
+          ]
+        },
+
+        $or: [
+          {"Envolvidos.Locador.idLocador": idUsuario},
+          {"Envolvidos.Locatario.idLocatario": idUsuario},
+        ]
+
+      }
+    );
+    return processosDeAluguelFinalizados;
+  }
+
+
+
 
 
   async create(idMaquina: string, idLocador:string, idLocatario) {

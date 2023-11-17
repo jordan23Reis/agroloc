@@ -13,7 +13,7 @@ export class UsuarioLogadoDonoDoProcessoGuard implements CanActivate {
     const processoDeAluguel = await this.processoService.findOne(request.params.idProcessoDeFrete);
 
     if(processoDeAluguel?.Envolvidos?.Freteiro?.idFreteiro.toString() !== request.user.IdUsuario){
-      throw new UnauthorizedException(`Você não é o freteiro deste processo de aluguel!`);
+      throw new UnauthorizedException(`Você não é o freteiro deste processo de frete!`);
     }
 
     return true;

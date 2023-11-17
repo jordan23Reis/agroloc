@@ -17,7 +17,7 @@ import { InformacoesBancariasFreteiroGuard } from './guards/InformacoesBancarias
 import { UsuarioLogadoDonoDoProcessoGuard } from './guards/UsuarioLogadoDonoDoProcessoGuard';
 import { ProcessoAAceitarGuard } from './guards/ProcessoAAceitarGuard';
 import { ProcessoAComecarGuard } from './guards/ProcessoAComecarGuard';
-import { ProcessoAFinalizarGuard } from './guards/ProcessoAFinalizarGuard';
+import { ProcessoEmAndamentoGuard } from './guards/ProcessoEmAndamentoGuard';
 import { ProcessoAPagarGuard } from './guards/ProcessoAPagarGuard';
 import { ProcessoDeAluguelExisteGuard } from './guards/ProcessoDeAluguelExisteGuard';
 
@@ -26,6 +26,37 @@ export class ProcessoDeFreteController {
   constructor(
     private readonly processoDeFreteService: ProcessoDeFreteService
   ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get("/:idProcessoDeFrete")
+  findProcessosDeAluguel(@Param('idProcessoDeFrete') idProcessoDeFrete: string){
+   try{
+     return this.processoDeFreteService.findProcessoDeFrete(idProcessoDeFrete);
+     }catch(e){
+       return new Error(e.message);
+     }
+  } 
+
+  @UseGuards(JwtAuthGuard)
+  @Get("finalizados/:idUsuario")
+  findProcessosDeFreteFinalizadosDeUsuario(@Param('idUsuario') idUsuario: string){
+   try{
+     return this.processoDeFreteService.findProcessosDeFreteFinalizadosDeUsuario(idUsuario);
+     }catch(e){
+       return new Error(e.message);
+     }
+  } 
+
+  @UseGuards(JwtAuthGuard)
+  @Get("abertos/:idUsuario")
+  findProcessosDeFreteAbertosDeUsuario(@Param('idUsuario') idUsuario: string){
+   try{
+     return this.processoDeFreteService.findProcessosDeFreteAbertosDeUsuario(idUsuario);
+     }catch(e){
+       return new Error(e.message);
+     }
+  } 
+
 
   @UseGuards(JwtAuthGuard, MaquinaGuard, FreteiroSolicitanteGuard, ProcessoAAceitarJaExisteGuard, InformacoesBancariasFreteiroGuard, ProcessoDeAluguelExisteGuard )
   @Post(":idProcessoDeAluguel/:idMaquina/:idFreteiro/:idSolicitante/:enderecoSolicitanteSelecionado/:valorFrete")
@@ -77,7 +108,7 @@ export class ProcessoDeFreteController {
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioLogadoDonoDoProcessoGuard, ProcessoAFinalizarGuard)
+  @UseGuards(JwtAuthGuard, UsuarioLogadoDonoDoProcessoGuard, ProcessoEmAndamentoGuard)
   @Patch("mudarstatus/finalizar/:idProcessoDeFrete")
   finalizarProcessoDeFrete(
     @Param('idProcessoDeFrete') idProcessoDeFrete: string){
