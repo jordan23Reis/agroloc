@@ -443,7 +443,14 @@
         <img [src]="'assets/default-account-icon.png'" />
         <h2>Ola, {{ infoLocatario.CadastroComum?.Nome }}</h2>
         <h2>R${{ (processItem | async)?.Pagamento?.Valor }}</h2>
-        <div style="width: 60%">
+        <div
+          style="
+            width: 60%;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+          "
+        >
           <p>O locador propôs o seguinte preço para a locação do maquinário.</p>
         </div>
         <div style="display: flex; flex-direction: row; width: 100%">
@@ -518,7 +525,14 @@
         <h2>Ola, (nome Locador)</h2>
 
         <h3>Deseja concluir o processo de Aluguel?</h3>
-        <div style="width: 60%">
+        <div
+          style="
+            width: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
           <p>
             Verifique se o locatário realizou o pagamento antes de concluir o
             processo de aluguel
