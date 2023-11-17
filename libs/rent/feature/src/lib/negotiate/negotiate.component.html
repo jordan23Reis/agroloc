@@ -42,9 +42,46 @@
       </div>
       <div style="flex: 1 1 auto"></div>
     </div>
-    <div class="message">
-      <mat-icon class="searchIcon">attach_money</mat-icon>
-      <h2>Negociar Maquinário</h2>
+    <div class="message" style="margin-top: 30px">
+      <mat-icon class="searchIcon">more_horiz</mat-icon>
+      <h2>Processo de Aluguel Solicitado</h2>
+    </div>
+    <div class="content">
+      <div class="message" style="margin-top: 30px">
+        <h2>Quem esta Solicitando?</h2>
+      </div>
+      <div class="inicio">
+        <img [src]="'assets/default-account-icon.png'" />
+        <h2>Ola, meu nome é (nome solicitante)</h2>
+        <h3>Minhas informações:</h3>
+        <div style="width: 60%">
+          <p><strong>Meu endereço:</strong></p>
+          <div>
+            <mat-divider></mat-divider>
+            <p>Estado - PR</p>
+            <mat-divider></mat-divider>
+            <p>CEP - 86750000</p>
+            <mat-divider></mat-divider>
+            <p>Logradouro - Rua Antenor Tenente, Numero: 23</p>
+            <mat-divider></mat-divider>
+          </div>
+          <p style="margin-top: 30px;"><strong>Meu Contato:</strong></p>
+          <div style="margin-bottom: 60px;">
+            <mat-divider></mat-divider>
+            <p>Email - jordan.reis@alunos.unicesumar.edu.br</p>
+            <mat-divider></mat-divider>
+            <p>Telefone 1 - 444444444</p>
+            <mat-divider></mat-divider>
+            <p>Telefone 2 - 555555555</p>
+            <mat-divider></mat-divider>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: row; width: 100%;">
+        <div style="flex: 1 1 auto;"></div>
+        <button mat-raised-button color="accent" style="margin: 30px;">Recusar</button>
+        <button mat-raised-button color="primary" style="margin: 30px;">Aceitar</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
