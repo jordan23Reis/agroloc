@@ -1,7 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, combineLatest, debounceTime, take } from 'rxjs';
+import {
+  ReplaySubject,
+  catchError,
+  combineLatest,
+  debounceTime,
+  take,
+} from 'rxjs';
 import { DadosTransacao } from '../../entities/negotiate.interface';
 import { AuthService } from '@agroloc/account/data-acess';
 import { SearchService } from '@agroloc/shared/data-access';
@@ -19,6 +25,12 @@ export class RentService {
 
   userProfile = this.authService.userProfile$;
   selectData = this.searchService.itemSelect$;
+
+  selectedProcess = new ReplaySubject(1);
+  selectedProcess$ = this.selectedProcess.asObservable();
+
+  selectedProcessFrete = new ReplaySubject(1);
+  selectedProcessFrete$ = this.selectedProcessFrete.asObservable();
 
   userCreateProcess() {
     combineLatest([this.selectData, this.userProfile])
