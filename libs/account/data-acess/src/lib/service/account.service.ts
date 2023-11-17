@@ -121,6 +121,30 @@ export class AccountService {
   searchFreteiros = new ReplaySubject<SelectAutomovel>(1);
   searchFreteiros$ = this.searchFreteiros.asObservable().pipe(debounceTime(1));
 
+  acharFreteiros = new ReplaySubject<Account[]>(1);
+  acharFreteiros$ = this.acharFreteiros.asObservable().pipe(debounceTime(1000));
+
+  findFreteiros(params: {
+    quantidadePorPagina: number;
+    page: number;
+    busca: string;
+    ordenarPor: string;
+  }) {
+    const queryParams = new HttpParams()
+      .set('quantidadePorPagina', params.quantidadePorPagina.toString())
+      .set('page', params.page.toString())
+      .set('busca', params.busca)
+      .set('ordenarPor', params.ordenarPor);
+
+    this.http
+      .get<Account[]>(`/api/usuario/freteiros`, {
+        params: queryParams,
+      })
+      .subscribe((response) => {
+        this.acharFreteiros.next(response);
+      });
+  }
+
   onSelectAutomovel(idAutomovel: string) {
     this.userAccount$.subscribe((response) => {
       const automovel = response.CadastroFreteiro?.Automovel?.filter(
@@ -158,27 +182,13 @@ export class AccountService {
     );
   }
 
-  findFreteiros(params: {
-    quantidadePorPagina: number;
-    page: number;
-    busca: string;
-    ordenarPor: string;
-  }): Observable<Account[]> {
-    const queryParams = new HttpParams()
-      .set('quantidadePorPagina', params.quantidadePorPagina.toString())
-      .set('page', params.page.toString())
-      .set('busca', params.busca)
-      .set('ordenarPor', params.ordenarPor);
-
-    return this.http.get<Account[]>(`/api/usuario/freteiros`, {
-      params: queryParams,
-    });
-  }
-
   getCadastro(accountId: string): Observable<any> {
     return this.http.get(`/api/usuario/cadastro/${accountId}`);
   }
 
+  getUser(idusuario: string): Observable<any> {
+    return this.http.get(`/api/usuario/${idusuario}`);
+  }
   updateAccount(accountId: string, accountData: any): Observable<any> {
     return this.http.put(`/api/usuario/cadastro/${accountId}`, accountData);
   }

@@ -261,7 +261,6 @@ export class ComponentDialogOverviewExampleDialog {
 
   onNoClick(): void {
     this.dialogRef.close();
-    this.router.navigate(['web', 'main', 'negotiate']);
   }
 
   negotiateMachinery(): void {

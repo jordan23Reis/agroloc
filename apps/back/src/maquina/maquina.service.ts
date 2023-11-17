@@ -35,6 +35,8 @@ export class MaquinaService {
   ) {}
 
   async create(createMaquinaDto: CreateUpdateMaquinaDto, request) {
+    createMaquinaDto.IdCategoria = request.body.idCategoria;
+
     try {
       const idUsuario = request.user.IdUsuario;
       const usuarioDono = await this.usersService.findOne(idUsuario);

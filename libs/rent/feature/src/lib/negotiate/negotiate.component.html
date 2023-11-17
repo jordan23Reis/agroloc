@@ -37,46 +37,129 @@
             justify-content: center;
           "
         >
-          <p>Estado do Processo: Em Andamento</p>
+          <p>Estado do Processo: {{ (processItem | async)?.Status }}</p>
         </div>
       </div>
       <div style="flex: 1 1 auto"></div>
     </div>
-    <div *ngIf="false" class="messageLoading Espera" style="margin-top: 30px">
+    <div
+      *ngIf="loadingProcessLocatario"
+      class="messageLoading Espera"
+      style="margin-top: 30px"
+    >
       <mat-icon class="searchIcon">more_horiz</mat-icon>
       <h2>Esperando Resposta</h2>
       <mat-icon class="searchIcon">more_horiz</mat-icon>
     </div>
-    <div *ngIf="false" class="message AceitarProcesso" style="margin-top: 30px">
+    <div
+      *ngIf="loadingProcessLocador"
+      class="messageLoading Espera"
+      style="margin-top: 30px"
+    >
+      <mat-icon class="searchIcon">more_horiz</mat-icon>
+      <h2>Esperando Resposta</h2>
+      <mat-icon class="searchIcon">more_horiz</mat-icon>
+    </div>
+
+    <div
+      *ngIf="etapaAceitarProcesso"
+      class="message AceitarProcesso"
+      style="margin-top: 30px"
+    >
       <h2>Processo de Aluguel Solicitado</h2>
     </div>
-    <div *ngIf="false" class="content AceitarProcesso">
+    <div *ngIf="etapaAceitarProcesso" class="content AceitarProcesso">
       <div class="message" style="margin-top: 30px">
         <h2>Quem esta Solicitando?</h2>
       </div>
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, meu nome é (nome solicitante)</h2>
+        <h2>
+          Ola, meu nome é {{ (dadosLocatario$ | async)?.CadastroComum?.Nome }}
+        </h2>
         <h3>Minhas informações:</h3>
         <div style="width: 60%">
           <p><strong>Meu endereço:</strong></p>
           <div>
             <mat-divider></mat-divider>
-            <p>Estado - PR</p>
+            <p>
+              Estado -
+              {{ (dadosLocatario$ | async)?.CadastroComum?.Enderecos?.[0]?.Estado }}
+            </p>
             <mat-divider></mat-divider>
-            <p>CEP - 86750000</p>
+            <p>
+              CEP -
+              {{ (dadosLocatario$ | async)?.CadastroComum?.Enderecos?.[0]?.Cep }}
+            </p>
             <mat-divider></mat-divider>
-            <p>Logradouro - Rua Antenor Tenente, Numero: 23</p>
+            <p>
+              Logradouro -
+              {{
+                (dadosLocatario$ | async)?.CadastroComum?.Enderecos?.[0]?.Logradouro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              }}, Numero:
+              {{ (dadosLocatario$ | async)?.CadastroComum?.Enderecos?.[0]?.Numero }}
+            </p>
             <mat-divider></mat-divider>
           </div>
           <p style="margin-top: 30px"><strong>Meu Contato:</strong></p>
           <div style="margin-bottom: 60px">
             <mat-divider></mat-divider>
-            <p>Email - jordan.reis@alunos.unicesumar.edu.br</p>
+            <p>Email - {{ (dadosLocatario$ | async)?.Login?.Email }}</p>
             <mat-divider></mat-divider>
-            <p>Telefone 1 - 444444444</p>
+            <p>
+              Telefone 1 -
+              {{ (dadosLocatario$ | async)?.CadastroComum?.Telefone?.[0] }}
+            </p>
             <mat-divider></mat-divider>
-            <p>Telefone 2 - 555555555</p>
+            <p>
+              Telefone 2 -
+              {{ (dadosLocatario$ | async)?.CadastroComum?.Telefone?.[1]  }}
+            </p>
             <mat-divider></mat-divider>
           </div>
         </div>
@@ -85,44 +168,33 @@
           <button mat-raised-button color="accent" style="margin: 30px">
             Recusar
           </button>
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="acceptProcess()"
+          >
             Aceitar
           </button>
         </div>
       </div>
     </div>
 
-    <div *ngIf="false" class="message SelecaoFrete" style="margin-top: 30px">
+    <div
+      *ngIf="estapaAguardandoSelecaoFrete"
+      class="message SelecaoFrete"
+      style="margin-top: 30px"
+    >
       <h2>Aguardando escolha de Frete</h2>
     </div>
-    <div *ngIf="false" class="content SelecaoFrete">
+    <div *ngIf="estapaAguardandoSelecaoFrete" class="content SelecaoFrete">
       <div class="message" style="margin-top: 30px">
         <h2>Procure por um freteiro</h2>
       </div>
       <div class="inicio">
         <mat-form-field style="width: 60%" class="example-form-field">
           <mat-label>Valor do Frete</mat-label>
-          <input
-            #search
-            type="text"
-            matInput
-            [formControl]="myControl"
-            [matAutocomplete]="auto"
-            (keypress)="enterPress($event)"
-            (keyup)="clearSearch(search)"
-          />
-          <mat-autocomplete
-            autoActiveFirstOption
-            #auto="matAutocomplete"
-            (optionSelected)="onSelectecSearch()"
-          >
-            <mat-option
-              *ngFor="let option of filteredOptionsSubscribe | async"
-              [value]="option"
-            >
-              {{ option }}
-            </mat-option>
-          </mat-autocomplete>
+          <input [formControl]="myControlValue" type="number" matInput />
         </mat-form-field>
         <mat-form-field style="width: 60%" class="example-form-field">
           <mat-label>Pesquisar freteiro por Nome</mat-label>
@@ -130,16 +202,10 @@
             #search
             type="text"
             matInput
-            [formControl]="myControl"
+            [formControl]="myControlFrete"
             [matAutocomplete]="auto"
-            (keypress)="enterPress($event)"
-            (keyup)="clearSearch(search)"
           />
-          <mat-autocomplete
-            autoActiveFirstOption
-            #auto="matAutocomplete"
-            (optionSelected)="onSelectecSearch()"
-          >
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
             <mat-option
               *ngFor="let option of filteredOptionsSubscribe | async"
               [value]="option"
@@ -148,71 +214,6 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-
-        <div style="width: 100%">
-          <div class="formContainer">
-            <div class="footerList">
-              <p>Seus Automoveis</p>
-              <span class="example-spacer"></span>
-              <button
-                mat-mini-fab
-                [color]="'primary'"
-                (click)="addInfoAutomovel()"
-              >
-                <mat-icon>add </mat-icon>
-              </button>
-              <button
-                mat-mini-fab
-                [disabled]="!ListAutomovel.selectedOptions.hasValue()"
-                [color]="'warn'"
-                (click)="
-                  remInfoAutomovel(
-                    ListAutomovel.selectedOptions.selected[0].value
-                  )
-                "
-              >
-                <mat-icon matPrefix>delete</mat-icon>
-              </button>
-            </div>
-
-            <div class="listEndereco">
-              <mat-selection-list
-                #ListAutomovel
-                [multiple]="false"
-                [ngStyle]="{'overflow-y': (userDate | async)?.CadastroFreteiro?.Automovel?.[0] ? 'scroll' : 'hidden'}"
-              >
-                <mat-list-option
-                  *ngFor="
-                    let item of (userDate | async)?.CadastroFreteiro?.Automovel
-                  "
-                  [value]="item._id"
-                >
-                  <span
-                    (click)="
-                      moveToAutomovel(
-                        ListAutomovel.selectedOptions.selected[0].value
-                      )
-                    "
-                    matListItemTitle
-                    >{{ item.Nome }}</span
-                  >
-                  <span matListItemLine style="margin-left: 20px">{{
-                    item.Categoria?.Nome
-                  }}</span>
-                </mat-list-option>
-                <mat-list
-                  *ngIf="
-            !(userDate | async)?.CadastroFreteiro?.Automovel?.[0]
-          "
-                >
-                  <mat-list-item matListItemTitle>
-                    Você não possui automoveis Registrado
-                  </mat-list-item>
-                </mat-list>
-              </mat-selection-list>
-            </div>
-          </div>
-        </div>
 
         <div
           style="
@@ -223,7 +224,12 @@
           "
         >
           <div style="flex: 1 1 auto"></div>
-          <button mat-raised-button color="accent" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="accent"
+            style="margin: 30px"
+            (click)="skipFrete()"
+          >
             Pular
           </button>
           <button mat-raised-button color="primary" style="margin: 30px">
@@ -289,10 +295,10 @@
       </div>
     </div>
 
-    <div *ngIf="false" class="message Comecar" style="margin-top: 30px">
+    <div *ngIf="aComecar" class="message Comecar" style="margin-top: 30px">
       <h2>Iniciar Aluguel</h2>
     </div>
-    <div *ngIf="false" class="content Comecar">
+    <div *ngIf="aComecar" class="content Comecar">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
         <h2>Ola, (nome Locador)</h2>
@@ -308,17 +314,22 @@
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="comecarProcesso()"
+          >
             Começar
           </button>
         </div>
       </div>
     </div>
 
-    <div *ngIf="false" class="message Finalizar" style="margin-top: 30px">
+    <div *ngIf="emAndamento" class="message Finalizar" style="margin-top: 30px">
       <h2>Concluir Aluguel</h2>
     </div>
-    <div *ngIf="false" class="content Finalizar">
+    <div *ngIf="emAndamento" class="content Finalizar">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
         <h2>Ola, (nome Locador)</h2>
@@ -333,7 +344,12 @@
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="finalizarAndamento()"
+          >
             Finalizar
           </button>
         </div>
@@ -341,33 +357,21 @@
     </div>
 
     <div
-      *ngIf="false"
+      *ngIf="segundaSelecaoFrete"
       class="message SegundaSelecaoFrete"
       style="margin-top: 30px"
     >
       <h2>Aguardando escolha de Frete</h2>
     </div>
-    <div *ngIf="false" class="content SegundaSelecaoFrete">
+    <div *ngIf="segundaSelecaoFrete" class="content SegundaSelecaoFrete">
       <div class="message" style="margin-top: 30px">
         <h2>Procure por um freteiro</h2>
       </div>
       <div class="inicio">
         <mat-form-field style="width: 60%" class="example-form-field">
           <mat-label>Valor do Frete</mat-label>
-          <input
-            #search
-            type="text"
-            matInput
-            [formControl]="myControl"
-            [matAutocomplete]="auto"
-            (keypress)="enterPress($event)"
-            (keyup)="clearSearch(search)"
-          />
-          <mat-autocomplete
-            autoActiveFirstOption
-            #auto="matAutocomplete"
-            (optionSelected)="onSelectecSearch()"
-          >
+          <input #search type="text" matInput [matAutocomplete]="auto" />
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
             <mat-option
               *ngFor="let option of filteredOptionsSubscribe | async"
               [value]="option"
@@ -378,20 +382,8 @@
         </mat-form-field>
         <mat-form-field style="width: 60%" class="example-form-field">
           <mat-label>Pesquisar freteiro por Nome</mat-label>
-          <input
-            #search
-            type="text"
-            matInput
-            [formControl]="myControl"
-            [matAutocomplete]="auto"
-            (keypress)="enterPress($event)"
-            (keyup)="clearSearch(search)"
-          />
-          <mat-autocomplete
-            autoActiveFirstOption
-            #auto="matAutocomplete"
-            (optionSelected)="onSelectecSearch()"
-          >
+          <input #search type="text" matInput [matAutocomplete]="auto" />
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
             <mat-option
               *ngFor="let option of filteredOptionsSubscribe | async"
               [value]="option"
@@ -475,7 +467,12 @@
           "
         >
           <div style="flex: 1 1 auto"></div>
-          <button mat-raised-button color="accent" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="accent"
+            style="margin: 30px"
+            (click)="skipFrete()"
+          >
             Pular
           </button>
           <button mat-raised-button color="primary" style="margin: 30px">
@@ -485,10 +482,14 @@
       </div>
     </div>
 
-    <div *ngIf="false" class="message SelecionarPreco" style="margin-top: 30px">
+    <div
+      *ngIf="selecionarPreco"
+      class="message SelecionarPreco"
+      style="margin-top: 30px"
+    >
       <h2>Selecionar Preço do Aluguel</h2>
     </div>
-    <div *ngIf="false" class="content SelecionarPreco">
+    <div *ngIf="selecionarPreco" class="content SelecionarPreco">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
         <h2>Ola, (nome Locador)</h2>
@@ -499,23 +500,32 @@
           </p>
           <mat-form-field style="width: 100%">
             <mat-label>Input</mat-label>
-            <input matInput />
+            <input matInput [formControl]="myControlSelectPreco" />
           </mat-form-field>
         </div>
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="selectPreco()"
+          >
             Enviar
           </button>
         </div>
       </div>
     </div>
 
-    <div *ngIf="false" class="message AvaliarPreco" style="margin-top: 30px">
+    <div
+      *ngIf="confirmarPreco"
+      class="message AvaliarPreco"
+      style="margin-top: 30px"
+    >
       <h2>Avaliar Preço</h2>
     </div>
-    <div *ngIf="false" class="content AvaliarPreco">
+    <div *ngIf="confirmarPreco" class="content AvaliarPreco">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
         <h2>Ola, (nome Locátario)</h2>
@@ -525,38 +535,57 @@
         </div>
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
-          <button mat-raised-button color="accent" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="accent"
+            style="margin: 30px"
+            (click)="recusarPreco()"
+          >
             Recusar
           </button>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="aceitarPreco()"
+          >
             Aceitar
           </button>
         </div>
       </div>
     </div>
 
-    <div *ngIf="false" class="message RefazerPreco" style="margin-top: 30px">
+    <div
+      *ngIf="refazerPreco"
+      class="message RefazerPreco"
+      style="margin-top: 30px"
+    >
       <h2>Negociar Preço do Aluguel</h2>
     </div>
-    <div *ngIf="false" class="content RefazerPreco">
+    <div *ngIf="refazerPreco" class="content RefazerPreco">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
         <h2>Ola, (nome Locador)</h2>
         <div style="width: 60%">
           <p>
-            O locatário recusou a oferta inicial; favor selecionar um novo valor
-            para a locação.
+            Revise seu maquinário e selecione o preço apropriado a ser cobrado
+            do locatário.
           </p>
           <mat-form-field style="width: 100%">
             <mat-label>Input</mat-label>
-            <input matInput />
+            <input matInput [formControl]="myControlSelectPreco" />
           </mat-form-field>
         </div>
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="selectPreco()"
+          >
             Enviar
           </button>
         </div>
@@ -564,13 +593,13 @@
     </div>
 
     <div
-      *ngIf="false"
+      *ngIf="aPagar"
       class="message ConfirmarPagamento"
       style="margin-top: 30px"
     >
       <h2>Confirmar Pagamento</h2>
     </div>
-    <div *ngIf="false" class="content ConfirmarPagamento">
+    <div *ngIf="aPagar" class="content ConfirmarPagamento">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
         <h2>Ola, (nome Locador)</h2>
@@ -585,17 +614,22 @@
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="concluirProcesso()"
+          >
             Concluir
           </button>
         </div>
       </div>
     </div>
 
-    <div *ngIf="false" class="message Avaliar" style="margin-top: 30px">
+    <div *ngIf="aAvaliar" class="message Avaliar" style="margin-top: 30px">
       <h2>Avaliar Maquinário</h2>
     </div>
-    <div *ngIf="false" class="content Avaliar">
+    <div *ngIf="aAvaliar" class="content Avaliar">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
         <h2>Ola, (nome Locador)</h2>
