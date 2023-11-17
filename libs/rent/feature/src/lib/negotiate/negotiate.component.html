@@ -74,95 +74,8 @@
       </div>
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
-        <h2>
-          Ola, meu nome é {{ (dadosLocatario$ | async)?.CadastroComum?.Nome }}
-        </h2>
-        <h3>Minhas informações:</h3>
-        <div style="width: 60%">
-          <p><strong>Meu endereço:</strong></p>
-          <div>
-            <mat-divider></mat-divider>
-            <p>
-              Estado -
-              {{ (dadosLocatario$ | async)?.CadastroComum?.Enderecos?.[0]?.Estado }}
-            </p>
-            <mat-divider></mat-divider>
-            <p>
-              CEP -
-              {{ (dadosLocatario$ | async)?.CadastroComum?.Enderecos?.[0]?.Cep }}
-            </p>
-            <mat-divider></mat-divider>
-            <p>
-              Logradouro -
-              {{
-                (dadosLocatario$ | async)?.CadastroComum?.Enderecos?.[0]?.Logradouro
+        <h2>Ola, meu nome é {{ infoLocatario?.CadastroComum?.Nome }}</h2>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              }}, Numero:
-              {{ (dadosLocatario$ | async)?.CadastroComum?.Enderecos?.[0]?.Numero }}
-            </p>
-            <mat-divider></mat-divider>
-          </div>
-          <p style="margin-top: 30px"><strong>Meu Contato:</strong></p>
-          <div style="margin-bottom: 60px">
-            <mat-divider></mat-divider>
-            <p>Email - {{ (dadosLocatario$ | async)?.Login?.Email }}</p>
-            <mat-divider></mat-divider>
-            <p>
-              Telefone 1 -
-              {{ (dadosLocatario$ | async)?.CadastroComum?.Telefone?.[0] }}
-            </p>
-            <mat-divider></mat-divider>
-            <p>
-              Telefone 2 -
-              {{ (dadosLocatario$ | async)?.CadastroComum?.Telefone?.[1]  }}
-            </p>
-            <mat-divider></mat-divider>
-          </div>
-        </div>
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
           <button mat-raised-button color="accent" style="margin: 30px">
@@ -301,7 +214,7 @@
     <div *ngIf="aComecar" class="content Comecar">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
+        <h2>Ola, {{ infoLocador.CadastroComum?.Nome }}</h2>
 
         <h3>Você esta pronto para começar o processo de aluguel?</h3>
         <div style="width: 60%">
@@ -332,7 +245,7 @@
     <div *ngIf="emAndamento" class="content Finalizar">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
+        <h2>Ola, {{ infoLocador.CadastroComum?.Nome }}</h2>
 
         <h3>Deseja concluir o processo de Aluguel?</h3>
         <div style="width: 60%">
@@ -492,7 +405,7 @@
     <div *ngIf="selecionarPreco" class="content SelecionarPreco">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
+        <h2>Ola, {{ infoLocador.CadastroComum?.Nome }}</h2>
         <div style="width: 60%">
           <p>
             Revise seu maquinário e selecione o preço apropriado a ser cobrado
@@ -528,8 +441,8 @@
     <div *ngIf="confirmarPreco" class="content AvaliarPreco">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locátario)</h2>
-        <h2>R$(Preço)</h2>
+        <h2>Ola, {{ infoLocatario.CadastroComum?.Nome }}</h2>
+        <h2>R${{ (processItem | async)?.Pagamento?.Valor }}</h2>
         <div style="width: 60%">
           <p>O locador propôs o seguinte preço para a locação do maquinário.</p>
         </div>

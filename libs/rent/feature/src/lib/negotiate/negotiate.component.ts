@@ -158,8 +158,6 @@ export class NegotiateComponent implements OnInit {
 
   //////////////////////////////////////
 
-  dadosLocatario;
-
   /////////////////////////////////////
 
   myControlSelectPreco = new FormControl('');
@@ -179,8 +177,24 @@ export class NegotiateComponent implements OnInit {
 
   ///////////////////////////////////
 
+  infoLocatario: Account;
+  arrayEndLocata: any;
+  infoFreteiro: Account;
+  infoLocador: Account;
+
   ngOnInit() {
-    this.dadosLocatario$.subscribe((response) => {});
+    this.dadosLocatario$.subscribe((response) => {
+      this.arrayEndLocata = response.CadastroComum?.Enderecos?.[0];
+      this.infoLocatario = response;
+    });
+
+    this.dadosFreteiro$.subscribe((response) => {
+      this.infoFreteiro = response;
+    });
+
+    this.dadosLocador$.subscribe((response) => {
+      this.infoLocador = response;
+    });
 
     ////////////////////////////////
 

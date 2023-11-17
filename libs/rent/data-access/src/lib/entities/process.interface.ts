@@ -1,5 +1,6 @@
 interface Pagamento {
   Status: string;
+  Valor?: number;
   Preco: {
     ValorPorTipo: number;
     Tipo: {
