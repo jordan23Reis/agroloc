@@ -28,109 +28,169 @@ export class ProcessoDeFreteController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get("/:idProcessoDeFrete")
-  findProcessosDeAluguel(@Param('idProcessoDeFrete') idProcessoDeFrete: string){
-   try{
-     return this.processoDeFreteService.findProcessoDeFrete(idProcessoDeFrete);
-     }catch(e){
-       return new Error(e.message);
-     }
-  } 
-
-  @UseGuards(JwtAuthGuard)
-  @Get("finalizados/:idUsuario")
-  findProcessosDeFreteFinalizadosDeUsuario(@Param('idUsuario') idUsuario: string){
-   try{
-     return this.processoDeFreteService.findProcessosDeFreteFinalizadosDeUsuario(idUsuario);
-     }catch(e){
-       return new Error(e.message);
-     }
-  } 
-
-  @UseGuards(JwtAuthGuard)
-  @Get("abertos/:idUsuario")
-  findProcessosDeFreteAbertosDeUsuario(@Param('idUsuario') idUsuario: string){
-   try{
-     return this.processoDeFreteService.findProcessosDeFreteAbertosDeUsuario(idUsuario);
-     }catch(e){
-       return new Error(e.message);
-     }
-  } 
-
-
-  @UseGuards(JwtAuthGuard, MaquinaGuard, FreteiroSolicitanteGuard, ProcessoAAceitarJaExisteGuard, InformacoesBancariasFreteiroGuard, ProcessoDeAluguelExisteGuard )
-  @Post(":idProcessoDeAluguel/:idMaquina/:idFreteiro/:idSolicitante/:enderecoSolicitanteSelecionado/:valorFrete")
-  create(
-    @Param('idProcessoDeAluguel') idProcessoDeAluguel: string, 
-    @Param('idMaquina') idMaquina: string, 
-    @Param('idFreteiro') idFreteiro: string, 
-    @Param('idSolicitante') idSolicitante: string, 
-    @Param('enderecoSolicitanteSelecionado') enderecoSolicitanteSelecionado: string, 
-    @Param('valorFrete') valorFrete: number) {
-    try{
-    return this.processoDeFreteService.create(idProcessoDeAluguel, idMaquina, idFreteiro, idSolicitante, enderecoSolicitanteSelecionado, valorFrete);
-    }catch(e){
+  @Get('/:idProcessoDeFrete')
+  findProcessosDeAluguel(
+    @Param('idProcessoDeFrete') idProcessoDeFrete: string
+  ) {
+    try {
+      return this.processoDeFreteService.findProcessoDeFrete(idProcessoDeFrete);
+    } catch (e) {
       return new Error(e.message);
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioLogadoDonoDoProcessoGuard, ProcessoAAceitarGuard, VeiculoGuard)
-  @Patch("mudarstatus/aceitar/:idProcessoDeFrete/:idVeiculo")
+  @UseGuards(JwtAuthGuard)
+  @Get('finalizados/:idUsuario')
+  findProcessosDeFreteFinalizadosDeUsuario(
+    @Param('idUsuario') idUsuario: string
+  ) {
+    try {
+      return this.processoDeFreteService.findProcessosDeFreteFinalizadosDeUsuario(
+        idUsuario
+      );
+    } catch (e) {
+      return new Error(e.message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('abertos/:idUsuario')
+  findProcessosDeFreteAbertosDeUsuario(@Param('idUsuario') idUsuario: string) {
+    try {
+      return this.processoDeFreteService.findProcessosDeFreteAbertosDeUsuario(
+        idUsuario
+      );
+    } catch (e) {
+      return new Error(e.message);
+    }
+  }
+
+  @UseGuards(
+    JwtAuthGuard,
+    MaquinaGuard,
+    FreteiroSolicitanteGuard,
+    ProcessoAAceitarJaExisteGuard,
+    InformacoesBancariasFreteiroGuard,
+    ProcessoDeAluguelExisteGuard
+  )
+  @Post(
+    ':idProcessoDeAluguel/:idMaquina/:idFreteiro/:idSolicitante/:enderecoSolicitanteSelecionado/:valorFrete'
+  )
+  create(
+    @Param('idProcessoDeAluguel') idProcessoDeAluguel: string,
+    @Param('idMaquina') idMaquina: string,
+    @Param('idFreteiro') idFreteiro: string,
+    @Param('idSolicitante') idSolicitante: string,
+    @Param('enderecoSolicitanteSelecionado')
+    enderecoSolicitanteSelecionado: string,
+    @Param('valorFrete') valorFrete: number
+  ) {
+    try {
+      return this.processoDeFreteService.create(
+        idProcessoDeAluguel,
+        idMaquina,
+        idFreteiro,
+        idSolicitante,
+        enderecoSolicitanteSelecionado,
+        valorFrete
+      );
+    } catch (e) {
+      return new Error(e.message);
+    }
+  }
+
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioLogadoDonoDoProcessoGuard,
+    ProcessoAAceitarGuard,
+    VeiculoGuard
+  )
+  @Patch('mudarstatus/aceitar/:idProcessoDeFrete/:idVeiculo')
   aceitarProcessoDeFrete(
     @Param('idProcessoDeFrete') idProcessoDeFrete: string,
-    @Param('idVeiculo') idVeiculo: string){
-    try{
-      return this.processoDeFreteService.aceitarProcessoDeFrete(idProcessoDeFrete, idVeiculo);
-    }catch(e){
+    @Param('idVeiculo') idVeiculo: string
+  ) {
+    try {
+      return this.processoDeFreteService.aceitarProcessoDeFrete(
+        idProcessoDeFrete,
+        idVeiculo
+      );
+    } catch (e) {
       return new Error(e.message);
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioLogadoDonoDoProcessoGuard, ProcessoAAceitarGuard)
-  @Patch("mudarstatus/recusar/:idProcessoDeFrete")
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioLogadoDonoDoProcessoGuard,
+    ProcessoAAceitarGuard
+  )
+  @Patch('mudarstatus/recusar/:idProcessoDeFrete')
   recusarProcessoDeFrete(
-    @Param('idProcessoDeFrete') idProcessoDeFrete: string){
-    try{
-      return this.processoDeFreteService.recusarProcessoDeFrete(idProcessoDeFrete);
-    }catch(e){
+    @Param('idProcessoDeFrete') idProcessoDeFrete: string
+  ) {
+    try {
+      return this.processoDeFreteService.recusarProcessoDeFrete(
+        idProcessoDeFrete
+      );
+    } catch (e) {
       return new Error(e.message);
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioLogadoDonoDoProcessoGuard, ProcessoAComecarGuard)
-  @Patch("mudarstatus/comecar/:idProcessoDeFrete")
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioLogadoDonoDoProcessoGuard,
+    ProcessoAComecarGuard
+  )
+  @Patch('mudarstatus/comecar/:idProcessoDeFrete')
   comecarProcessoDeFrete(
-    @Param('idProcessoDeFrete') idProcessoDeFrete: string){
-    try{
-      return this.processoDeFreteService.comecarProcessoDeFrete(idProcessoDeFrete);
-    }catch(e){
+    @Param('idProcessoDeFrete') idProcessoDeFrete: string
+  ) {
+    try {
+      return this.processoDeFreteService.comecarProcessoDeFrete(
+        idProcessoDeFrete
+      );
+    } catch (e) {
       return new Error(e.message);
     }
   }
 
-  @UseGuards(JwtAuthGuard, UsuarioLogadoDonoDoProcessoGuard, ProcessoEmAndamentoGuard)
-  @Patch("mudarstatus/finalizar/:idProcessoDeFrete")
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioLogadoDonoDoProcessoGuard,
+    ProcessoEmAndamentoGuard
+  )
+  @Patch('mudarstatus/finalizar/:idProcessoDeFrete')
   finalizarProcessoDeFrete(
-    @Param('idProcessoDeFrete') idProcessoDeFrete: string){
-    try{
-      return this.processoDeFreteService.finalizarProcessoDeFrete(idProcessoDeFrete);
-    }catch(e){
+    @Param('idProcessoDeFrete') idProcessoDeFrete: string
+  ) {
+    try {
+      return this.processoDeFreteService.finalizarProcessoDeFrete(
+        idProcessoDeFrete
+      );
+    } catch (e) {
       return new Error(e.message);
     }
   }
 
-  
-  @UseGuards(JwtAuthGuard, UsuarioLogadoDonoDoProcessoGuard, ProcessoAPagarGuard)
-  @Patch("mudarstatus/confirmarpagamento/:idProcessoDeFrete")
+  @UseGuards(
+    JwtAuthGuard,
+    UsuarioLogadoDonoDoProcessoGuard,
+    ProcessoAPagarGuard
+  )
+  @Patch('mudarstatus/confirmarpagamento/:idProcessoDeFrete')
   confirmarPagamentoProcessoDeFrete(
-    @Param('idProcessoDeFrete') idProcessoDeFrete: string){
-    try{
-      return this.processoDeFreteService.confirmarPagamentoProcessoDeFrete(idProcessoDeFrete);
-    }catch(e){
+    @Param('idProcessoDeFrete') idProcessoDeFrete: string
+  ) {
+    try {
+      return this.processoDeFreteService.confirmarPagamentoProcessoDeFrete(
+        idProcessoDeFrete
+      );
+    } catch (e) {
       return new Error(e.message);
     }
   }
-
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -144,5 +204,4 @@ export class ProcessoDeFreteController {
   // ) {
   //   return this.processoDeFreteService.update(+id, updateProcessoDeFreteDto);
   // }
-
 }

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { MachineryService, Maquina } from '@agroloc/machinery/data-access';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
@@ -33,7 +34,6 @@ export class SearchService {
     PrecoMax: 999999999,
     Ordem: '',
   };
-
 
   itemSelect = new ReplaySubject<Maquina>(1);
   itemSelect$ = this.itemSelect.asObservable();
@@ -149,6 +149,15 @@ export class SearchService {
       .subscribe((response) => {
         this.itemSelect.next(response);
         this.router.navigate(['web', 'main', 'details']);
+      });
+  }
+
+  onSelectForProcess(idItem: string) {
+    this.machineryService
+      .getMachinery(idItem)
+      .pipe(take(1))
+      .subscribe((response) => {
+        this.itemSelect.next(response);
       });
   }
 }

@@ -1,19 +1,23 @@
 import { Platform } from '@angular/cdk/platform';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { LoaderFacade, SearchService } from '@agroloc/shared/data-access';
-import { AccountService, AuthService } from '@agroloc/account/data-acess';
+import {
+  Account,
+  AccountService,
+  AuthService,
+} from '@agroloc/account/data-acess';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { RentService } from '@agroloc/rent/data-access';
+import { DadosTransacao, RentService } from '@agroloc/rent/data-access';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { debounceTime, combineLatest, take, map } from 'rxjs';
+import { debounceTime, combineLatest, take, map, ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'agroloc-negotiate',
   templateUrl: './negotiate.component.html',
   styleUrls: ['./negotiate.component.scss'],
 })
-export class NegotiateComponent {
+export class NegotiateComponent implements OnInit {
   platform = inject(Platform);
   isMobile = this.platform.ANDROID || this.platform.IOS;
 
@@ -33,6 +37,47 @@ export class NegotiateComponent {
 
   userDate = this.accountService.userAccount$.pipe(debounceTime(1));
   userProfile = this.authService.userProfile$;
+  processItem = this.rentService.selectedProcess$.pipe(
+    map((response) => {
+      console.log(response);
+
+      return response;
+    })
+  );
+  processFreteItem = this.rentService.selectedProcessFrete$;
+
+  dadosLocador = new ReplaySubject<Account>(1);
+  dadosLocador$ = this.dadosLocador.asObservable();
+  dadosLocatario = new ReplaySubject<Account>(1);
+  dadosLocatario$ = this.dadosLocatario.asObservable();
+  dadosFreteiro = new ReplaySubject<Account>(1);
+  dadosFreteiro$ = this.dadosFreteiro.asObservable();
+  changeDetectorRef = inject(ChangeDetectorRef);
+
+  populateLoc = this.processItem.subscribe((response) => {
+    if (response) {
+      this.accountService
+        .getUser(response.Envolvidos.Locador.idLocador)
+        .subscribe((response) => {
+          this.dadosLocador.next(response);
+        });
+      this.accountService
+        .getUser(response.Envolvidos.Locatario.idLocatario)
+        .subscribe((response) => {
+          this.dadosLocatario.next(response);
+        });
+    }
+  });
+  populateFret = this.processFreteItem.subscribe((response) => {
+    if (response) {
+      const idfreteiro = response.Envolvidos.Freteiro.idFreteiro;
+      if (idfreteiro) {
+        this.accountService.getUser(idfreteiro).subscribe((response) => {
+          this.dadosFreteiro.next(response);
+        });
+      }
+    }
+  });
 
   addInfoAutomovel() {
     this.router.navigate(['web', 'main', 'automobile']);
@@ -53,44 +98,34 @@ export class NegotiateComponent {
       });
   }
 
-  myControl = new FormControl('');
+  myControlFrete = new FormControl('');
+  myControlValue = new FormControl('');
   options: string[];
   loader = inject(LoaderFacade);
 
-  enterPress(event: KeyboardEvent) {
-    if (event.key == 'Enter') {
-      this.router.navigate(['web', 'main', 'search']);
-    }
-  }
-
-  clearSearch(element: HTMLInputElement) {
-    this.loader.intervalLoading();
-
-    if (element.value === '') {
-      this.searchService.setBusca('');
-      this.myControl.patchValue('');
-    }
-  }
-
-  onSelectecSearch() {
-    this.router.navigate(['web', 'main', 'search']);
-  }
-
-  filteredOptionsSubscribe = this.myControl.valueChanges.pipe(
+  filteredOptionsSubscribe = this.myControlFrete.valueChanges.pipe(
     map((value) => {
       if (value) {
         this.loader.intervalLoading();
-        this.searchService.setBusca(value);
+        this.accountService.findFreteiros({
+          quantidadePorPagina: 10,
+          page: 0,
+          busca: value,
+          ordenarPor: 'MaisBemAvaliado',
+        });
       }
       return this.filter(value || '');
     })
   );
 
-  optionsSubscribe = this.searchService.searchData$
+  ultimaPesquisa: any;
+
+  optionsSubscribe = this.accountService.acharFreteiros$
     .pipe(
       map((response) => {
         return response.map((value) => {
-          return value.Nome;
+          this.ultimaPesquisa = value;
+          return value.CadastroComum!.Nome;
         });
       })
     )
@@ -109,8 +144,223 @@ export class NegotiateComponent {
     }
   }
 
+  // applyFreteiro() {
+  //   processItem;
+  //   userDate;
+
+  //   this.rentService.createProcessFrete();
+  // }
+
   moveToAutomovel(id: string) {
     this.accountService.onSelectAutomovel(id);
     this.router.navigate(['web', 'main', 'automobiledetails']);
+  }
+
+  //////////////////////////////////////
+
+  dadosLocatario;
+
+  /////////////////////////////////////
+
+  myControlSelectPreco = new FormControl('');
+
+  loadingProcessLocatario = false;
+  loadingProcessLocador = false;
+  etapaAceitarProcesso = false;
+  estapaAguardandoSelecaoFrete = false;
+  aComecar = false;
+  emAndamento = false;
+  segundaSelecaoFrete = false;
+  selecionarPreco = false;
+  confirmarPreco = false;
+  refazerPreco = false;
+  aPagar = false;
+  aAvaliar = false;
+
+  ///////////////////////////////////
+
+  ngOnInit() {
+    this.dadosLocatario$.subscribe((response) => {});
+
+    ////////////////////////////////
+
+    combineLatest([this.userProfile, this.processItem])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([profile, processItem]) => {
+        this.etapaAceitarProcesso =
+          profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
+          processItem?.Status === 'A aceitar';
+
+        this.estapaAguardandoSelecaoFrete =
+          profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
+          processItem?.Status === 'Aguardando Selecao de Frete de Ida';
+
+        this.aComecar =
+          profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
+          processItem?.Status === 'A Comecar';
+
+        this.emAndamento =
+          profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
+          processItem?.Status === 'Em Andamento';
+
+        this.segundaSelecaoFrete =
+          profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
+          processItem?.Status === 'Aguardando Selecao de Frete de Volta';
+
+        this.selecionarPreco =
+          profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
+          processItem?.Status === 'A Selecionar Preco';
+
+        this.confirmarPreco =
+          profile?.IdUsuario ===
+            processItem?.Envolvidos?.Locatario?.idLocatario &&
+          processItem?.Status === 'A Confirmar Preco';
+
+        this.refazerPreco =
+          profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
+          processItem?.Status === 'A Refazer Preco';
+
+        this.aPagar =
+          profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
+          processItem?.Status === 'A Pagar';
+
+        this.aAvaliar =
+          profile?.IdUsuario ===
+            processItem?.Envolvidos?.Locatario?.idLocatario &&
+          processItem?.Status === 'A Avaliar';
+      });
+  }
+
+  moveToHome() {
+    this.router.navigate(['web', 'main', 'search']);
+  }
+
+  acceptProcess() {
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService.acceptProcess(response._id).subscribe((response) => {
+        this.snackBar.open('Processo Aceito com Sucesso', undefined, {
+          duration: 3000,
+        });
+      });
+      this.rentService.onSelectProcessFrete(response._id);
+      this.moveToHome();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    });
+  }
+
+  skipFrete() {
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService.skipTransport(response._id).subscribe((response) => {
+        this.snackBar.open('Frete skipado', undefined, {
+          duration: 3000,
+        });
+      });
+      this.rentService.onSelectProcessFrete(response._id);
+      this.moveToHome();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    });
+  }
+
+  comecarProcesso() {
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService.initProcess(response._id).subscribe((response) => {
+        this.snackBar.open('Processo Iniciado', undefined, {
+          duration: 3000,
+        });
+      });
+      this.rentService.onSelectProcessFrete(response._id);
+      this.moveToHome();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    });
+  }
+
+  finalizarAndamento() {
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService.finishProcess(response._id).subscribe((response) => {
+        this.snackBar.open('Processo finalizado', undefined, {
+          duration: 3000,
+        });
+      });
+      this.rentService.onSelectProcessFrete(response._id);
+      this.moveToHome();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    });
+  }
+
+  selectPreco() {
+    const dataSelect: DadosTransacao = {
+      QuantificadorPreco: parseFloat(
+        this.myControlSelectPreco.value as unknown as string
+      ),
+      TipoRecebimento: 'ContaBancaria',
+    };
+
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService
+        .selectPrice(response._id, dataSelect)
+        .subscribe((response) => {
+          this.snackBar.open('Preço Enviado', undefined, {
+            duration: 3000,
+          });
+        });
+      this.rentService.onSelectProcessFrete(response._id);
+      this.moveToHome();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    });
+  }
+
+  aceitarPreco() {
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService.acceptPrice(response._id).subscribe((response) => {
+        this.snackBar.open('Preço Aceito', undefined, {
+          duration: 3000,
+        });
+      });
+      this.rentService.onSelectProcessFrete(response._id);
+      this.moveToHome();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    });
+  }
+
+  recusarPreco() {
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService.recusePrice(response._id).subscribe((response) => {
+        this.snackBar.open('Preço Recusado', undefined, {
+          duration: 3000,
+        });
+      });
+      this.rentService.onSelectProcessFrete(response._id);
+      this.moveToHome();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    });
+  }
+
+  concluirProcesso() {
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService.confirmPayment(response._id).subscribe((response) => {
+        this.snackBar.open('Pagamento Confirmado', undefined, {
+          duration: 3000,
+        });
+      });
+      this.rentService.onSelectProcessFrete(response._id);
+      this.moveToHome();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    });
   }
 }

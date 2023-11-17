@@ -32,6 +32,7 @@ import { AutomobileComponent } from './automobile/automobile.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { DetailsAutomobileComponent } from './details-automobile/details-automobile.component';
 import { ImageModule } from 'primeng/image';
+import { ProcessAluguelComponent } from './process-aluguel/process-aluguel.component';
 
 @NgModule({
   imports: [
@@ -70,6 +71,7 @@ import { ImageModule } from 'primeng/image';
     ManagementComponent,
     AutomobileComponent,
     DetailsAutomobileComponent,
+    ProcessAluguelComponent,
   ],
   exports: [
     AccountRegisterComponent,
@@ -78,6 +80,7 @@ import { ImageModule } from 'primeng/image';
     ManagementComponent,
     AutomobileComponent,
     DetailsAutomobileComponent,
+    ProcessAluguelComponent,
   ],
 })
 export class AccountFeatureModule {}

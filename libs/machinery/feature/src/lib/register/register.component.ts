@@ -377,6 +377,8 @@ export class MachineryRegisterComponent implements OnInit {
             },
           };
 
+          console.log(machineryData);
+
           this.machineryService
             .createMachinery(machineryData)
             .subscribe((response) => {

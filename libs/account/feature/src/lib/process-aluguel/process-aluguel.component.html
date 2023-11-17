@@ -1,0 +1,63 @@
+<div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
+  <mat-divider></mat-divider>
+  <div class="list">
+    <mat-divider></mat-divider>
+    <div class="head">
+      <span class="example-spacer"></span>
+      <h3>Lista de Processos</h3>
+
+      <span class="example-spacer"></span>
+      <h3
+        *ngIf="((listProcess | async)?.[0] === undefined) && ((listProcessFrete | async)?.[0] === undefined) "
+      >
+        Nenhum Processo encontrado
+      </h3>
+    </div>
+
+    <mat-divider></mat-divider>
+    <div class="item" *ngFor="let item of listProcess | async">
+      <mat-divider [vertical]="true"></mat-divider>
+
+      <div class="dividerInfo">
+        <mat-divider></mat-divider>
+        <div class="informacoes">
+          <h4
+            class="favoriteName"
+            routerLink="details"
+            (click)="selectItem(item._id)"
+          >
+            {{ item.Maquina.Nome }}
+          </h4>
+          <span class="example-spacer"></span>
+
+          <mat-divider [vertical]="true"></mat-divider>
+        </div>
+        <mat-divider></mat-divider>
+      </div>
+      <mat-divider [vertical]="true"></mat-divider>
+    </div>
+    <div class="item" *ngFor="let item of listProcessFrete | async">
+      <mat-divider [vertical]="true"></mat-divider>
+
+      <div class="dividerInfo">
+        <mat-divider></mat-divider>
+        <div class="informacoes">
+          <h4
+            class="favoriteName"
+            routerLink="details"
+            (click)="selectItem(item._id)"
+          >
+            {{ item.Maquina.Nome }}
+          </h4>
+          <span class="example-spacer"></span>
+
+          <mat-divider [vertical]="true"></mat-divider>
+        </div>
+        <mat-divider></mat-divider>
+      </div>
+      <mat-divider [vertical]="true"></mat-divider>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
+  <mat-divider></mat-divider>
+</div>
