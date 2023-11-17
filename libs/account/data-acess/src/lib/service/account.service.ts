@@ -118,6 +118,9 @@ export class AccountService {
     .asObservable()
     .pipe(debounceTime(1));
 
+  searchFreteiros = new ReplaySubject<SelectAutomovel>(1);
+  searchFreteiros$ = this.searchFreteiros.asObservable().pipe(debounceTime(1));
+
   onSelectAutomovel(idAutomovel: string) {
     this.userAccount$.subscribe((response) => {
       const automovel = response.CadastroFreteiro?.Automovel?.filter(
@@ -155,7 +158,7 @@ export class AccountService {
     );
   }
 
-  searchFreteiros(params: {
+  findFreteiros(params: {
     quantidadePorPagina: number;
     page: number;
     busca: string;
