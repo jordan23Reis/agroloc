@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Account } from '../entities/account-paths.interface';
+import { Account, SelectAutomovel } from '../entities/account-paths.interface';
 import {
   BehaviorSubject,
   Observable,
@@ -24,6 +24,7 @@ import {
 import { AccountData } from '../entities/register-account.interface';
 import { Automovel, EditAutomovel } from '../entities/car-path.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Favorito } from '../entities';
 
 @Injectable({
   providedIn: 'root',
@@ -111,6 +112,20 @@ export class AccountService {
 
   userAccount = new ReplaySubject<Account>(1);
   userAccount$ = this.userAccount.asObservable().pipe(debounceTime(1));
+
+  selectedAutomobile = new ReplaySubject<SelectAutomovel>(1);
+  selectedAutomobile$ = this.selectedAutomobile
+    .asObservable()
+    .pipe(debounceTime(1));
+
+  onSelectAutomovel(idAutomovel: string) {
+    this.userAccount$.subscribe((response) => {
+      const automovel = response.CadastroFreteiro?.Automovel?.filter(
+        (value) => value._id === idAutomovel
+      );
+      this.selectedAutomobile.next(automovel?.[0] as SelectAutomovel);
+    });
+  }
 
   nextAccount(userId: string) {
     this.http
@@ -326,5 +341,9 @@ export class AccountService {
           throw new Error(error);
         })
       );
+  }
+
+  findFavoritos(idFavorito: string) {
+    return this.http.get<Favorito[]>(`/api/favorito/${idFavorito}`);
   }
 }

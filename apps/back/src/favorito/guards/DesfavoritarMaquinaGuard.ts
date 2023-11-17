@@ -10,6 +10,7 @@ export class DesfavoritarMaquinaGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const user = await this.userService.findOne(request.params.id);
+    console.log(request.params.idFavorito);
     
     const MaquinaNaLista = user.MaquinasFavoritas.find( (fav) => fav == request.params.idFavorito);
 

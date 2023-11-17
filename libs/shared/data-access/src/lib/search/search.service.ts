@@ -1,4 +1,4 @@
-import { Maquina } from '@agroloc/machinery/data-access';
+import { MachineryService, Maquina } from '@agroloc/machinery/data-access';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
@@ -21,6 +21,7 @@ export interface SearchFilter {
 export class SearchService {
   http = inject(HttpClient);
   router = inject(Router);
+  machineryService = inject(MachineryService);
 
   initialFilter: SearchFilter = {
     Quantidade: 10,
@@ -32,6 +33,10 @@ export class SearchService {
     PrecoMax: 999999999,
     Ordem: '',
   };
+
+
+  itemSelect = new ReplaySubject<Maquina>(1);
+  itemSelect$ = this.itemSelect.asObservable();
 
   searchData = new ReplaySubject<Maquina[]>(1);
   searchData$ = this.searchData.asObservable();
@@ -135,5 +140,15 @@ export class SearchService {
 
       this.searchFilter.next(updatedFilter);
     });
+  }
+
+  onSelectItem(idItem: string) {
+    this.machineryService
+      .getMachinery(idItem)
+      .pipe(take(1))
+      .subscribe((response) => {
+        this.itemSelect.next(response);
+        this.router.navigate(['web', 'main', 'details']);
+      });
   }
 }

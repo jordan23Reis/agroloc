@@ -125,7 +125,7 @@
             class="example-icon"
             aria-label="Example icon-button with favorite icon"
           >
-            <mat-icon class="favoriteIcon">favorite</mat-icon>
+            <mat-icon>favorite</mat-icon>
           </button>
 
           <mat-menu #favorite="matMenu" xPosition="before">
@@ -180,11 +180,19 @@
               </h3>
             </div>
             <mat-divider></mat-divider>
-            <button mat-menu-item routerLink="machinery">
+            <button
+              *ngIf="(userProfile | async)?.TipoUsuario !== 'Freteiro'"
+              mat-menu-item
+              routerLink="machinery"
+            >
               <mat-icon matPrefix>library_add</mat-icon>
               <span>Cadastrar Maquinário</span>
             </button>
-            <button mat-menu-item routerLink="management">
+            <button
+              *ngIf="(userProfile | async)?.TipoUsuario !== 'Freteiro'"
+              mat-menu-item
+              routerLink="management"
+            >
               <mat-icon matPrefix>agriculture</mat-icon>
               <span>Meus Maquinarios</span>
             </button>
@@ -215,11 +223,11 @@
 
           <mat-menu #noPerson="matMenu" xPosition="before">
             <mat-divider></mat-divider>
-            <button mat-menu-item routerLink="../login">
+            <button mat-menu-item routerLink="../login" (click)="remThema()">
               <mat-icon matPrefix>login</mat-icon>
               <span>Entrar</span>
             </button>
-            <button mat-menu-item routerLink="../register">
+            <button mat-menu-item routerLink="../register" (click)="remThema()">
               <mat-icon>person_add</mat-icon>
               <span>Cadastrar</span>
             </button>

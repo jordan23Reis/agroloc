@@ -368,6 +368,7 @@
               <mat-divider></mat-divider>
 
               <mat-expansion-panel
+                *ngIf="(userProfile | async)?.TipoUsuario === 'Freteiro'"
                 (opened)="panelOpenState = true"
                 (closed)="panelOpenState = false"
               >
@@ -379,7 +380,70 @@
                   <h3>Informações de Freteiro</h3>
                   <span class="example-spacer"></span>
                 </mat-expansion-panel-header>
-                <p>Formas de pagamento e transações feitas na conta.</p>
+
+                <div class="formContainer">
+                  <div class="footerList">
+                    <p>Seus Automoveis</p>
+                    <span class="example-spacer"></span>
+                    <button
+                      mat-mini-fab
+                      [color]="'primary'"
+                      (click)="addInfoAutomovel()"
+                    >
+                      <mat-icon>add </mat-icon>
+                    </button>
+                    <button
+                      mat-mini-fab
+                      [disabled]="!ListAutomovel.selectedOptions.hasValue()"
+                      [color]="'warn'"
+                      (click)="
+                        remInfoAutomovel(
+                          ListAutomovel.selectedOptions.selected[0].value
+                        )
+                      "
+                    >
+                      <mat-icon matPrefix>delete</mat-icon>
+                    </button>
+                  </div>
+
+                  <div class="listEndereco">
+                    <mat-selection-list
+                      #ListAutomovel
+                      [multiple]="false"
+                      [ngStyle]="{'overflow-y': (userDate | async)?.CadastroFreteiro?.Automovel?.[0] ? 'scroll' : 'hidden'}"
+                    >
+                      <mat-list-option
+                        *ngFor="
+                          let item of (userDate | async)?.CadastroFreteiro
+                            ?.Automovel
+                        "
+                        [value]="item._id"
+                      >
+                        <span
+                          (click)="
+                            moveToAutomovel(
+                              ListAutomovel.selectedOptions.selected[0].value
+                            )
+                          "
+                          matListItemTitle
+                          >{{ item.Nome }}</span
+                        >
+                        <span matListItemLine style="margin-left: 20px">{{
+                          item.Categoria?.Nome
+                        }}</span>
+                      </mat-list-option>
+                      <mat-list
+                        *ngIf="
+                  !(userDate | async)?.CadastroFreteiro?.Automovel?.[0]
+                "
+                      >
+                        <mat-list-item matListItemTitle>
+                          Você não possui automoveis Registrado
+                        </mat-list-item>
+                      </mat-list>
+                    </mat-selection-list>
+                  </div>
+                </div>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
 
@@ -912,8 +976,7 @@
                               </span>
 
                               <span class="number"
-                                >**** **** ****
-                                {{
+                                >**** *** ****{{
                                   (
                                     (userDate | async)?.InformacoesBancarias
                                       ?.ContaBancaria?.Agencia || ''

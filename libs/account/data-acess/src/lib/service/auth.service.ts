@@ -59,7 +59,7 @@ export class AuthService {
 
   SingOutWeb() {
     this.authStorage.removeAcessToken();
-    this.router.navigate(['web', 'main']);
+    this.router.navigate(['web', 'main', 'search']);
     setTimeout(() => {
       window.location.reload();
     }, 100);
@@ -67,6 +67,7 @@ export class AuthService {
 
   SwtichAccountWeb() {
     this.authStorage.removeAcessToken();
+    document.body.classList.remove('darkMode');
     this.router.navigate(['web', 'login']);
     setTimeout(() => {
       window.location.reload();

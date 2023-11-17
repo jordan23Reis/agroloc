@@ -18,6 +18,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoaderFacade } from '@agroloc/shared/data-access';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'agroloc-management',
@@ -32,6 +33,7 @@ export class ManagementComponent implements OnInit {
   snackBar = inject(MatSnackBar);
   loader = inject(LoaderFacade);
   authStorage = inject(AuthStorage);
+  router = inject(Router);
 
   loadingRequest = this.loader.active$;
 
@@ -696,6 +698,30 @@ export class ManagementComponent implements OnInit {
             this.accountService.nextAccount(profile.IdUsuario);
           });
       });
+  }
+
+  remInfoAutomovel(automovel: string) {
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {
+        this.accountService
+          .removeAutomovel(profile.IdUsuario, automovel)
+          .subscribe((response) => {
+            this.snackBar.open(`Automovel Removido`, undefined, {
+              duration: 3000,
+            });
+            this.accountService.nextAccount(profile.IdUsuario);
+          });
+      });
+  }
+
+  addInfoAutomovel() {
+    this.router.navigate(['web', 'main', 'automobile']);
+  }
+
+  moveToAutomovel(id: string) {
+    this.accountService.onSelectAutomovel(id);
+    this.router.navigate(['web', 'main', 'automobiledetails']);
   }
 
   setInfoBancarias() {

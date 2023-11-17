@@ -41,6 +41,8 @@ export class WebMainComponent {
   loader = inject(LoaderFacade);
   scrollDispatcher = inject(ScrollDispatcher);
 
+  userProfile = this.authService.userProfile$;
+
   @ViewChild('drawer') sidenav: MatSidenav;
   @ViewChild('valorMaximo') valorMaximoInput: ElementRef;
   @ViewChild('valorMinimo') valorMinimoInput: ElementRef;
@@ -178,11 +180,7 @@ export class WebMainComponent {
     this.sidenav.toggle();
   });
 
-  links = [
-    { nome: 'Home', url: 'home' },
-    { nome: 'Pesquisa', url: 'search' },
-    { nome: 'Detalhes', url: 'details' },
-  ];
+  links = [{ nome: 'Home', url: 'search' }];
 
   constructor() {
     this.isDarkMode =
@@ -221,6 +219,10 @@ export class WebMainComponent {
   //     });
   //   });
   // }
+
+  remThema() {
+    document.body.classList.remove('darkMode');
+  }
 
   setValorMaximo() {
     this.loader.intervalLoading();

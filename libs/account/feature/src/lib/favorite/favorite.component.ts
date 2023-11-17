@@ -1,7 +1,13 @@
-import { AccountService } from '@agroloc/account/data-acess';
+import {
+  AccountService,
+  AuthService,
+  Favorito,
+} from '@agroloc/account/data-acess';
 import { MachineryService, Maquina } from '@agroloc/machinery/data-access';
+import { SearchService } from '@agroloc/shared/data-access';
 import { Platform } from '@angular/cdk/platform';
 import { Component, inject } from '@angular/core';
+import { MatChipSelectionChange } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReplaySubject, catchError, debounceTime, map, take } from 'rxjs';
 
@@ -14,18 +20,34 @@ export class FavoriteComponent {
   platform = inject(Platform);
   accountService = inject(AccountService);
   machineryService = inject(MachineryService);
+  authService = inject(AuthService);
+  searchService = inject(SearchService);
   snackbar = inject(MatSnackBar);
 
-  favoriteMachinery = new ReplaySubject<Maquina[]>(1);
-  favoriteMachinery$ = this.favoriteMachinery.asObservable();
+  filter: string;
+
+  favoriteMachinery = new ReplaySubject<Favorito[]>(1);
+  favoriteMachinery$ = this.favoriteMachinery.asObservable().pipe(
+    map((response) => {
+      if (this.filter) {
+        console.log(response);
+
+        console.log(response[1]);
+
+        return response;
+      }
+      return response;
+    })
+  );
 
   userData = this.accountService.userAccount$
     .pipe(debounceTime(1000))
     .subscribe((response) => {
-      const favoritos: Maquina[] = [];
+      const favoritos: Favorito[] = [];
+
       response.MaquinasFavoritas?.forEach((value) => {
-        this.machineryService
-          .getMachinery(value)
+        this.accountService
+          .findFavoritos(value)
           .pipe(
             take(1),
             catchError((error) => {
@@ -33,111 +55,42 @@ export class FavoriteComponent {
             })
           )
           .subscribe((response) => {
-            favoritos.push(response);
-            this.favoriteMachinery.next(favoritos);
+            favoritos.push(response[0]);
           });
       });
+      this.favoriteMachinery.next(favoritos);
     });
 
   isMobile = this.platform.ANDROID || this.platform.IOS;
-  favoriteList = [
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-    {
-      foto: 'foto aqui',
-      titulo:
-        'Apple iPhone 15 Pro Max (256 GB) - Titânio Preto - Distribuidor autorizado ',
-      preco: 'R$4.249,00',
-      delete: 'delete aqui',
-    },
-  ];
+
+  removeFavorite(idMaquina: string) {
+    console.log('passei');
+
+    this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
+      const idUser = response.IdUsuario;
+      this.accountService
+        .removeMaquinaFavorita(response.IdUsuario, idMaquina)
+        .subscribe((response) => {
+          this.accountService.nextAccount(idUser);
+          this.snackbar.open('Maquina removida!', undefined, {
+            duration: 3000,
+          });
+        });
+    });
+  }
+
+  selectItem(idItem: string) {
+    this.searchService.onSelectItem(idItem);
+  }
+
+  favoriteFilter(event: MatChipSelectionChange) {
+    if (event.selected) {
+      this.filter = event.source.value;
+    } else {
+      this.filter = '';
+    }
+    this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
+      this.accountService.nextAccount(response.IdUsuario);
+    });
+  }
 }

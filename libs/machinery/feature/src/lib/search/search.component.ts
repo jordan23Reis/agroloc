@@ -116,8 +116,9 @@ export class SearchComponent implements OnInit {
     setTimeout(() => {
       this.changeDetectorRef.detectChanges();
     }, 1000);
-    this.elementScrollRef.scrollTo({ top: 0, behavior: 'smooth' });
-    console.log('passei');
+    if (this.elementScrollRef.scrollTo) {
+      this.elementScrollRef.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   toggleSidenav() {
@@ -172,6 +173,7 @@ export class SearchComponent implements OnInit {
       .subscribe((response) => {
         if (response) {
           this.authService.userProfile$.pipe(take(1)).subscribe((response) => {
+            const idUser = response.IdUsuario;
             this.accountService
               .addMaquinaFavorita(response.IdUsuario, machineryId)
               .pipe(
@@ -188,6 +190,7 @@ export class SearchComponent implements OnInit {
                 this.snackBar.open('Maquinário adicionado', undefined, {
                   duration: 3000,
                 });
+                this.accountService.nextAccount(idUser);
               });
           });
         } else {
@@ -196,5 +199,10 @@ export class SearchComponent implements OnInit {
           });
         }
       });
+  }
+
+  selectItem(idItem: string) {
+    this.searchService.onSelectItem(idItem);
+    this.scrollToTop();
   }
 }

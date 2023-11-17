@@ -31,6 +31,8 @@
       ],
       "@agroloc/machinery/feature": ["libs/machinery/feature/src/index.ts"],
       "@agroloc/machinery/ui": ["libs/machinery/ui/src/index.ts"],
+      "@agroloc/rent/data-access": ["libs/rent/data-access/src/index.ts"],
+      "@agroloc/rent/feature": ["libs/rent/feature/src/index.ts"],
       "@agroloc/shared/data-access": ["libs/shared/data-access/src/index.ts"],
       "@agroloc/shared/util": ["libs/shared/util/src/index.ts"]
     }

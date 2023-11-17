@@ -20,6 +20,19 @@ export interface Account {
   InformacoesBancarias?: InformacoesBancarias;
 }
 
+export interface SelectAutomovel {
+  _id?: string;
+  Nome: string;
+  Descricao: string;
+  Peso?: number;
+  Comprimento?: number;
+  Largura?: number;
+  Altura?: number;
+  ImagemPrincipal?: Imagem;
+  ImagensSecundarias?: Imagem[];
+  Categoria?: Categoria;
+}
+
 // Representa os dados do cadastro comum
 interface CadastroComum {
   Nome: string;
@@ -53,6 +66,7 @@ interface Address {
 
 // Representa os dados de um automóvel
 interface Automovel {
+  _id?: string;
   Nome: string;
   Descricao: string;
   Peso?: number;
