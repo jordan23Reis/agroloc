@@ -230,6 +230,8 @@ export class NegotiateComponent implements OnInit {
             processItem?.Envolvidos?.Locatario?.idLocatario &&
           processItem?.Status === 'A Confirmar Preco';
 
+        console.log(this.confirmarPreco);
+
         this.refazerPreco =
           profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
           processItem?.Status === 'A Refazer Preco';
