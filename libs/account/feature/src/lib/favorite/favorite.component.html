@@ -4,11 +4,31 @@
     <mat-divider></mat-divider>
     <div class="head">
       <span class="example-spacer"></span>
-      <h3>Lista de Favoritos</h3>
+
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <mat-icon style="position: relative; top: 1px">favorite</mat-icon>
+        <h2>Lista de Favoritos</h2>
+      </div>
 
       <span class="example-spacer"></span>
-      <h3 *ngIf="(favoriteMachinery$ | async)?.[0] === undefined">
-        Nenhum Favorito adicionado
+      <mat-icon
+        class="messageLoading"
+        *ngIf="(favoriteMachinery$ | async)?.[0] === undefined"
+        style="height: 48px; width: 48px; font-size: 48px; margin-top: 10px"
+        >search</mat-icon
+      >
+      <h3
+        class="messageLoading"
+        *ngIf="(favoriteMachinery$ | async)?.[0] === undefined"
+      >
+        Nenhum Favorito Encontrado
       </h3>
     </div>
 

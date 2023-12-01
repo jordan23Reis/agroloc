@@ -12,6 +12,19 @@
     height: 100%;
     width: 100%;
 
+    .messageLoading {
+      animation: notFind 4s;
+    }
+
+    @keyframes notFind {
+      100% {
+        opacity: 1;
+      }
+      0% {
+        opacity: 0;
+      }
+    }
+
     .example-spacer {
       flex: 1 1 auto;
     }

@@ -164,6 +164,7 @@ export class NegotiateComponent implements OnInit {
 
   loadingProcessLocatario = false;
   loadingProcessLocador = false;
+  loadingProcessFreteiro = false;
   etapaAceitarProcesso = false;
   estapaAguardandoSelecaoFrete = false;
   aComecar = false;
@@ -199,7 +200,7 @@ export class NegotiateComponent implements OnInit {
     ////////////////////////////////
 
     combineLatest([this.userProfile, this.processItem])
-      .pipe(take(1), debounceTime(1000))
+      .pipe(debounceTime(1000))
       .subscribe(([profile, processItem]) => {
         this.etapaAceitarProcesso =
           profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
@@ -230,8 +231,6 @@ export class NegotiateComponent implements OnInit {
             processItem?.Envolvidos?.Locatario?.idLocatario &&
           processItem?.Status === 'A Confirmar Preco';
 
-        console.log(this.confirmarPreco);
-
         this.refazerPreco =
           profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
           processItem?.Status === 'A Refazer Preco';
@@ -244,11 +243,37 @@ export class NegotiateComponent implements OnInit {
           profile?.IdUsuario ===
             processItem?.Envolvidos?.Locatario?.idLocatario &&
           processItem?.Status === 'A Avaliar';
+
+        this.loadingProcessLocatario =
+          profile?.IdUsuario ===
+            processItem?.Envolvidos?.Locatario?.idLocatario &&
+          processItem?.Status !== 'A Confirmar Preco' &&
+          processItem?.Status !== 'A Avaliar';
+
+        this.loadingProcessLocador =
+          profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
+          processItem?.Status !== 'A Pagar' &&
+          processItem?.Status !== 'A Refazer Preco' &&
+          processItem?.Status !== 'A Selecionar Preco' &&
+          processItem?.Status !== 'Aguardando Selecao de Frete de Volta' &&
+          processItem?.Status !== 'Em Andamento' &&
+          processItem?.Status !== 'A Comecar' &&
+          processItem?.Status !== 'Aguardando Selecao de Frete de Ida' &&
+          processItem?.Status !== 'A aceitar';
+
+        this.loadingProcessFreteiro =
+          profile?.IdUsuario ===
+            processItem?.Envolvidos?.Locatario?.idLocatario &&
+          processItem?.Status === 'A Avaliar';
       });
   }
 
   moveToHome() {
     this.router.navigate(['web', 'main', 'search']);
+  }
+
+  moveToItem() {
+    this.router.navigate(['web', 'main', 'details']);
   }
 
   acceptProcess() {

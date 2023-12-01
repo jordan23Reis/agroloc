@@ -1,5 +1,5 @@
 const MaquinaImagemLimites = {
-  maxImagemsACriar: 10,
+  maxImagemsACriar: 20,
   tamMaxImagem: 10000000, // 10mb
   tiposPermitidos: 'jpg|jpeg|png',
 };

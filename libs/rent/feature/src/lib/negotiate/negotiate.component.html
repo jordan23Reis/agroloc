@@ -27,7 +27,9 @@
             justify-content: center;
           "
         >
-          <h3>{{ (searchItem | async)?.Nome }}</h3>
+          <h3 style="cursor: pointer" (click)="moveToItem()">
+            {{ (searchItem | async)?.Nome }}
+          </h3>
         </div>
         <div
           style="
@@ -42,6 +44,7 @@
       </div>
       <div style="flex: 1 1 auto"></div>
     </div>
+
     <div
       *ngIf="loadingProcessLocatario"
       class="messageLoading Espera"
@@ -51,8 +54,19 @@
       <h2>Esperando Resposta</h2>
       <mat-icon class="searchIcon">more_horiz</mat-icon>
     </div>
+
     <div
       *ngIf="loadingProcessLocador"
+      class="messageLoading Espera"
+      style="margin-top: 30px"
+    >
+      <mat-icon class="searchIcon">more_horiz</mat-icon>
+      <h2>Esperando Resposta</h2>
+      <mat-icon class="searchIcon">more_horiz</mat-icon>
+    </div>
+
+    <div
+      *ngIf="loadingProcessFreteiro"
       class="messageLoading Espera"
       style="margin-top: 30px"
     >
