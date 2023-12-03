@@ -1,5 +1,5 @@
 import { SearchService } from '@agroloc/shared/data-access';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
@@ -8,6 +8,7 @@ import {
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
+import { Location } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class selectItemGuard implements CanActivate {
@@ -23,6 +24,7 @@ export class selectItemGuard implements CanActivate {
         if (response) {
           return of(true);
         }
+        window.history.back();
         return of(false);
       })
     );

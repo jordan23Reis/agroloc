@@ -10,7 +10,7 @@ import {
   take,
 } from 'rxjs';
 import { DadosTransacao } from '../../entities/negotiate.interface';
-import { AuthService } from '@agroloc/account/data-acess';
+import { AccountService, AuthService } from '@agroloc/account/data-acess';
 import { SearchService } from '@agroloc/shared/data-access';
 import { Router } from '@angular/router';
 import { AluguelProcesso } from '../../entities';
@@ -25,9 +25,11 @@ export class RentService {
   searchService = inject(SearchService);
   authService = inject(AuthService);
   router = inject(Router);
+  accountService = inject(AccountService);
 
   userProfile = this.authService.userProfile$;
   selectData = this.searchService.itemSelect$;
+  dataAccount = this.accountService.userAccount$;
 
   selectedProcess = new ReplaySubject<AluguelProcesso>(1);
   selectedProcess$ = this.selectedProcess.asObservable().pipe(
@@ -52,12 +54,9 @@ export class RentService {
     debounceTime(100),
     map((response) => {
       const idmaquina = response?.Maquina?.idMaquina;
-      console.log(idmaquina);
-
       if (idmaquina) {
         this.searchService.onSelectForProcess(idmaquina);
       }
-
       return response;
     })
   );
@@ -125,19 +124,23 @@ export class RentService {
       );
   }
 
-  listProcessSubscribe = this.authService.userProfile$.subscribe((response) => {
-    this.findListProcess(response.IdUsuario).subscribe((response) => {
+  listProcessSubscribe = combineLatest([
+    this.dataAccount,
+    this.userProfile,
+  ]).subscribe(([account, profile]) => {
+    this.findListProcess(profile.IdUsuario).subscribe((response) => {
       this.listProcess.next(response as AluguelProcesso[]);
     });
   });
 
-  listProcessFreteSubscribe = this.authService.userProfile$.subscribe(
-    (response) => {
-      this.findListProcessFrete(response.IdUsuario).subscribe((response) => {
-        this.listProcessFrete.next(response as ProcessoDeFrete[]);
-      });
-    }
-  );
+  listProcessFreteSubscribe = combineLatest([
+    this.dataAccount,
+    this.userProfile,
+  ]).subscribe(([account, profile]) => {
+    this.findListProcessFrete(profile.IdUsuario).subscribe((response) => {
+      this.listProcessFrete.next(response as ProcessoDeFrete[]);
+    });
+  });
 
   userCreateProcess() {
     combineLatest([this.selectData, this.userProfile])
@@ -163,6 +166,7 @@ export class RentService {
             this.snackbar.open('Processo Criado', undefined, {
               duration: 3000,
             });
+            this.accountService.nextAccount(profile.IdUsuario);
             this.router.navigate(['web', 'main', 'negotiate']);
           });
       });
@@ -317,6 +321,36 @@ export class RentService {
       );
   }
 
+  userCreateProcessFrete(selectedFreteiroId: string, value: number) {
+    combineLatest([this.selectData, this.userProfile, this.selectedProcess$])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([machinery, profile, process]) => {
+        this.createProcessFrete(
+          process._id,
+          machinery._id,
+          selectedFreteiroId,
+          profile.IdUsuario,
+          machinery.Endereco._id,
+          value
+        )
+          .pipe(
+            catchError((error) => {
+              console.log(error);
+              this.snackbar.open('Erro ao criar Processo', undefined, {
+                duration: 3000,
+              });
+              throw new Error(error);
+            })
+          )
+          .subscribe((response) => {
+            this.selectedProcess.next(response as AluguelProcesso);
+            this.snackbar.open('Processo Criado', undefined, {
+              duration: 3000,
+            });
+          });
+      });
+  }
+
   createProcessFrete(
     idprocessodealuguel: any,
     idmaquina: any,
@@ -395,7 +429,7 @@ export class RentService {
         })
       );
   }
-  confirmPaymentFrte(idprocessodefrete: any) {
+  confirmPaymentFrete(idprocessodefrete: any) {
     return this.http
       .patch(
         `/api/processo-de-frete/mudarstatus/confirmarpagamento/${idprocessodefrete}`,

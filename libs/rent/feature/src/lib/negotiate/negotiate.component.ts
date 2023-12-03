@@ -34,16 +34,11 @@ export class NegotiateComponent implements OnInit {
   accountService = inject(AccountService);
   router = inject(Router);
   snackBar = inject(MatSnackBar);
+  changeDetectorRef = inject(ChangeDetectorRef);
 
   userDate = this.accountService.userAccount$.pipe(debounceTime(1));
   userProfile = this.authService.userProfile$;
-  processItem = this.rentService.selectedProcess$.pipe(
-    map((response) => {
-      console.log(response);
-
-      return response;
-    })
-  );
+  processItem = this.rentService.selectedProcess$;
   processFreteItem = this.rentService.selectedProcessFrete$;
 
   dadosLocador = new ReplaySubject<Account>(1);
@@ -52,7 +47,6 @@ export class NegotiateComponent implements OnInit {
   dadosLocatario$ = this.dadosLocatario.asObservable();
   dadosFreteiro = new ReplaySubject<Account>(1);
   dadosFreteiro$ = this.dadosFreteiro.asObservable();
-  changeDetectorRef = inject(ChangeDetectorRef);
 
   populateLoc = this.processItem.subscribe((response) => {
     if (response) {
@@ -291,6 +285,10 @@ export class NegotiateComponent implements OnInit {
     });
   }
 
+  createProcessFrete(freteiroId: string, value: number) {
+    this.rentService.userCreateProcessFrete(freteiroId, value);
+  }
+
   skipFrete() {
     this.processItem.pipe(take(1)).subscribe((response) => {
       this.rentService.skipTransport(response._id).subscribe((response) => {
@@ -397,6 +395,25 @@ export class NegotiateComponent implements OnInit {
           duration: 3000,
         });
       });
+      this.rentService.onSelectProcessFrete(response._id);
+      this.moveToHome();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
+    });
+  }
+
+  // PROCESSO DE FRETE
+
+  acceptProcessFrete(selectedAutomobileId: string) {
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService
+        .acceptProcessFrete(response._id, selectedAutomobileId)
+        .subscribe((response) => {
+          this.snackBar.open('Processo Aceito com Sucesso', undefined, {
+            duration: 3000,
+          });
+        });
       this.rentService.onSelectProcessFrete(response._id);
       this.moveToHome();
       setTimeout(() => {
