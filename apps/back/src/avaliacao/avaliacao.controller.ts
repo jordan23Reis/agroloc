@@ -21,12 +21,13 @@ import { AvaliacaoExisteGuard } from './guards/avaliacaoExisteGuard';
 import { UsuarioDonoAvaliacao } from './guards/usuarioDonoAvaliacao';
 import { Avaliacao } from './entities/avaliacao.entity';
 import { AvaliarFreteiroGuard } from './guards/avaliarFreteiroGuard';
+import { ProcessoDeAluguel } from '../processo-de-aluguel/entities/processo-de-aluguel.entity';
 
 @Controller('avaliacao')
 export class AvaliacaoController {
   constructor(private readonly avaliacaoService: AvaliacaoService) {}
 
-  @UseGuards(JwtAuthGuard, UsuarioComumGuard, UsuarioCorretoGuard, UsuarioExisteGuard, AvaliarMaquinaGuard)
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, UsuarioCorretoGuard, UsuarioExisteGuard, AvaliarMaquinaGuard, ProcessoDeAluguel)
   @Post("maquina/:id/:idMaquina")
   createAvaliacaoMaquina(
     @Param('id') idUsuarioAvaliador: string,
