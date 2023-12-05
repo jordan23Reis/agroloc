@@ -365,6 +365,101 @@
                   mode="indeterminate"
                 ></mat-progress-bar>
               </mat-expansion-panel>
+
+              <mat-divider></mat-divider>
+
+              <mat-expansion-panel
+                *ngIf="(userProfile | async)?.TipoUsuario === 'Comum'"
+                (opened)="panelOpenState = true"
+                (closed)="panelOpenState = false"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <mat-icon>agriculture</mat-icon>
+                  </mat-panel-title>
+
+                  <h3>Informações de Maquinários</h3>
+                  <span class="example-spacer"></span>
+                </mat-expansion-panel-header>
+
+                <div class="formContainer">
+                  <div class="footerList">
+                    <p>Seus Maquinários</p>
+                    <span class="example-spacer"></span>
+                    <button
+                      mat-mini-fab
+                      [color]="'primary'"
+                      (click)="addInfoMaquinario()"
+                    >
+                      <mat-icon>add </mat-icon>
+                    </button>
+
+                    <button
+                      mat-mini-fab
+                      [disabled]="!ListMaquinas.selectedOptions.hasValue()"
+                      [color]="'warn'"
+                      (click)="
+                        editInfoMaquinario(
+                          ListMaquinas.selectedOptions.selected[0].value
+                        )
+                      "
+                    >
+                      <mat-icon matPrefix>edit</mat-icon>
+                    </button>
+                    <button
+                      mat-mini-fab
+                      [disabled]="!ListMaquinas.selectedOptions.hasValue()"
+                      [color]="'warn'"
+                      (click)="
+                        remInfoMaquinario(
+                          ListMaquinas.selectedOptions.selected[0].value
+                        )
+                      "
+                    >
+                      <mat-icon matPrefix>delete</mat-icon>
+                    </button>
+                  </div>
+
+                  <div class="listEndereco">
+                    <mat-selection-list
+                      #ListMaquinas
+                      [multiple]="false"
+                      [ngStyle]="{
+                        'overflow-y':
+                          (userMachineryList | async) ? 'scroll' : 'hidden'
+                      }"
+                    >
+                      <mat-list-option
+                        *ngFor="let item of userMachineryList | async"
+                        [value]="item._id"
+                      >
+                        <span
+                          (click)="
+                            moveToMaquina(
+                              ListMaquinas.selectedOptions.selected[0].value
+                            )
+                          "
+                          matListItemTitle
+                          >{{ item.Nome }}</span
+                        >
+                        <span matListItemLine style="margin-left: 20px">{{
+                          item.Categoria?.Nome
+                        }}</span>
+                      </mat-list-option>
+                      <mat-list
+                        *ngIf="
+                  !(userMachineryList | async)?.[0]
+                "
+                      >
+                        <mat-list-item matListItemTitle>
+                          Você não possui maquinas Registrado
+                        </mat-list-item>
+                      </mat-list>
+                    </mat-selection-list>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+
               <mat-divider></mat-divider>
 
               <mat-expansion-panel
@@ -445,6 +540,7 @@
                   </div>
                 </div>
               </mat-expansion-panel>
+
               <mat-divider></mat-divider>
 
               <mat-expansion-panel
@@ -791,15 +887,13 @@
                     <mat-icon>payment</mat-icon>
                   </mat-panel-title>
 
-                  <h3>Formas de pagamento</h3>
+                  <h3>Informações Bancarias</h3>
                   <span class="example-spacer"></span>
                 </mat-expansion-panel-header>
 
                 <span class="example-spacer"></span>
 
                 <form class="conteudo">
-                  <p><strong>Informações de Endereços</strong></p>
-
                   <div class="formContainer">
                     <div class="formEndereco">
                       <form class="formEndereco" [formGroup]="infoBancarias">
@@ -1001,22 +1095,6 @@
                 </form>
 
                 <span class="example-spacer"></span>
-              </mat-expansion-panel>
-              <mat-divider></mat-divider>
-
-              <mat-expansion-panel
-                (opened)="panelOpenState = true"
-                (closed)="panelOpenState = false"
-              >
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <mat-icon>monetization_on</mat-icon>
-                  </mat-panel-title>
-
-                  <h3>Informações sobre pagamentos</h3>
-                  <span class="example-spacer"></span>
-                </mat-expansion-panel-header>
-                <p>Formas de pagamento e transações feitas na conta.</p>
               </mat-expansion-panel>
               <mat-divider></mat-divider>
             </mat-accordion>

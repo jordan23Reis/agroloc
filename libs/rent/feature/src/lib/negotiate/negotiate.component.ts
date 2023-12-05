@@ -173,14 +173,18 @@ export class NegotiateComponent implements OnInit {
   ///////////////////////////////////
 
   infoLocatario: Account;
-  arrayEndLocata: any;
+  infoLocatarioEndereco: any;
+  infoLocatarioTelefone1: any;
+  infoLocatarioTelefone2: any;
   infoFreteiro: Account;
   infoLocador: Account;
 
   ngOnInit() {
     this.dadosLocatario$.subscribe((response) => {
-      this.arrayEndLocata = response.CadastroComum?.Enderecos?.[0];
       this.infoLocatario = response;
+      this.infoLocatarioEndereco = response.CadastroComum?.Enderecos?.[0];
+      this.infoLocatarioTelefone1 = response.CadastroComum?.Telefone?.[0];
+      this.infoLocatarioTelefone2 = response.CadastroComum?.Telefone?.[1];
     });
 
     this.dadosFreteiro$.subscribe((response) => {
@@ -262,8 +266,17 @@ export class NegotiateComponent implements OnInit {
       });
   }
 
-  moveToHome() {
-    this.router.navigate(['web', 'main', 'search']);
+  nextProcess() {
+    combineLatest([this.processItem, this.processFreteItem])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([process, processFrete]) => {
+        if (process) {
+          this.rentService.onSelectProcess(process._id);
+        }
+        if (processFrete) {
+          this.rentService.onSelectProcessFrete(processFrete._id);
+        }
+      });
   }
 
   moveToItem() {
@@ -277,30 +290,34 @@ export class NegotiateComponent implements OnInit {
           duration: 3000,
         });
       });
-      this.rentService.onSelectProcessFrete(response._id);
-      this.moveToHome();
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      this.nextProcess();
+    });
+  }
+
+  recuseProcess() {
+    this.processItem.pipe(take(1)).subscribe((response) => {
+      this.rentService.recuseProcess(response._id).subscribe((response) => {
+        this.snackBar.open('Processo Recusado com Sucesso', undefined, {
+          duration: 3000,
+        });
+      });
+      this.nextProcess();
     });
   }
 
   createProcessFrete(freteiroId: string, value: number) {
     this.rentService.userCreateProcessFrete(freteiroId, value);
+    this.nextProcess();
   }
 
   skipFrete() {
     this.processItem.pipe(take(1)).subscribe((response) => {
       this.rentService.skipTransport(response._id).subscribe((response) => {
-        this.snackBar.open('Frete skipado', undefined, {
+        this.snackBar.open('Frete Pulado', undefined, {
           duration: 3000,
         });
       });
-      this.rentService.onSelectProcessFrete(response._id);
-      this.moveToHome();
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      this.nextProcess();
     });
   }
 
@@ -311,11 +328,7 @@ export class NegotiateComponent implements OnInit {
           duration: 3000,
         });
       });
-      this.rentService.onSelectProcessFrete(response._id);
-      this.moveToHome();
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      this.nextProcess();
     });
   }
 
@@ -326,11 +339,7 @@ export class NegotiateComponent implements OnInit {
           duration: 3000,
         });
       });
-      this.rentService.onSelectProcessFrete(response._id);
-      this.moveToHome();
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      this.nextProcess();
     });
   }
 
@@ -350,11 +359,7 @@ export class NegotiateComponent implements OnInit {
             duration: 3000,
           });
         });
-      this.rentService.onSelectProcessFrete(response._id);
-      this.moveToHome();
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      this.nextProcess();
     });
   }
 
@@ -365,11 +370,7 @@ export class NegotiateComponent implements OnInit {
           duration: 3000,
         });
       });
-      this.rentService.onSelectProcessFrete(response._id);
-      this.moveToHome();
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      this.nextProcess();
     });
   }
 
@@ -380,11 +381,7 @@ export class NegotiateComponent implements OnInit {
           duration: 3000,
         });
       });
-      this.rentService.onSelectProcessFrete(response._id);
-      this.moveToHome();
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      this.nextProcess();
     });
   }
 
@@ -395,11 +392,7 @@ export class NegotiateComponent implements OnInit {
           duration: 3000,
         });
       });
-      this.rentService.onSelectProcessFrete(response._id);
-      this.moveToHome();
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      this.nextProcess();
     });
   }
 
@@ -415,10 +408,6 @@ export class NegotiateComponent implements OnInit {
           });
         });
       this.rentService.onSelectProcessFrete(response._id);
-      this.moveToHome();
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
     });
   }
 }

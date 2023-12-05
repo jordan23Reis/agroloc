@@ -17,8 +17,9 @@ import { combineLatest, debounceTime, map, take } from 'rxjs';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { LoaderFacade } from '@agroloc/shared/data-access';
+import { LoaderFacade, SearchService } from '@agroloc/shared/data-access';
 import { Router } from '@angular/router';
+import { MachineryService } from '@agroloc/machinery/data-access';
 
 @Component({
   selector: 'agroloc-management',
@@ -29,15 +30,23 @@ export class ManagementComponent implements OnInit {
   platform = inject(Platform);
   authService = inject(AuthService);
   accountService = inject(AccountService);
+  machineryService = inject(MachineryService);
   _formBuilder = inject(FormBuilder);
   snackBar = inject(MatSnackBar);
   loader = inject(LoaderFacade);
   authStorage = inject(AuthStorage);
   router = inject(Router);
+  searchService = inject(SearchService);
 
   loadingRequest = this.loader.active$;
 
   userDate = this.accountService.userAccount$.pipe(debounceTime(1));
+  userMachineryList = this.accountService.userMachinery$.pipe(
+    debounceTime(1),
+    map((response) => {
+      return response;
+    })
+  );
   userProfile = this.authService.userProfile$;
 
   isLogged = this.authService.IsLogged();
@@ -273,6 +282,8 @@ export class ManagementComponent implements OnInit {
     this.disableAllInfoEndereco();
     this.disableAllInfoBancarias();
     this.disableAllInfoPix();
+
+    this.searchService.changeNavTab('Gerenciar Conta');
   }
 
   disableAllInfoPessoais() {
@@ -719,9 +730,37 @@ export class ManagementComponent implements OnInit {
     this.router.navigate(['web', 'main', 'automobile']);
   }
 
+  addInfoMaquinario() {
+    this.router.navigate(['web', 'main', 'machinery']);
+  }
+
+  remInfoMaquinario(automovel: string) {
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {
+        this.machineryService
+          .deleteMachinery(automovel)
+          .subscribe((response) => {
+            this.snackBar.open(`Maquinário Removido`, undefined, {
+              duration: 3000,
+            });
+            this.accountService.nextAccount(profile.IdUsuario);
+          });
+      });
+  }
+
+  editInfoMaquinario(automovel: string) {
+    this.accountService.selectedForEdit(automovel);
+    this.router.navigate(['web', 'main', 'edit']);
+  }
+
   moveToAutomovel(id: string) {
     this.accountService.onSelectAutomovel(id);
     this.router.navigate(['web', 'main', 'automobiledetails']);
+  }
+
+  moveToMaquina(id: string) {
+    this.searchService.onSelectItem(id);
   }
 
   setInfoBancarias() {

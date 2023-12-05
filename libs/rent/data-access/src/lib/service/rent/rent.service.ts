@@ -70,7 +70,6 @@ export class RentService {
       .pipe(
         catchError((error) => {
           console.log(error);
-
           this.snackbar.open('Erro ao Procurar Processos', undefined, {
             duration: 3000,
           });
@@ -87,6 +86,7 @@ export class RentService {
       .get(`/api/processo-de-frete/${idprocessodefrete}`, {})
       .pipe(
         catchError((error) => {
+          console.log(error);
           this.snackbar.open('Erro ao Procurar Processos', undefined, {
             duration: 3000,
           });

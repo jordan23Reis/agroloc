@@ -7,6 +7,7 @@ import { Error404Component } from './error404/error404.component';
 import { MobRegisterComponent } from './mob-register/mob-register.component';
 import { WebRegisterComponent } from './web-register/web-register.component';
 import {
+  EditMachineryComponent,
   MachineryRegisterComponent,
   SearchComponent,
 } from '@agroloc/machinery/feature';
@@ -54,6 +55,15 @@ export const homeShellRoutes: Route[] = [
           {
             path: 'machinery',
             component: MachineryRegisterComponent,
+            canActivate: [AuthGuard],
+            data: {
+              roles: ['Administrador', 'Comum', 'Freteiro'],
+            },
+            children: [],
+          },
+          {
+            path: 'edit',
+            component: EditMachineryComponent,
             canActivate: [AuthGuard],
             data: {
               roles: ['Administrador', 'Comum', 'Freteiro'],

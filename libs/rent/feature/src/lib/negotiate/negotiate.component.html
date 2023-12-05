@@ -89,10 +89,56 @@
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
         <h2>Ola, meu nome é {{ infoLocatario?.CadastroComum?.Nome }}</h2>
+        <h3
+          *ngIf="
+            infoLocatarioEndereco ||
+            infoLocatarioTelefone1 ||
+            infoLocatarioTelefone2
+          "
+        >
+          Minhas informações:
+        </h3>
+        <div style="width: 60%">
+          <p *ngIf="infoLocatarioEndereco"><strong>Meu endereço:</strong></p>
+          <div *ngIf="infoLocatarioEndereco">
+            <mat-divider></mat-divider>
+            <p>Estado - {{ infoLocatarioEndereco.Estado }}</p>
+            <mat-divider></mat-divider>
+            <p>CEP - {{ infoLocatarioEndereco.Cep }}</p>
+            <mat-divider></mat-divider>
+            <p>
+              Logradouro - {{ infoLocatarioEndereco.Logradouro }}, Numero:
+              {{ infoLocatarioEndereco.Numero }}
+            </p>
+            <mat-divider></mat-divider>
+          </div>
+          <p
+            style="margin-top: 30px"
+            *ngIf="infoLocatarioTelefone1 || infoLocatarioTelefone2"
+          >
+            <strong>Meu Contato:</strong>
+          </p>
+          <div style="margin-bottom: 60px">
+            <mat-divider></mat-divider>
+            <p *ngIf="infoLocatarioTelefone1">
+              Telefone 1 - {{ infoLocatarioTelefone1 }}
+            </p>
+            <mat-divider></mat-divider>
+            <p *ngIf="infoLocatarioTelefone2">
+              Telefone 2 - {{ infoLocatarioTelefone2 }}
+            </p>
+            <mat-divider></mat-divider>
+          </div>
+        </div>
 
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
-          <button mat-raised-button color="accent" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="accent"
+            style="margin: 30px"
+            (click)="recuseProcess()"
+          >
             Recusar
           </button>
           <button
@@ -426,7 +472,7 @@
             do locatário.
           </p>
           <mat-form-field style="width: 100%">
-            <mat-label>Input</mat-label>
+            <mat-label>Valor</mat-label>
             <input matInput [formControl]="myControlSelectPreco" />
           </mat-form-field>
         </div>
@@ -500,20 +546,19 @@
     <div *ngIf="refazerPreco" class="content RefazerPreco">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
+        <h2>Ola, {{ infoLocador.CadastroComum?.Nome }}</h2>
         <div style="width: 60%">
           <p>
-            Revise seu maquinário e selecione o preço apropriado a ser cobrado
-            do locatário.
+            O locatário recusou o preço, revise seu maquinário e selecione o
+            preço apropriado a ser cobrado do locatário.
           </p>
           <mat-form-field style="width: 100%">
-            <mat-label>Input</mat-label>
+            <mat-label>Valor</mat-label>
             <input matInput [formControl]="myControlSelectPreco" />
           </mat-form-field>
         </div>
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
-
           <button
             mat-raised-button
             color="primary"
@@ -536,8 +581,7 @@
     <div *ngIf="aPagar" class="content ConfirmarPagamento">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
-
+        <h2>Ola, {{ (dadosLocador$ | async)?.CadastroComum?.Nome }}</h2>
         <h3>Deseja concluir o processo de Aluguel?</h3>
         <div
           style="
@@ -554,7 +598,6 @@
         </div>
         <div style="display: flex; flex-direction: row; width: 100%">
           <div style="flex: 1 1 auto"></div>
-
           <button
             mat-raised-button
             color="primary"
@@ -575,7 +618,7 @@
     <div *ngIf="aAvaliar" class="content Avaliar">
       <div class="inicio">
         <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
+        <h2>Ola, {{ infoLocatario.CadastroComum?.Nome }}</h2>
         <div style="width: 60%">
           <p>
             Antes de finalizar o processo de aluguel, por favor, avalie o

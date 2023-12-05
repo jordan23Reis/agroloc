@@ -8,7 +8,10 @@ import {
   Subject,
   catchError,
   debounceTime,
+  forkJoin,
   map,
+  of,
+  switchMap,
   take,
 } from 'rxjs';
 import { InformacoesBancarias } from '../entities/account-paths.interface';
@@ -25,6 +28,7 @@ import { AccountData } from '../entities/register-account.interface';
 import { Automovel, EditAutomovel } from '../entities/car-path.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Favorito } from '../entities';
+import { MachineryService, Maquina } from '@agroloc/machinery/data-access';
 
 @Injectable({
   providedIn: 'root',
@@ -32,6 +36,7 @@ import { Favorito } from '../entities';
 export class AccountService {
   http = inject(HttpClient);
   snackBar = inject(MatSnackBar);
+  machineryService = inject(MachineryService);
 
   loadingAccount: Account = {
     Login: {
@@ -112,6 +117,34 @@ export class AccountService {
 
   userAccount = new ReplaySubject<Account>(1);
   userAccount$ = this.userAccount.asObservable().pipe(debounceTime(1));
+
+  editedMachinery = new ReplaySubject<string>(1);
+  editedMachinery$ = this.editedMachinery.asObservable().pipe(debounceTime(1));
+
+  selectedForEdit(itemId: string) {
+    this.editedMachinery.next(itemId);
+  }
+
+  userMachinery$ = this.userAccount$.pipe(
+    switchMap((response) => {
+      if (!response || !response.Maquinas || response.Maquinas.length === 0) {
+        console.log('passei por dentro');
+
+        const machineryArrayEmpty: Maquina[] = [];
+        return of(machineryArrayEmpty); // Se não houver Maquinas, retorna um array vazio
+      }
+
+      // Cria um array de observables
+      const observables = response.Maquinas.map((value) =>
+        this.machineryService
+          .getMachinery(value)
+          .pipe(map((machinery) => machinery))
+      );
+
+      // Combina todos os observables em um único observable
+      return forkJoin(observables);
+    })
+  );
 
   selectedAutomobile = new ReplaySubject<SelectAutomovel>(1);
   selectedAutomobile$ = this.selectedAutomobile

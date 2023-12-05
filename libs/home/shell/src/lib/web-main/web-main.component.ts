@@ -11,7 +11,7 @@ import { Location } from '@angular/common';
 import { Platform } from '@angular/cdk/platform';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { AccountService, AuthService } from '@agroloc/account/data-acess';
-import { Observable, map, startWith, take } from 'rxjs';
+import { Observable, debounceTime, map, startWith, take } from 'rxjs';
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
 import {
   LoaderFacade,
@@ -180,7 +180,13 @@ export class WebMainComponent {
     this.sidenav.toggle();
   });
 
-  links = [{ nome: 'Home', url: 'search' }];
+  links = [
+    { nome: 'Inicio', url: 'home' },
+    { nome: 'Pesquisa', url: 'search' },
+    { nome: 'Gerenciar Conta', url: 'management' },
+  ];
+
+  activeTab = this.searchService.navTabControl$;
 
   constructor() {
     this.isDarkMode =
@@ -192,6 +198,15 @@ export class WebMainComponent {
       localStorage.setItem('prefers-color-scheme', 'light');
       document.body.classList.remove('darkMode');
     }
+
+    this.searchService.searchFilter$
+      .pipe(take(1), debounceTime(1000))
+      .subscribe((response) => {
+        this.valorMaximo.setValue(response.PrecoMax);
+        this.valorMinimo.setValue(response.PrecoMin);
+        this.tipoPreco.setValue(response.TipoPreco);
+        this.ordenadoPor.setValue(response.Ordem);
+      });
   }
 
   // ngAfterViewInit() {
