@@ -180,6 +180,8 @@ export class NegotiateComponent implements OnInit {
   infoLocador: Account;
 
   ngOnInit() {
+    this.searchService.changeNavTab('Processo');
+
     this.dadosLocatario$.subscribe((response) => {
       this.infoLocatario = response;
       this.infoLocatarioEndereco = response.CadastroComum?.Enderecos?.[0];

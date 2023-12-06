@@ -97,7 +97,7 @@ export class SearchComponent implements OnInit {
         const currentScrollPosition =
           response.getElementRef().nativeElement.scrollTop;
 
-        if (currentScrollPosition > 600) {
+        if (currentScrollPosition > 400) {
           console.log('passei');
 
           this.showButton.next(true);

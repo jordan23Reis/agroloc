@@ -149,6 +149,10 @@ export class DetailsComponent {
     },
   ];
 
+  constructor() {
+    this.searchService.changeNavTab('Detalhes');
+  }
+
   addFavorite(machineryId: string) {
     this.authService
       .IsLogged()

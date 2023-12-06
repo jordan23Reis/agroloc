@@ -118,6 +118,19 @@ export class SearchService {
     return this.http.get<Maquina[]>(`/api/maquina/`, { params });
   }
 
+  searchMachineriesAll(): Observable<Maquina[]> {
+    const params = new HttpParams();
+    return this.http.get<Maquina[]>(`/api/maquina/`, { params });
+  }
+  searchMachineriesForCategory(categoria: string): Observable<Maquina[]> {
+    const params = new HttpParams().set('categoria', categoria);
+    return this.http.get<Maquina[]>(`/api/maquina/`, { params });
+  }
+  searchMachineriesForOrder(ordernarPor: string): Observable<Maquina[]> {
+    const params = new HttpParams().set('ordernarPor', ordernarPor);
+    return this.http.get<Maquina[]>(`/api/maquina/`, { params });
+  }
+
   setQuantidade(quantidade: number) {
     this.updateSearchFilter({ Quantidade: quantidade });
   }

@@ -230,8 +230,8 @@
 
           <span class="example-spacer"></span>
 
-          <mat-tab-group (selectedTabChange)="moveUrl($event)">
-            <mat-tab *ngFor="let link of links" #uniqueTab>
+          <mat-tab-group #navTabs (selectedTabChange)="moveUrl($event)">
+            <mat-tab *ngFor="let link of tabListControl$ | async">
               <ng-template mat-tab-label>
                 <a [routerLink]="link.url">
                   <span>{{ link.nome }}</span>

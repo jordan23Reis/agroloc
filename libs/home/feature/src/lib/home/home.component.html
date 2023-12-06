@@ -1,1 +1,49 @@
-<p>home works!</p>
+<div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
+    <div *ngFor="let item of listMachineryCategory" class="card">
+        <div style="display: flex; flex-direction: row; margin-left: 45px; margin-bottom: 30px;">
+
+            <h2 style="margin-right: 20px;">{{item.Category}}</h2>
+
+            <a (click)="onSelectedCategory(item.Category)"
+                style="display: flex;align-items: center;font-size: large; text-decoration: none; color: #3483fa; position: relative; top: 2px;"
+                routerLink="">Ver mais
+                <mat-icon>chevron_right</mat-icon></a>
+
+
+        </div>
+
+        <p-carousel [value]="item.Machinery" [numVisible]="3" [numScroll]="1" [responsiveOptions]="responsiveOptions">
+            <ng-template let-product pTemplate="item">
+                <div class="product-item">
+                    <div class="product-item-content" (click)="onSelectedItem(product._id)"
+                        style="display: flex;flex-direction: column;align-items: center; justify-content: center; cursor: pointer;  padding-top: 15px;">
+                        <div class="mb-3" style=" align-items: center; justify-content: center; display: flex;">
+                            <img [src]="product.ImagemPrincipal.Url" [alt]="product.name" class="product-image"
+                                style="width: 80%;" />
+                        </div>
+                        <div style="width: 80%;">
+                            <h4 class="mb-1">{{ product.Nome }}</h4>
+                            <div style="display: flex; flex-direction: row; width: 100%;">
+                                <h2>R${{ product.Preco.ValorPorTipo }}</h2>
+                                <div style="flex: 1 1 auto;"></div>
+                                <h4 class="mt-0 mb-3" style="align-self: center;">{{ product.Preco.Tipo.Nome }}</h4>
+                                <div style="flex: 1 1 auto;"></div>
+                                <h3 style="position: relative; left: 15px;">{{
+                                    calculateAverageRating(product.Avaliacoes) }}</h3>
+                                <button mat-icon-button class="example-icon"
+                                    aria-label="Example icon-button with star rate icon"
+                                    style="position: relative; top: 5px; left: 15px;">
+                                    <mat-icon class="star">star</mat-icon>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-carousel>
+    </div>
+    <button mat-fab color="primary" class="scrollTopButton" (click)="scrollToTop()" *ngIf="showButton$ | async">
+        <mat-icon>expand_less</mat-icon>
+    </button>
+</div>
