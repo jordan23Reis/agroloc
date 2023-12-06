@@ -122,3 +122,11 @@ body {
 .p-message .p-message-wrapper {
   overflow-wrap: anywhere;
 }
+
+.matClass {
+  width: 90%;
+  margin: 10px;
+  .mat-mdc-text-field-wrapper {
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.4);
+  }
+}
