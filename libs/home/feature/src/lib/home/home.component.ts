@@ -26,6 +26,11 @@ interface ListMachineryCategory {
   Machinery: Maquina[];
 }
 
+interface ListOneMachineryCategory {
+  Category: string;
+  Machinery: string;
+}
+
 @Component({
   selector: 'agroloc-home',
   templateUrl: './home.component.html',
@@ -46,90 +51,70 @@ export class HomeComponent implements OnInit {
 
   isMobile = this.platform.ANDROID || this.platform.IOS;
 
-  products: any[] = [
+  images: any[] = [
     {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
+      itemImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      thumbnailImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      alt: 'Description for Image 1',
+      title: 'Tratores',
     },
     {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
+      itemImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      thumbnailImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      alt: 'Description for Image 1',
+      title: 'Title 1',
     },
     {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
+      itemImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      thumbnailImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      alt: 'Description for Image 1',
+      title: 'Title 1',
     },
     {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
+      itemImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      thumbnailImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      alt: 'Description for Image 1',
+      title: 'Title 1',
     },
     {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
+      itemImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      thumbnailImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      alt: 'Description for Image 1',
+      title: 'Title 1',
     },
     {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
+      itemImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      thumbnailImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      alt: 'Description for Image 1',
+      title: 'Title 1',
     },
     {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
+      itemImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      thumbnailImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      alt: 'Description for Image 1',
+      title: 'Title 1',
+    },
+    {
+      itemImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      thumbnailImageSrc:
+        'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0',
+      alt: 'Description for Image 1',
+      title: 'Title 1',
     },
   ];
 
@@ -140,8 +125,10 @@ export class HomeComponent implements OnInit {
   allCategories$ = this.allCategories.asObservable();
 
   responsiveOptions: any[] | undefined;
+  responsiveOptionsInitial: any[] | undefined;
 
   listMachineryCategory: ListMachineryCategory[] = [];
+  listOneMachineryCategory: ListOneMachineryCategory[] = [];
 
   lastScrollPosition = 0;
   showButton = new BehaviorSubject<boolean>(false);
@@ -188,10 +175,19 @@ export class HomeComponent implements OnInit {
               Machinery: machineryFilter,
             };
             this.listMachineryCategory.push(relationMachineryCategory);
+
+            this.listOneMachineryCategory = this.listMachineryCategory.map(
+              (value) => {
+                console.log(this.listOneMachineryCategory);
+
+                return {
+                  Category: value.Category,
+                  Machinery: value.Machinery[0].ImagemPrincipal.Url,
+                };
+              }
+            );
           }
         });
-
-        console.log(this.listMachineryCategory);
       });
 
     this.responsiveOptions = [
@@ -212,6 +208,21 @@ export class HomeComponent implements OnInit {
       },
     ];
 
+    this.responsiveOptionsInitial = [
+      {
+        breakpoint: '1024px',
+        numVisible: 5,
+      },
+      {
+        breakpoint: '768px',
+        numVisible: 3,
+      },
+      {
+        breakpoint: '560px',
+        numVisible: 1,
+      },
+    ];
+
     this.scrollDispatcher.scrolled().subscribe((response) => {
       if (response instanceof CdkScrollable) {
         this.elementScrollRef = response;
@@ -220,8 +231,6 @@ export class HomeComponent implements OnInit {
           response.getElementRef().nativeElement.scrollTop;
 
         if (currentScrollPosition > 400) {
-          console.log('passei');
-
           this.showButton.next(true);
         } else {
           this.showButton.next(false);
@@ -243,22 +252,22 @@ export class HomeComponent implements OnInit {
   }
 
   onSelectedItem(itemId: string) {
+    this.router.navigate(['web', 'main', 'details']);
     this.searchService.onSelectItem(itemId);
     this.scrollToTop();
-    this.router.navigate(['web', 'main', 'details']);
   }
 
   onSelectedCategory(category: string) {
+    this.router.navigate(['web', 'main', 'search']);
     this.searchService.setCategoria(category);
     this.scrollToTop();
-    this.router.navigate(['web', 'main', 'search']);
   }
 
   scrollToTop() {
     setTimeout(() => {
       this.changeDetectorRef.detectChanges();
     }, 1000);
-    if (this.elementScrollRef.scrollTo) {
+    if (this.elementScrollRef.scrollTo !== undefined) {
       this.elementScrollRef.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
