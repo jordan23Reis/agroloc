@@ -103,9 +103,6 @@ export class RentService {
       .get(`/api/processo-de-aluguel/abertos/${idusuario}`, {})
       .pipe(
         catchError((error) => {
-          this.snackbar.open('Erro ao Procurar Lista', undefined, {
-            duration: 3000,
-          });
           throw new Error(error);
         })
       );
@@ -116,9 +113,6 @@ export class RentService {
       .get(`/api/processo-de-frete/abertos/${idusuario}`, {})
       .pipe(
         catchError((error) => {
-          this.snackbar.open('Erro ao Procurar Lista', undefined, {
-            duration: 3000,
-          });
           throw new Error(error);
         })
       );
@@ -359,19 +353,10 @@ export class RentService {
     idendereco: any,
     valorfrete: any
   ) {
-    return this.http
-      .post(
-        `/api/processo-de-frete/${idprocessodealuguel}/${idmaquina}/${idfreteiro}/${idsolicitante}/${idendereco}/${valorfrete}`,
-        {}
-      )
-      .pipe(
-        catchError((error) => {
-          this.snackbar.open('Erro ao criar processo de Frete', undefined, {
-            duration: 3000,
-          });
-          throw new Error(error);
-        })
-      );
+    return this.http.post(
+      `/api/processo-de-frete/${idprocessodealuguel}/${idmaquina}/${idfreteiro}/${idsolicitante}/${idendereco}/${valorfrete}`,
+      {}
+    );
   }
   acceptProcessFrete(idprocessodealuguel: any, idautomovel: any) {
     return this.http

@@ -67,4 +67,12 @@ export class AccountLoginComponent {
       });
     }
   }
+
+  activeSpinner = false;
+  onClickButtom() {
+    this.activeSpinner = true;
+    setTimeout(() => {
+      this.activeSpinner = false;
+    }, 1000);
+  }
 }

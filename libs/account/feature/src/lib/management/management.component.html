@@ -794,6 +794,21 @@
                       <p>Seus Endereços</p>
                       <span class="example-spacer"></span>
                       <button
+                        *ngIf="
+                          (userProfile | async)?.TipoUsuario === 'Freteiro'
+                        "
+                        mat-mini-fab
+                        [disabled]="!ListEndereco.selectedOptions.hasValue()"
+                        [color]="'primary'"
+                        (click)="
+                          activeInfoEndereco(
+                            ListEndereco.selectedOptions.selected[0].value
+                          )
+                        "
+                      >
+                        <mat-icon matPrefix>toggle_on</mat-icon>
+                      </button>
+                      <button
                         mat-mini-fab
                         [disabled]="!ListEndereco.selectedOptions.hasValue()"
                         [color]="'warn'"

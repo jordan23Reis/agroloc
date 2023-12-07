@@ -157,15 +157,8 @@ export class AccountService {
   acharFreteiros = new ReplaySubject<Account[]>(1);
   acharFreteiros$ = this.acharFreteiros.asObservable().pipe(debounceTime(1000));
 
-  findFreteiros(params: {
-    quantidadePorPagina: number;
-    page: number;
-    busca: string;
-    ordenarPor: string;
-  }) {
+  findFreteiros(params: { busca: string; ordenarPor: string }) {
     const queryParams = new HttpParams()
-      .set('quantidadePorPagina', params.quantidadePorPagina.toString())
-      .set('page', params.page.toString())
       .set('busca', params.busca)
       .set('ordenarPor', params.ordenarPor);
 
@@ -185,6 +178,13 @@ export class AccountService {
       );
       this.selectedAutomobile.next(automovel?.[0] as SelectAutomovel);
     });
+  }
+
+  onSelectAutomovelForOtherUser(idAutomovel: string, selectedUser: Account) {
+    const automovel = selectedUser.CadastroFreteiro?.Automovel?.filter(
+      (value) => value._id === idAutomovel
+    );
+    this.selectedAutomobile.next(automovel?.[0] as SelectAutomovel);
   }
 
   nextAccount(userId: string) {

@@ -711,6 +711,29 @@ export class ManagementComponent implements OnInit {
       });
   }
 
+  activeInfoEndereco(endereco: string) {
+    combineLatest([this.userDate, this.userProfile])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile]) => {
+        const newAccount: AccountData = {
+          CadastroComum: account.CadastroComum,
+          CadastroFreteiro: {
+            CNH: account.CadastroFreteiro?.CNH as string,
+            EstaAtivo: true,
+            IdEndereco: endereco,
+          },
+        };
+        this.accountService
+          .updateAccount(profile.IdUsuario, newAccount)
+          .subscribe((response) => {
+            this.snackBar.open(`Endereço Ativado`, undefined, {
+              duration: 3000,
+            });
+            this.accountService.nextAccount(profile.IdUsuario);
+          });
+      });
+  }
+
   remInfoAutomovel(automovel: string) {
     combineLatest([this.userDate, this.userProfile])
       .pipe(take(1), debounceTime(1000))

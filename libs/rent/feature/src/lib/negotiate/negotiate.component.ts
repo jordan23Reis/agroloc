@@ -10,7 +10,20 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { DadosTransacao, RentService } from '@agroloc/rent/data-access';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { debounceTime, combineLatest, take, map, ReplaySubject } from 'rxjs';
+import {
+  debounceTime,
+  combineLatest,
+  take,
+  map,
+  ReplaySubject,
+  catchError,
+} from 'rxjs';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+
+interface OptionNameAndId {
+  NomeCompleto: string;
+  IdFreteiro: string | undefined;
+}
 
 @Component({
   selector: 'agroloc-negotiate',
@@ -73,37 +86,31 @@ export class NegotiateComponent implements OnInit {
     }
   });
 
-  addInfoAutomovel() {
-    this.router.navigate(['web', 'main', 'automobile']);
-  }
-
-  remInfoAutomovel(automovel: string) {
-    combineLatest([this.userDate, this.userProfile])
-      .pipe(take(1), debounceTime(1000))
-      .subscribe(([account, profile]) => {
-        this.accountService
-          .removeAutomovel(profile.IdUsuario, automovel)
-          .subscribe((response) => {
-            this.snackBar.open(`Automovel Removido`, undefined, {
-              duration: 3000,
-            });
-            this.accountService.nextAccount(profile.IdUsuario);
-          });
-      });
-  }
-
   myControlFrete = new FormControl('');
-  myControlValue = new FormControl('');
-  options: string[];
-  loader = inject(LoaderFacade);
+  myControlValue = new FormControl(null);
+  options: OptionNameAndId[];
+  valueFrete = 0;
+
+  optionsForStringSubscribe = this.accountService.acharFreteiros$
+    .pipe(
+      map((response) => {
+        return response.map((value) => {
+          return {
+            NomeCompleto:
+              value.CadastroComum!.Nome + ' ' + value.CadastroComum!.Sobrenome,
+            IdFreteiro: value._id,
+          };
+        });
+      })
+    )
+    .subscribe((response) => {
+      this.options = response;
+    });
 
   filteredOptionsSubscribe = this.myControlFrete.valueChanges.pipe(
     map((value) => {
       if (value) {
-        this.loader.intervalLoading();
         this.accountService.findFreteiros({
-          quantidadePorPagina: 10,
-          page: 0,
           busca: value,
           ordenarPor: 'MaisBemAvaliado',
         });
@@ -112,42 +119,97 @@ export class NegotiateComponent implements OnInit {
     })
   );
 
-  ultimaPesquisa: any;
-
-  optionsSubscribe = this.accountService.acharFreteiros$
+  valueFreteSubscribe = this.myControlValue.valueChanges
     .pipe(
-      map((response) => {
-        return response.map((value) => {
-          this.ultimaPesquisa = value;
-          return value.CadastroComum!.Nome;
-        });
+      map((value) => {
+        console.log(value);
+        if (value) {
+          this.valueFrete = value;
+        }
+        return value;
       })
     )
-    .subscribe((response) => {
-      this.options = response;
-    });
+    .subscribe();
 
-  filter(value: string): string[] {
+  filter(value: string): OptionNameAndId[] {
     const filterValue = value.toLowerCase();
     if (this.options) {
       return this.options.filter((option) =>
-        option.toLowerCase().includes(filterValue)
+        option.NomeCompleto.toLowerCase().includes(filterValue)
       );
     } else {
-      return [''];
+      return [{ NomeCompleto: '', IdFreteiro: '' }];
     }
   }
 
-  // applyFreteiro() {
-  //   processItem;
-  //   userDate;
+  selectedFreteiro: Account;
 
-  //   this.rentService.createProcessFrete();
-  // }
+  onSelectecFreteiro(event: MatAutocompleteSelectedEvent) {
+    const valueId = event.option.value;
+    const valueObject = this.options.filter(
+      (value) => value.IdFreteiro === valueId
+    );
+    this.myControlFrete.setValue(valueObject[0].NomeCompleto);
 
-  moveToAutomovel(id: string) {
-    this.accountService.onSelectAutomovel(id);
+    this.accountService.getUser(valueId).subscribe((response) => {
+      this.selectedFreteiro = response;
+    });
+  }
+
+  moveToAutomovel(id: string | undefined) {
+    this.accountService.onSelectAutomovelForOtherUser(
+      id as string,
+      this.selectedFreteiro
+    );
     this.router.navigate(['web', 'main', 'automobiledetails']);
+  }
+
+  applyFreteiro() {
+    combineLatest([
+      this.processItem,
+      this.processFreteItem,
+      this.userProfile,
+      this.userDate,
+    ])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([process, processFrete, profile, account]) => {
+        console.log('ID Processo: ', process._id);
+        console.log('ID Maquina: ', process.Maquina.idMaquina);
+        console.log('ID selectedFreteiro: ', this.selectedFreteiro._id);
+        console.log('ID IdUsuario: ', profile.IdUsuario);
+        console.log(
+          'ID Enderecos: ',
+          account.CadastroComum?.Enderecos?.[0]._id
+        );
+        console.log('Valor Processo: ', this.valueFrete);
+
+        this.rentService
+          .createProcessFrete(
+            process._id,
+            process.Maquina.idMaquina,
+            this.selectedFreteiro._id as string,
+            profile.IdUsuario,
+            account.CadastroComum?.Enderecos?.[0]._id as string,
+            this.valueFrete
+          )
+          .pipe(
+            catchError((error) => {
+              console.log(error);
+              this.snackBar.open(
+                'Erro ao Solicitar Freteiro, Verifique as informações Inseridas',
+                undefined,
+                { duration: 3000 }
+              );
+              throw new Error(error);
+            })
+          )
+          .subscribe((response) => {
+            this.snackBar.open('Frete solicitado', undefined, {
+              duration: 3000,
+            });
+            this.nextProcess();
+          });
+      });
   }
 
   //////////////////////////////////////

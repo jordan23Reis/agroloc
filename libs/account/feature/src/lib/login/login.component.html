@@ -66,13 +66,22 @@
       <div class="registerOrLogin">
         <div>
           <p>Não possui conta?</p>
-          <a (click)="register()">Cadastra-se</a>
+          <a (click)="register(); onClickButtom()">Cadastra-se</a>
         </div>
         <div style="flex: 1 1 auto"></div>
-        <button mat-raised-button color="primary" (click)="SingIn()">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="SingIn(); onClickButtom()"
+        >
           Entrar
         </button>
       </div>
     </div>
   </form>
+  <div style="flex: 1 1 auto"></div>
+  <mat-progress-bar
+    *ngIf="activeSpinner"
+    mode="indeterminate"
+  ></mat-progress-bar>
 </div>

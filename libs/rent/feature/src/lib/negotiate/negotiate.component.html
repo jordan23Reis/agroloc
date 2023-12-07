@@ -175,6 +175,7 @@
           <mat-label>Valor do Frete</mat-label>
           <input [formControl]="myControlValue" type="number" matInput />
         </mat-form-field>
+
         <mat-form-field style="width: 60%" class="example-form-field">
           <mat-label>Pesquisar freteiro por Nome</mat-label>
           <input
@@ -184,15 +185,70 @@
             [formControl]="myControlFrete"
             [matAutocomplete]="auto"
           />
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-autocomplete
+            autoActiveFirstOption
+            #auto="matAutocomplete"
+            (optionSelected)="onSelectecFreteiro($event)"
+          >
             <mat-option
               *ngFor="let option of filteredOptionsSubscribe | async"
-              [value]="option"
+              [value]="option.IdFreteiro"
             >
-              {{ option }}
+              {{ option.NomeCompleto }}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
+
+        <img
+          *ngIf="selectedFreteiro?.CadastroComum?.Nome"
+          [src]="
+            selectedFreteiro?.CadastroComum?.Foto?.Url
+              ? selectedFreteiro?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
+          "
+        />
+        <h2 *ngIf="selectedFreteiro?.CadastroComum?.Nome">
+          {{
+            selectedFreteiro?.CadastroComum?.Nome +
+              ' ' +
+              selectedFreteiro?.CadastroComum?.Sobrenome
+          }}
+        </h2>
+
+        <div *ngIf="selectedFreteiro?.CadastroComum?.Nome" style="width: 60%">
+          <p
+            style="margin-top: 30px"
+            *ngIf="
+              selectedFreteiro.CadastroComum?.Telefone?.[0] ||
+              selectedFreteiro.CadastroComum?.Telefone?.[1]
+            "
+          >
+            <strong>Contato:</strong>
+          </p>
+          <div style="margin-bottom: 30px">
+            <mat-divider></mat-divider>
+            <p *ngIf="selectedFreteiro.CadastroComum?.Telefone?.[0]">
+              Telefone 1 - {{ selectedFreteiro.CadastroComum?.Telefone?.[0] }}
+            </p>
+            <mat-divider></mat-divider>
+            <p *ngIf="selectedFreteiro.CadastroComum?.Telefone?.[1]">
+              Telefone 2 - {{ selectedFreteiro.CadastroComum?.Telefone?.[1] }}
+            </p>
+            <mat-divider></mat-divider>
+          </div>
+          <p *ngIf="selectedFreteiro?.CadastroComum?.Nome">
+            <strong>Automoveis:</strong>
+          </p>
+          <div
+            *ngFor="let item of selectedFreteiro.CadastroFreteiro?.Automovel"
+          >
+            <mat-divider></mat-divider>
+            <p style="cursor: pointer" (click)="moveToAutomovel(item._id)">
+              {{ item.Nome }}
+            </p>
+            <mat-divider></mat-divider>
+          </div>
+        </div>
 
         <div style="display: flex; flex-direction: row; width: 60%">
           <div style="flex: 1 1 auto"></div>
@@ -204,7 +260,12 @@
           >
             Pular
           </button>
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="applyFreteiro()"
+          >
             Concluir
           </button>
         </div>
@@ -376,22 +437,13 @@
             <div class="footerList">
               <p>Seus Automoveis</p>
               <span class="example-spacer"></span>
-              <button
-                mat-mini-fab
-                [color]="'primary'"
-                (click)="addInfoAutomovel()"
-              >
+              <button mat-mini-fab [color]="'primary'">
                 <mat-icon>add </mat-icon>
               </button>
               <button
                 mat-mini-fab
                 [disabled]="!ListAutomovel.selectedOptions.hasValue()"
                 [color]="'warn'"
-                (click)="
-                  remInfoAutomovel(
-                    ListAutomovel.selectedOptions.selected[0].value
-                  )
-                "
               >
                 <mat-icon matPrefix>delete</mat-icon>
               </button>
