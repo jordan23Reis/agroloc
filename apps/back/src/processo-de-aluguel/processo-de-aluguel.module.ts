@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ProcessoDeAluguelService } from './processo-de-aluguel.service';
 import { ProcessoDeAluguelController } from './processo-de-aluguel.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -18,7 +18,11 @@ const modelProcessoDeAluguel = MongooseModule.forFeatureAsync([
 ]);
 
 @Module({
-  imports: [modelProcessoDeAluguel, MaquinaModule, UsersModule, TipoPrecoModule, AsaasModule],
+  imports: [modelProcessoDeAluguel, 
+    forwardRef(() =>MaquinaModule), 
+    forwardRef(() =>UsersModule), 
+    forwardRef(() =>TipoPrecoModule), 
+  ],
   controllers: [ProcessoDeAluguelController],
   providers: [ProcessoDeAluguelService],
   exports: [ProcessoDeAluguelService]

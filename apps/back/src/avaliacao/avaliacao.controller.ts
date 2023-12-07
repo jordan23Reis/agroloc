@@ -21,19 +21,26 @@ import { AvaliacaoExisteGuard } from './guards/avaliacaoExisteGuard';
 import { UsuarioDonoAvaliacao } from './guards/usuarioDonoAvaliacao';
 import { Avaliacao } from './entities/avaliacao.entity';
 import { AvaliarFreteiroGuard } from './guards/avaliarFreteiroGuard';
-import { ProcessoDeAluguel } from '../processo-de-aluguel/entities/processo-de-aluguel.entity';
+import { ProcessoDeAluguelExisteGuard } from './guards/processoAluguelExisteGuard';
+import { ProcessoDeAluguelNaoAvaliadoGuard } from './guards/ProcessoDeAluguelNaoAvaliadoGuard';
+import { ProcessoDeAluguelJaAvaliadoGuard } from './guards/ProcessoDeAluguelJaAvaliadoGuard';
+import { UsuarioLocatarioDoProcessoGuard } from './guards/UsuarioLocatarioDoProcessoGuard';
+import { ProcessoDeFreteExisteGuard } from './guards/processoFreteExisteGuard';
+import { UsuarioSolicitanteDoProcessoGuard } from './guards/UsuarioSolicitanteDoProcessoGuard';
+import { ProcessoDeFreteNaoAvaliadoGuard } from './guards/ProcessoDeFreteNaoAvaliadoGuard';
 
 @Controller('avaliacao')
 export class AvaliacaoController {
   constructor(private readonly avaliacaoService: AvaliacaoService) {}
 
-  @UseGuards(JwtAuthGuard, UsuarioComumGuard, UsuarioCorretoGuard, UsuarioExisteGuard, AvaliarMaquinaGuard, ProcessoDeAluguel)
-  @Post("maquina/:id/:idMaquina")
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, UsuarioCorretoGuard, UsuarioExisteGuard, AvaliarMaquinaGuard, ProcessoDeAluguelExisteGuard, UsuarioLocatarioDoProcessoGuard, ProcessoDeAluguelNaoAvaliadoGuard)
+  @Post("maquina/:id/:idMaquina/:idProcessoDeAluguel")
   createAvaliacaoMaquina(
     @Param('id') idUsuarioAvaliador: string,
     @Param('idMaquina') idMaquina: string,
+    @Param('idProcessoDeAluguel') idProcessoDeAluguel: string,
     @Body() createAvaliacaoDto: CreateAvaliacaoDto) {
-    return this.avaliacaoService.criarAvaliacaoMaquina(idUsuarioAvaliador,idMaquina,createAvaliacaoDto);
+    return this.avaliacaoService.criarAvaliacaoMaquina(idUsuarioAvaliador,idMaquina,createAvaliacaoDto, idProcessoDeAluguel);
   }
 
   @UseGuards(JwtAuthGuard, AvaliacaoExisteGuard, UsuarioDonoAvaliacao)
@@ -45,20 +52,24 @@ export class AvaliacaoController {
     return this.avaliacaoService.editarAvaliacaoMaquina(idAvaliacao, updateAvaliacaoDto);
   }
 
-  @UseGuards(JwtAuthGuard, AvaliacaoExisteGuard, UsuarioDonoAvaliacao)
-  @Delete('maquina/:idAvaliacao')
-  removeAvaliacaoMaquina(@Param('idAvaliacao') idAvaliacao: Avaliacao) {
-    return this.avaliacaoService.deletarAvaliacaoMaquina(idAvaliacao);
+  @UseGuards(JwtAuthGuard, AvaliacaoExisteGuard, UsuarioDonoAvaliacao, ProcessoDeAluguelExisteGuard, ProcessoDeAluguelJaAvaliadoGuard)
+  @Delete('maquina/:idAvaliacao/:idProcessoDeAluguel')
+  removeAvaliacaoMaquina(
+    @Param('idAvaliacao') idAvaliacao: Avaliacao, 
+    @Param('idProcessoDeAluguel') idProcessoDeAluguel: string
+  ) {
+    return this.avaliacaoService.deletarAvaliacaoMaquina(idAvaliacao, idProcessoDeAluguel);
   }
 
 
-  @UseGuards(JwtAuthGuard, UsuarioComumGuard, UsuarioCorretoGuard, UsuarioExisteGuard, AvaliarFreteiroGuard)
-  @Post("freteiro/:id/:idFreteiro")
+  @UseGuards(JwtAuthGuard, UsuarioComumGuard, UsuarioCorretoGuard, UsuarioExisteGuard, AvaliarFreteiroGuard, ProcessoDeFreteExisteGuard, UsuarioSolicitanteDoProcessoGuard, ProcessoDeFreteNaoAvaliadoGuard)
+  @Post("freteiro/:id/:idFreteiro/:idProcessoDeFrete")
   createAvaliacaoFreteiro(
     @Param('id') idUsuarioAvaliador: string,
     @Param('idFreteiro') idFreteiro: string,
+    @Param('idProcessoDeFrete') idProcessoDeFrete: string,
     @Body() createAvaliacaoDto: CreateAvaliacaoDto) {
-    return this.avaliacaoService.criarAvaliacaoFreteiro(idUsuarioAvaliador,idFreteiro,createAvaliacaoDto);
+    return this.avaliacaoService.criarAvaliacaoFreteiro(idUsuarioAvaliador,idFreteiro,createAvaliacaoDto, idProcessoDeFrete);
   }
 
   
@@ -72,10 +83,10 @@ export class AvaliacaoController {
   }
 
 
-  @UseGuards(JwtAuthGuard, AvaliacaoExisteGuard, UsuarioDonoAvaliacao)
-  @Delete('freteiro/:idAvaliacao')
-  removeAvaliacaoFreteiro(@Param('idAvaliacao') idAvaliacao: Avaliacao) {
-    return this.avaliacaoService.deletarAvaliacaoFreteiro(idAvaliacao);
+  @UseGuards(JwtAuthGuard, AvaliacaoExisteGuard, UsuarioDonoAvaliacao, ProcessoDeFreteExisteGuard)
+  @Delete('freteiro/:idAvaliacao/:idProcessoDeFrete')
+  removeAvaliacaoFreteiro(@Param('idAvaliacao') idAvaliacao: Avaliacao, @Param('idProcessoDeFrete') idProcessoDeFrete: string) {
+    return this.avaliacaoService.deletarAvaliacaoFreteiro(idAvaliacao, idProcessoDeFrete);
   }
 
 

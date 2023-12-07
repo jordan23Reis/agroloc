@@ -6,6 +6,9 @@ enum AvaliacaoSchemaDtoRestraints {
     tamMinComentarioAvaliacao = 3,
     tamMaxComentarioAvaliacao = 300,
 
+    tamMinIdProcesso = 3,
+    tamMaxIdProcesso = 150,
+
     tamMinIdUsuarioAvaliador = 0,
     tamMaxIdUsuarioAvaliador = 100,
 

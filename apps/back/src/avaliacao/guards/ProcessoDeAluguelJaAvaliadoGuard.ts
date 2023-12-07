@@ -3,7 +3,7 @@ import { ProcessoDeAluguelService } from '../../processo-de-aluguel/processo-de-
 
 
 @Injectable()
-export class ProcessoDeAluguelExisteGuard implements CanActivate {
+export class ProcessoDeAluguelJaAvaliadoGuard implements CanActivate {
     constructor(private processoService: ProcessoDeAluguelService){}
   async canActivate(
     context: ExecutionContext,
@@ -12,8 +12,8 @@ export class ProcessoDeAluguelExisteGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const processoDeAluguel = await this.processoService.findOne(request.params.idProcessoDeAluguel);
     
-    if(!processoDeAluguel){
-        throw new UnauthorizedException(`Este processo não existe`);
+    if(processoDeAluguel.Status != "Avaliado"){
+        throw new UnauthorizedException(`Este processo não esta avaliado!`);
     }
 
     return true;
