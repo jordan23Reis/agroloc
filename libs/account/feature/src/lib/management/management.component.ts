@@ -19,7 +19,11 @@ import { UsuarioSchemaDtoRestraints } from '@agroloc/shared/util';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoaderFacade, SearchService } from '@agroloc/shared/data-access';
 import { Router } from '@angular/router';
-import { MachineryService } from '@agroloc/machinery/data-access';
+import {
+  Machinery,
+  MachineryService,
+  Maquina,
+} from '@agroloc/machinery/data-access';
 
 @Component({
   selector: 'agroloc-management',
@@ -755,6 +759,43 @@ export class ManagementComponent implements OnInit {
 
   addInfoMaquinario() {
     this.router.navigate(['web', 'main', 'machinery']);
+  }
+
+  activeInfoMaquina(maquinaId: string) {
+    let machineryData: Machinery;
+    combineLatest([
+      this.userDate,
+      this.userProfile,
+      this.machineryService.getMachinery(maquinaId),
+    ])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([account, profile, maquina]) => {
+        console.log(maquina);
+        machineryData = {
+          Nome: maquina.Nome,
+          Descricao: maquina.Descricao,
+          Peso: maquina.Peso,
+          Comprimento: maquina.Comprimento,
+          Largura: maquina.Largura,
+          Altura: maquina.Altura,
+          EstaAtiva: true,
+          idCategoria: 'asdasdsa',
+          IdEndereco: 'asdasdsa',
+          Preco: {
+            idTipo: maquina.Preco.Tipo.idTipo,
+            ValorPorTipo: maquina.Preco.ValorPorTipo,
+          },
+        };
+
+        this.machineryService
+          .updateMachinery(maquinaId, machineryData)
+          .subscribe((response) => {
+            this.snackBar.open(`Anuncio Ativada com Sucesso!!`, undefined, {
+              duration: 3000,
+            });
+            this.accountService.nextAccount(profile.IdUsuario);
+          });
+      });
   }
 
   remInfoMaquinario(automovel: string) {

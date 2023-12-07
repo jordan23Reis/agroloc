@@ -13,6 +13,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { RatingModule } from 'primeng/rating';
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatAutocompleteModule,
     ReactiveFormsModule,
     AsyncPipe,
+    RatingModule,
   ],
   declarations: [NegotiateComponent],
   exports: [NegotiateComponent],

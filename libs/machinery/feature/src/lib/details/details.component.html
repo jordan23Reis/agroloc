@@ -150,31 +150,24 @@
             <footer class="comment-meta">
               <div class="comment-author vcard">
                 <img
-                  data-lazyloaded="1"
-                  data-placeholder-resp="64x64"
                   [src]="
                     item.UsuarioAvaliador?.Foto?.Url
                       ? item.UsuarioAvaliador?.Foto?.Url
                       : 'https://www.brasilcode.com.br/wp-content/litespeed/avatar/27c6b0c9dda701de1de82244a57ff179.jpg?ver=1699745455'
                   "
-                  alt=""
-                  data-src="https://www.brasilcode.com.br/wp-content/litespeed/avatar/27c6b0c9dda701de1de82244a57ff179.jpg?ver=1699745455"
-                  data-srcset="https://www.brasilcode.com.br/wp-content/litespeed/avatar/87f5405154301ba8ed1925238d37c2e3.jpg?ver=1699745455 2x"
                   class="avatar avatar-64 photo entered litespeed-loaded"
-                  height="64"
-                  width="64"
-                  decoding="async"
-                  data-ll-status="loaded"
-                  srcset="
-                    https://www.brasilcode.com.br/wp-content/litespeed/avatar/87f5405154301ba8ed1925238d37c2e3.jpg?ver=1699745455 2x
-                  "
                 />
                 <b class="fn">{{ item.UsuarioAvaliador.Nome }}</b>
                 <span class="says">disse:</span>
               </div>
               <div class="comment-metadata">
-                <p>item.Nivel</p>
-                <mat-icon>star</mat-icon>
+                <div class="card flex justify-content-center">
+                  <p-rating
+                    [(ngModel)]="item.Nivel"
+                    [readonly]="true"
+                    [cancel]="false"
+                  ></p-rating>
+                </div>
               </div>
             </footer>
             <div class="comment-content">

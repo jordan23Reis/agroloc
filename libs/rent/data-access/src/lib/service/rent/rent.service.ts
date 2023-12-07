@@ -70,9 +70,6 @@ export class RentService {
       .pipe(
         catchError((error) => {
           console.log(error);
-          this.snackbar.open('Erro ao Procurar Processos', undefined, {
-            duration: 3000,
-          });
           throw new Error(error);
         })
       )
@@ -358,10 +355,10 @@ export class RentService {
       {}
     );
   }
-  acceptProcessFrete(idprocessodealuguel: any, idautomovel: any) {
+  acceptProcessFrete(idprocessodefrete: any, idautomovel: any) {
     return this.http
       .patch(
-        `/api/processo-de-frete/mudarstatus/aceitar/${idprocessodealuguel}/${idautomovel}`,
+        `/api/processo-de-frete/mudarstatus/aceitar/${idprocessodefrete}/${idautomovel}`,
         {}
       )
       .pipe(
@@ -371,10 +368,10 @@ export class RentService {
         })
       );
   }
-  recuseProcessFrete(idprocessodealuguel: any) {
+  recuseProcessFrete(idprocessodefrete: any) {
     return this.http
       .patch(
-        `/api/processo-de-frete/mudarstatus/recusar/${idprocessodealuguel}`,
+        `/api/processo-de-frete/mudarstatus/recusar/${idprocessodefrete}`,
         {}
       )
       .pipe(
@@ -425,6 +422,84 @@ export class RentService {
           this.snackbar.open('Erro ao Confirmar Pagamento', undefined, {
             duration: 3000,
           });
+          throw new Error(error);
+        })
+      );
+  }
+
+  avaliarFreteiro(
+    idusuario: any,
+    idfreteiroavaliacao: any,
+    idprocessodefrete: any,
+    avaliacao: any
+  ) {
+    return this.http
+      .post(
+        `/api/avaliacao/freteiro/${idusuario}/${idfreteiroavaliacao}/${idprocessodefrete}`,
+        avaliacao
+      )
+      .pipe(
+        catchError((error) => {
+          console.log(error);
+
+          this.snackbar.open('Erro ao Avaliar Freteiro', undefined, {
+            duration: 3000,
+          });
+          throw new Error(error);
+        })
+      );
+  }
+
+  atualizarAvaliacaoFreteiro(idavaliacao: any, avaliacao: any) {
+    return this.http
+      .put(`/api/avaliacao/freteiro/${idavaliacao}`, avaliacao)
+      .pipe(
+        catchError((error) => {
+          this.snackbar.open(
+            'Erro ao Atualizar Avaliação de Freteiro',
+            undefined,
+            {
+              duration: 3000,
+            }
+          );
+          throw new Error(error);
+        })
+      );
+  }
+
+  avaliarMaquina(
+    idusuario: any,
+    idmaquina: any,
+    idprocessodealuguel: any,
+    avaliacao: any
+  ) {
+    return this.http
+      .post(
+        `/api/avaliacao/maquina/${idusuario}/${idmaquina}/${idprocessodealuguel}`,
+        avaliacao
+      )
+      .pipe(
+        catchError((error) => {
+          this.snackbar.open('Erro ao Avaliar Máquina', undefined, {
+            duration: 3000,
+          });
+          throw new Error(error);
+        })
+      );
+  }
+
+  atualizarAvaliacaoMaquina(idavaliacao: any, avaliacao: any) {
+    return this.http
+      .put(`/api/avaliacao/maquina/${idavaliacao}`, avaliacao)
+      .pipe(
+        catchError((error) => {
+          this.snackbar.open(
+            'Erro ao Atualizar Avaliação de Máquina',
+            undefined,
+            {
+              duration: 3000,
+            }
+          );
           throw new Error(error);
         })
       );

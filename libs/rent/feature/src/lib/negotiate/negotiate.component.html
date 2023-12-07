@@ -39,7 +39,13 @@
             justify-content: center;
           "
         >
-          <p>Estado do Processo: {{ (processItem | async)?.Status }}</p>
+          <!-- resolver com o estado de loading -->
+          <p *ngIf="!isFreteiro && !isSolicitante">
+            Estado do Processo: {{ (processItem | async)?.Status }}
+          </p>
+          <p *ngIf="isFreteiro || isSolicitante">
+            Estado do Processo: {{ (processItemFrete | async)?.Status }}
+          </p>
         </div>
       </div>
       <div style="flex: 1 1 auto"></div>
@@ -272,10 +278,14 @@
       </div>
     </div>
 
-    <div *ngIf="false" class="message AceitarFrete" style="margin-top: 30px">
+    <div
+      *ngIf="etapaAceitarProcessoFrete"
+      class="message AceitarFrete"
+      style="margin-top: 30px"
+    >
       <h2>Processo de Frete Solicitado</h2>
     </div>
-    <div *ngIf="false" class="content AceitarFrete">
+    <div *ngIf="etapaAceitarProcessoFrete" class="content AceitarFrete">
       <div class="message" style="margin-top: 30px">
         <h2>Quem esta Solicitando?</h2>
       </div>
@@ -288,46 +298,103 @@
           "
         />
         <h2>Ola, meu nome é {{ infoLocador?.CadastroComum?.Nome }}</h2>
-        <h3>R$30000</h3>
-        <h3>Minhas informações:</h3>
-        <div style="width: 60%">
-          <p *ngIf="infoLocatarioEndereco"><strong>Meu endereço:</strong></p>
-          <div *ngIf="infoLocatarioEndereco">
-            <mat-divider></mat-divider>
-            <p>Estado - {{ infoLocatarioEndereco.Estado }}</p>
-            <mat-divider></mat-divider>
-            <p>CEP - {{ infoLocatarioEndereco.Cep }}</p>
-            <mat-divider></mat-divider>
-            <p>
-              Logradouro - {{ infoLocatarioEndereco.Logradouro }}, Numero:
-              {{ infoLocatarioEndereco.Numero }}
-            </p>
-            <mat-divider></mat-divider>
-          </div>
+        <h3>R${{ (processItemFrete | async)?.Pagamento?.Valor }}</h3>
+
+        <div *ngIf="infoLocador?.CadastroComum?.Nome" style="width: 60%">
           <p
             style="margin-top: 30px"
-            *ngIf="infoLocatarioTelefone1 || infoLocatarioTelefone2"
+            *ngIf="
+              infoLocador.CadastroComum?.Telefone?.[0] ||
+              infoLocador.CadastroComum?.Telefone?.[1]
+            "
           >
-            <strong>Meu Contato:</strong>
+            <strong>Contato:</strong>
           </p>
-          <div style="margin-bottom: 60px">
+          <div style="margin-bottom: 30px">
             <mat-divider></mat-divider>
-            <p *ngIf="infoLocatarioTelefone1">
-              Telefone 1 - {{ infoLocatarioTelefone1 }}
+            <p *ngIf="infoLocador.CadastroComum?.Telefone?.[0]">
+              Telefone 1 - {{ infoLocador.CadastroComum?.Telefone?.[0] }}
             </p>
             <mat-divider></mat-divider>
-            <p *ngIf="infoLocatarioTelefone2">
-              Telefone 2 - {{ infoLocatarioTelefone2 }}
+            <p *ngIf="infoLocador.CadastroComum?.Telefone?.[1]">
+              Telefone 2 - {{ infoLocador.CadastroComum?.Telefone?.[1] }}
             </p>
             <mat-divider></mat-divider>
           </div>
         </div>
-        <div style="display: flex; flex-direction: row; width: 100%">
+
+        <div class="formContainer">
+          <div class="footerList">
+            <p>Seus Automoveis</p>
+            <span class="example-spacer"></span>
+
+            <button
+              mat-mini-fab
+              [disabled]="!ListAutomovel.selectedOptions.hasValue()"
+              [color]="'primary'"
+              (click)="
+                selectAutomovel(ListAutomovel.selectedOptions.selected[0].value)
+              "
+            >
+              <mat-icon>done </mat-icon>
+            </button>
+          </div>
+
+          <div class="listEndereco">
+            <mat-selection-list
+              #ListAutomovel
+              [multiple]="false"
+              [ngStyle]="{'overflow-y': (userDate | async)?.CadastroFreteiro?.Automovel?.[0] ? 'scroll' : 'hidden'}"
+            >
+              <mat-list-option
+                *ngFor="
+                  let item of (userDate | async)?.CadastroFreteiro?.Automovel
+                "
+                [value]="item._id"
+              >
+                <span
+                  (click)="
+                    moveToAutomovel(
+                      ListAutomovel.selectedOptions.selected[0].value
+                    )
+                  "
+                  matListItemTitle
+                  >{{ item.Nome }}</span
+                >
+                <span matListItemLine style="margin-left: 20px">{{
+                  item.Categoria?.Nome
+                }}</span>
+              </mat-list-option>
+              <mat-list
+                *ngIf="
+            !(userDate | async)?.CadastroFreteiro?.Automovel?.[0]
+           "
+              >
+                <mat-list-item matListItemTitle>
+                  Você não possui automoveis Registrado
+                </mat-list-item>
+              </mat-list>
+            </mat-selection-list>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: row; width: 60%">
           <div style="flex: 1 1 auto"></div>
-          <button mat-raised-button color="accent" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="accent"
+            style="margin: 30px"
+            (click)="recuseProcessFrete()"
+          >
             Recusar
           </button>
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            [disabled]="selectedAutomovelId === 'Nenhum'"
+            (click)="acceptProcessFrete()"
+          >
             Aceitar
           </button>
         </div>
@@ -397,105 +464,96 @@
 
     <div
       *ngIf="segundaSelecaoFrete"
-      class="message SegundaSelecaoFrete"
+      class="message SelecaoFrete"
       style="margin-top: 30px"
     >
       <h2>Aguardando escolha de Frete</h2>
     </div>
-    <div *ngIf="segundaSelecaoFrete" class="content SegundaSelecaoFrete">
+    <div *ngIf="segundaSelecaoFrete" class="content SelecaoFrete">
       <div class="message" style="margin-top: 30px">
         <h2>Procure por um freteiro</h2>
       </div>
       <div class="inicio">
         <mat-form-field style="width: 60%" class="example-form-field">
           <mat-label>Valor do Frete</mat-label>
-          <input #search type="text" matInput [matAutocomplete]="auto" />
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-            <mat-option
-              *ngFor="let option of filteredOptionsSubscribe | async"
-              [value]="option"
-            >
-              {{ option }}
-            </mat-option>
-          </mat-autocomplete>
+          <input [formControl]="myControlValue" type="number" matInput />
         </mat-form-field>
+
         <mat-form-field style="width: 60%" class="example-form-field">
           <mat-label>Pesquisar freteiro por Nome</mat-label>
-          <input #search type="text" matInput [matAutocomplete]="auto" />
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <input
+            #search
+            type="text"
+            matInput
+            [formControl]="myControlFrete"
+            [matAutocomplete]="auto"
+          />
+          <mat-autocomplete
+            autoActiveFirstOption
+            #auto="matAutocomplete"
+            (optionSelected)="onSelectecFreteiro($event)"
+          >
             <mat-option
               *ngFor="let option of filteredOptionsSubscribe | async"
-              [value]="option"
+              [value]="option.IdFreteiro"
             >
-              {{ option }}
+              {{ option.NomeCompleto }}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
 
-        <div style="width: 100%">
-          <div class="formContainer">
-            <div class="footerList">
-              <p>Seus Automoveis</p>
-              <span class="example-spacer"></span>
-              <button mat-mini-fab [color]="'primary'">
-                <mat-icon>add </mat-icon>
-              </button>
-              <button
-                mat-mini-fab
-                [disabled]="!ListAutomovel.selectedOptions.hasValue()"
-                [color]="'warn'"
-              >
-                <mat-icon matPrefix>delete</mat-icon>
-              </button>
-            </div>
-
-            <div class="listEndereco">
-              <mat-selection-list
-                #ListAutomovel
-                [multiple]="false"
-                [ngStyle]="{'overflow-y': (userDate | async)?.CadastroFreteiro?.Automovel?.[0] ? 'scroll' : 'hidden'}"
-              >
-                <mat-list-option
-                  *ngFor="
-                    let item of (userDate | async)?.CadastroFreteiro?.Automovel
-                  "
-                  [value]="item._id"
-                >
-                  <span
-                    (click)="
-                      moveToAutomovel(
-                        ListAutomovel.selectedOptions.selected[0].value
-                      )
-                    "
-                    matListItemTitle
-                    >{{ item.Nome }}</span
-                  >
-                  <span matListItemLine style="margin-left: 20px">{{
-                    item.Categoria?.Nome
-                  }}</span>
-                </mat-list-option>
-                <mat-list
-                  *ngIf="
-            !(userDate | async)?.CadastroFreteiro?.Automovel?.[0]
+        <img
+          *ngIf="selectedFreteiro?.CadastroComum?.Nome"
+          [src]="
+            selectedFreteiro?.CadastroComum?.Foto?.Url
+              ? selectedFreteiro?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
           "
-                >
-                  <mat-list-item matListItemTitle>
-                    Você não possui automoveis Registrado
-                  </mat-list-item>
-                </mat-list>
-              </mat-selection-list>
-            </div>
+        />
+        <h2 *ngIf="selectedFreteiro?.CadastroComum?.Nome">
+          {{
+            selectedFreteiro?.CadastroComum?.Nome +
+              ' ' +
+              selectedFreteiro?.CadastroComum?.Sobrenome
+          }}
+        </h2>
+
+        <div *ngIf="selectedFreteiro?.CadastroComum?.Nome" style="width: 60%">
+          <p
+            style="margin-top: 30px"
+            *ngIf="
+              selectedFreteiro.CadastroComum?.Telefone?.[0] ||
+              selectedFreteiro.CadastroComum?.Telefone?.[1]
+            "
+          >
+            <strong>Contato:</strong>
+          </p>
+          <div style="margin-bottom: 30px">
+            <mat-divider></mat-divider>
+            <p *ngIf="selectedFreteiro.CadastroComum?.Telefone?.[0]">
+              Telefone 1 - {{ selectedFreteiro.CadastroComum?.Telefone?.[0] }}
+            </p>
+            <mat-divider></mat-divider>
+            <p *ngIf="selectedFreteiro.CadastroComum?.Telefone?.[1]">
+              Telefone 2 - {{ selectedFreteiro.CadastroComum?.Telefone?.[1] }}
+            </p>
+            <mat-divider></mat-divider>
+          </div>
+          <p *ngIf="selectedFreteiro?.CadastroComum?.Nome">
+            <strong>Automoveis:</strong>
+          </p>
+          <div
+            *ngFor="let item of selectedFreteiro.CadastroFreteiro?.Automovel"
+          >
+            <mat-divider></mat-divider>
+            <p style="cursor: pointer" (click)="moveToAutomovel(item._id)">
+              {{ item.Nome }}
+            </p>
+            <mat-divider></mat-divider>
           </div>
         </div>
 
-        <div
-          style="
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            align-self: last baseline;
-          "
-        >
+        <div style="display: flex; flex-direction: row; width: 60%">
           <div style="flex: 1 1 auto"></div>
           <button
             mat-raised-button
@@ -505,7 +563,12 @@
           >
             Pular
           </button>
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="applyFreteiro()"
+          >
             Concluir
           </button>
         </div>
@@ -530,7 +593,11 @@
           </p>
           <mat-form-field style="width: 100%">
             <mat-label>Valor</mat-label>
-            <input matInput [formControl]="myControlSelectPreco" />
+            <input
+              type="number"
+              matInput
+              [formControl]="myControlSelectPreco"
+            />
           </mat-form-field>
         </div>
         <div style="display: flex; flex-direction: row; width: 100%">
@@ -570,7 +637,7 @@
         >
           <p>O locador propôs o seguinte preço para a locação do maquinário.</p>
         </div>
-        <div style="display: flex; flex-direction: row; width: 100%">
+        <div style="display: flex; flex-direction: row; width: 60%">
           <div style="flex: 1 1 auto"></div>
           <button
             mat-raised-button
@@ -667,29 +734,58 @@
       </div>
     </div>
 
-    <!-- AVALIAR PROCESSO DE FRETE EM ANDAMENTO -->
+    <!-- AVALIAR PROCESSO EM ANDAMENTO -->
 
     <div *ngIf="aAvaliar" class="message Avaliar" style="margin-top: 30px">
       <h2>Avaliar Maquinário</h2>
     </div>
     <div *ngIf="aAvaliar" class="content Avaliar">
       <div class="inicio">
-        <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, {{ infoLocatario.CadastroComum?.Nome }}</h2>
+        <img
+          *ngIf="(dadosLocatario$ | async)?.CadastroComum?.Nome"
+          [src]="
+            (dadosLocatario$ | async)?.CadastroComum?.Foto?.Url
+              ? (dadosLocatario$ | async)?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
+          "
+        />
+        <h2>Ola, {{ (dadosLocatario$ | async)?.CadastroComum?.Nome }}</h2>
         <div style="width: 60%">
-          <p>
+          <p style="text-align: center">
             Antes de finalizar o processo de aluguel, por favor, avalie o
             maquinário.
           </p>
-          <mat-form-field style="width: 100%; height: 150px">
-            <mat-label>Textarea</mat-label>
+
+          <div
+            class="card flex justify-content-center"
+            style="
+              margin: 15px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-top: 15px;
+            "
+          >
+            <p-rating [(ngModel)]="value" [cancel]="false"></p-rating>
+          </div>
+
+          <mat-form-field
+            [formControl]="myControlDescricao"
+            style="width: 100%; height: 150px"
+          >
+            <mat-label>Descrição</mat-label>
             <textarea matInput></textarea>
           </mat-form-field>
         </div>
-        <div style="display: flex; flex-direction: row; width: 100%">
+        <div style="display: flex; flex-direction: row; width: 60%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="avaliarAluguel()"
+          >
             Avaliar
           </button>
         </div>
@@ -715,42 +811,100 @@
       </div>
     </div>
 
-    <!-- AVALIAR PROCESSO DE FRETE EM ANDAMENTO -->
+    <div
+      *ngIf="Avaliado"
+      class="message RemoverAvaliarFrete"
+      style="margin-top: 30px"
+    >
+      <h2>Aluguel Finalizado</h2>
+    </div>
+    <div *ngIf="Avaliado" class="content RemoverAvaliarFrete">
+      <div class="inicio">
+        <img
+          *ngIf="(dadosLocatario$ | async)?.CadastroComum?.Nome"
+          [src]="
+            (dadosLocatario$ | async)?.CadastroComum?.Foto?.Url
+              ? (dadosLocatario$ | async)?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
+          "
+        />
+        <h2>Ola, {{ (dadosLocatario$ | async)?.CadastroComum?.Nome }}</h2>
+        <div style="width: 60%; margin-bottom: 120px">
+          <h3 style="text-align: center">Processo de Aluguel Finalizado</h3>
+        </div>
+      </div>
+    </div>
 
-    <div *ngIf="false" class="message ComecarFrete" style="margin-top: 30px">
+    <!-- AVALIAR PROCESSO EM ANDAMENTO -->
+
+    <div
+      *ngIf="aComecarFrete"
+      class="message ComecarFrete"
+      style="margin-top: 30px"
+    >
       <h2>Iniciar Frete</h2>
     </div>
-    <div *ngIf="false" class="content Comecar">
+    <div *ngIf="aComecarFrete" class="content Comecar">
       <div class="inicio">
-        <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
+        <img
+          *ngIf="(dadosFreteiro$ | async)?.CadastroComum?.Nome"
+          [src]="
+            (dadosFreteiro$ | async)?.CadastroComum?.Foto?.Url
+              ? (dadosFreteiro$ | async)?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
+          "
+        />
+        <h2>Ola, {{ (dadosFreteiro$ | async)?.CadastroComum?.Nome }}</h2>
 
         <h3>Você esta pronto para começar o processo de Frete?</h3>
+        <p>Quando começar o frete aperte no botão "Começar".</p>
 
-        <div style="display: flex; flex-direction: row; width: 100%">
+        <div style="display: flex; flex-direction: row; width: 60%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="comecarProcessFrete()"
+          >
             Começar
           </button>
         </div>
       </div>
     </div>
 
-    <div *ngIf="false" class="message FinalizarFrete" style="margin-top: 30px">
+    <div
+      *ngIf="emAndamentoFrete"
+      class="message FinalizarFrete"
+      style="margin-top: 30px"
+    >
       <h2>Concluir Frete</h2>
     </div>
-    <div *ngIf="false" class="content FinalizarFrete">
+    <div *ngIf="emAndamentoFrete" class="content FinalizarFrete">
       <div class="inicio">
-        <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
+        <img
+          *ngIf="(dadosFreteiro$ | async)?.CadastroComum?.Nome"
+          [src]="
+            (dadosFreteiro$ | async)?.CadastroComum?.Foto?.Url
+              ? (dadosFreteiro$ | async)?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
+          "
+        />
+        <h2>Ola, {{ (dadosFreteiro$ | async)?.CadastroComum?.Nome }}</h2>
 
         <h3>Deseja concluir o processo de Aluguel?</h3>
+        <p>Quando finalizar o frete aperte no botão "Finalizar".</p>
 
-        <div style="display: flex; flex-direction: row; width: 100%">
+        <div style="display: flex; flex-direction: row; width: 60%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="concluirProcessFrete()"
+          >
             Finalizar
           </button>
         </div>
@@ -758,54 +912,103 @@
     </div>
 
     <div
-      *ngIf="false"
+      *ngIf="aPagarFrete"
       class="message ConfirmarPagamentoFrete"
       style="margin-top: 30px"
     >
       <h2>Confirmar Pagamento</h2>
     </div>
-    <div *ngIf="false" class="content ConfirmarPagamentoFrete">
+    <div *ngIf="aPagarFrete" class="content ConfirmarPagamentoFrete">
       <div class="inicio">
-        <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
+        <img
+          *ngIf="(dadosFreteiro$ | async)?.CadastroComum?.Nome"
+          [src]="
+            (dadosFreteiro$ | async)?.CadastroComum?.Foto?.Url
+              ? (dadosFreteiro$ | async)?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
+          "
+        />
+        <h2>Ola, {{ (dadosFreteiro$ | async)?.CadastroComum?.Nome }}</h2>
 
-        <h3>Deseja concluir o processo de Frete?</h3>
+        <h3>
+          Verifique o pagamento - R${{
+            (processItemFrete | async)?.Pagamento?.Valor
+          }}
+        </h3>
         <div style="width: 60%">
-          <p>
-            Verifique se o locador realizou o pagamento antes de concluir o
-            processo de Frete.
+          <p style="text-align: center">
+            Verifique se o solicitante realizou o pagamento do frete, após
+            pagamento conclua o processo de Frete apertando em "Concluir".
           </p>
         </div>
-        <div style="display: flex; flex-direction: row; width: 100%">
+        <div style="display: flex; flex-direction: row; width: 60%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="verificarPagamento()"
+          >
             Concluir
           </button>
         </div>
       </div>
     </div>
 
-    <div *ngIf="false" class="message AvaliarFrete" style="margin-top: 30px">
+    <div
+      *ngIf="aAvaliarFrete"
+      class="message AvaliarFrete"
+      style="margin-top: 30px"
+    >
       <h2>Avaliar Frete</h2>
     </div>
-    <div *ngIf="false" class="content AvaliarFrete">
+    <div *ngIf="aAvaliarFrete" class="content AvaliarFrete">
       <div class="inicio">
-        <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
+        <img
+          *ngIf="(dadosLocador$ | async)?.CadastroComum?.Nome"
+          [src]="
+            (dadosLocador$ | async)?.CadastroComum?.Foto?.Url
+              ? (dadosLocador$ | async)?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
+          "
+        />
+        <h2>Ola, {{ (dadosLocador$ | async)?.CadastroComum?.Nome }}</h2>
         <div style="width: 60%">
-          <p>
+          <p style="text-align: center">
             Antes de finalizar o processo de frete, por favor, avalie o frete.
           </p>
-          <mat-form-field style="width: 100%; height: 150px">
-            <mat-label>Textarea</mat-label>
+
+          <div
+            class="card flex justify-content-center"
+            style="
+              margin: 15px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-top: 15px;
+            "
+          >
+            <p-rating [(ngModel)]="value" [cancel]="false"></p-rating>
+          </div>
+
+          <mat-form-field
+            [formControl]="myControlDescricao"
+            style="width: 100%; height: 150px"
+          >
+            <mat-label>Descrição</mat-label>
             <textarea matInput></textarea>
           </mat-form-field>
         </div>
-        <div style="display: flex; flex-direction: row; width: 100%">
+        <div style="display: flex; flex-direction: row; width: 60%">
           <div style="flex: 1 1 auto"></div>
 
-          <button mat-raised-button color="primary" style="margin: 30px">
+          <button
+            mat-raised-button
+            color="primary"
+            style="margin: 30px"
+            (click)="avaliarFrete()"
+          >
             Avaliar
           </button>
         </div>
@@ -813,24 +1016,25 @@
     </div>
 
     <div
-      *ngIf="false"
+      *ngIf="AvaliadoFrete"
       class="message RemoverAvaliarFrete"
       style="margin-top: 30px"
     >
-      <h2>Remover avaliação do Frete</h2>
+      <h2>Frete Finalizado</h2>
     </div>
-    <div *ngIf="false" class="content RemoverAvaliarFrete">
+    <div *ngIf="AvaliadoFrete" class="content RemoverAvaliarFrete">
       <div class="inicio">
-        <img [src]="'assets/default-account-icon.png'" />
-        <h2>Ola, (nome Locador)</h2>
-        <h2>Deseja remover sua avaliação do Frete?</h2>
-        <div style="width: 60%"></div>
-        <div style="display: flex; flex-direction: row; width: 100%">
-          <div style="flex: 1 1 auto"></div>
-
-          <button mat-raised-button color="primary" style="margin: 30px">
-            Remover
-          </button>
+        <img
+          *ngIf="(dadosLocador$ | async)?.CadastroComum?.Nome"
+          [src]="
+            (dadosLocador$ | async)?.CadastroComum?.Foto?.Url
+              ? (dadosLocador$ | async)?.CadastroComum?.Foto?.Url
+              : 'assets/default-account-icon.png'
+          "
+        />
+        <h2>Ola, {{ (dadosLocador$ | async)?.CadastroComum?.Nome }}</h2>
+        <div style="width: 60%; margin-bottom: 120px">
+          <h3 style="text-align: center">Processo de Frete Finalizado</h3>
         </div>
       </div>
     </div>

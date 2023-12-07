@@ -178,8 +178,6 @@ export class HomeComponent implements OnInit {
 
             this.listOneMachineryCategory = this.listMachineryCategory.map(
               (value) => {
-                console.log(this.listOneMachineryCategory);
-
                 return {
                   Category: value.Category,
                   Machinery: value.Machinery[0].ImagemPrincipal.Url,

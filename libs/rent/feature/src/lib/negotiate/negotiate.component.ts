@@ -24,6 +24,10 @@ interface OptionNameAndId {
   NomeCompleto: string;
   IdFreteiro: string | undefined;
 }
+interface Avaliacao {
+  Nivel: number;
+  Comentario: string;
+}
 
 @Component({
   selector: 'agroloc-negotiate',
@@ -52,7 +56,13 @@ export class NegotiateComponent implements OnInit {
   userDate = this.accountService.userAccount$.pipe(debounceTime(1));
   userProfile = this.authService.userProfile$;
   processItem = this.rentService.selectedProcess$;
-  processFreteItem = this.rentService.selectedProcessFrete$;
+  processItemFrete = this.rentService.selectedProcessFrete$.pipe(
+    map((response) => {
+      console.log(response);
+
+      return response;
+    })
+  );
 
   dadosLocador = new ReplaySubject<Account>(1);
   dadosLocador$ = this.dadosLocador.asObservable();
@@ -75,13 +85,18 @@ export class NegotiateComponent implements OnInit {
         });
     }
   });
-  populateFret = this.processFreteItem.subscribe((response) => {
+  populateFret = this.processItemFrete.subscribe((response) => {
     if (response) {
       const idfreteiro = response.Envolvidos.Freteiro.idFreteiro;
       if (idfreteiro) {
         this.accountService.getUser(idfreteiro).subscribe((response) => {
           this.dadosFreteiro.next(response);
         });
+        this.accountService
+          .getUser(response.Envolvidos.Solicitante.idSolicitante)
+          .subscribe((response) => {
+            this.dadosLocador.next(response);
+          });
       }
     }
   });
@@ -165,24 +180,9 @@ export class NegotiateComponent implements OnInit {
   }
 
   applyFreteiro() {
-    combineLatest([
-      this.processItem,
-      this.processFreteItem,
-      this.userProfile,
-      this.userDate,
-    ])
+    combineLatest([this.processItem, this.userProfile, this.userDate])
       .pipe(take(1), debounceTime(1000))
-      .subscribe(([process, processFrete, profile, account]) => {
-        console.log('ID Processo: ', process._id);
-        console.log('ID Maquina: ', process.Maquina.idMaquina);
-        console.log('ID selectedFreteiro: ', this.selectedFreteiro._id);
-        console.log('ID IdUsuario: ', profile.IdUsuario);
-        console.log(
-          'ID Enderecos: ',
-          account.CadastroComum?.Enderecos?.[0]._id
-        );
-        console.log('Valor Processo: ', this.valueFrete);
-
+      .subscribe(([process, profile, account]) => {
         this.rentService
           .createProcessFrete(
             process._id,
@@ -208,6 +208,9 @@ export class NegotiateComponent implements OnInit {
               duration: 3000,
             });
             this.nextProcess();
+            this.userProfile.pipe(take(1)).subscribe((response) => {
+              this.accountService.nextAccount(response.IdUsuario);
+            });
           });
       });
   }
@@ -231,6 +234,19 @@ export class NegotiateComponent implements OnInit {
   refazerPreco = false;
   aPagar = false;
   aAvaliar = false;
+  Avaliado = false;
+
+  ///////////////////////////////////
+
+  isLocador = false;
+  isFreteiro = false;
+  isSolicitante = false;
+  etapaAceitarProcessoFrete = false;
+  aComecarFrete = false;
+  emAndamentoFrete = false;
+  aPagarFrete = false;
+  aAvaliarFrete = false;
+  AvaliadoFrete = false;
 
   ///////////////////////////////////
 
@@ -268,6 +284,11 @@ export class NegotiateComponent implements OnInit {
     combineLatest([this.userProfile, this.processItem])
       .pipe(debounceTime(1000))
       .subscribe(([profile, processItem]) => {
+        console.log('passei');
+
+        this.isLocador =
+          profile.IdUsuario === processItem.Envolvidos.Locador.idLocador;
+
         this.etapaAceitarProcesso =
           profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
           processItem?.Status === 'A aceitar';
@@ -310,11 +331,17 @@ export class NegotiateComponent implements OnInit {
             processItem?.Envolvidos?.Locatario?.idLocatario &&
           processItem?.Status === 'A Avaliar';
 
+        this.Avaliado =
+          profile?.IdUsuario ===
+            processItem?.Envolvidos?.Locatario?.idLocatario &&
+          processItem?.Status === 'Avaliado';
+
         this.loadingProcessLocatario =
           profile?.IdUsuario ===
             processItem?.Envolvidos?.Locatario?.idLocatario &&
           processItem?.Status !== 'A Confirmar Preco' &&
-          processItem?.Status !== 'A Avaliar';
+          processItem?.Status !== 'A Avaliar' &&
+          processItem?.Status !== 'Avaliado';
 
         this.loadingProcessLocador =
           profile?.IdUsuario === processItem?.Envolvidos?.Locador?.idLocador &&
@@ -326,24 +353,53 @@ export class NegotiateComponent implements OnInit {
           processItem?.Status !== 'A Comecar' &&
           processItem?.Status !== 'Aguardando Selecao de Frete de Ida' &&
           processItem?.Status !== 'A aceitar';
+      });
+
+    combineLatest([this.userProfile, this.processItemFrete])
+      .pipe(debounceTime(1000))
+      .subscribe(([profile, processItemFrete]) => {
+        this.isFreteiro =
+          profile.IdUsuario === processItemFrete.Envolvidos.Freteiro.idFreteiro;
+
+        this.isSolicitante =
+          profile.IdUsuario ===
+          processItemFrete.Envolvidos.Solicitante.idSolicitante;
+
+        this.etapaAceitarProcessoFrete =
+          this.isFreteiro && processItemFrete.Status === 'A aceitar';
+
+        this.aComecarFrete =
+          this.isFreteiro && processItemFrete.Status === 'A Comecar';
+
+        this.emAndamentoFrete =
+          this.isFreteiro && processItemFrete.Status === 'Em Andamento';
+
+        this.aPagarFrete =
+          this.isFreteiro && processItemFrete.Status === 'A Pagar';
+
+        this.aAvaliarFrete =
+          this.isSolicitante && processItemFrete.Status === 'A Avaliar';
+
+        this.AvaliadoFrete =
+          this.isSolicitante && processItemFrete.Status === 'Avaliado';
 
         this.loadingProcessFreteiro =
-          profile?.IdUsuario ===
-            processItem?.Envolvidos?.Locatario?.idLocatario &&
-          processItem?.Status === 'A Avaliar';
+          this.isFreteiro &&
+          processItemFrete.Status !== 'A aceitar' &&
+          processItemFrete.Status !== 'A Comecar' &&
+          processItemFrete.Status !== 'Em Andamento' &&
+          processItemFrete.Status !== 'A Pagar';
       });
   }
 
   nextProcess() {
-    combineLatest([this.processItem, this.processFreteItem])
+    this.processItem.pipe(take(1), debounceTime(1000)).subscribe((response) => {
+      this.rentService.onSelectProcess(response._id);
+    });
+    this.processItemFrete
       .pipe(take(1), debounceTime(1000))
-      .subscribe(([process, processFrete]) => {
-        if (process) {
-          this.rentService.onSelectProcess(process._id);
-        }
-        if (processFrete) {
-          this.rentService.onSelectProcessFrete(processFrete._id);
-        }
+      .subscribe((response) => {
+        this.rentService.onSelectProcessFrete(response._id);
       });
   }
 
@@ -466,16 +522,131 @@ export class NegotiateComponent implements OnInit {
 
   // PROCESSO DE FRETE
 
-  acceptProcessFrete(selectedAutomobileId: string) {
-    this.processItem.pipe(take(1)).subscribe((response) => {
+  selectedAutomovelId = 'Nenhum';
+
+  selectAutomovel(automovelId: string) {
+    this.selectedAutomovelId = automovelId;
+  }
+
+  acceptProcessFrete() {
+    this.processItemFrete.pipe(take(1)).subscribe((response) => {
       this.rentService
-        .acceptProcessFrete(response._id, selectedAutomobileId)
+        .acceptProcessFrete(response._id, this.selectedAutomovelId)
         .subscribe((response) => {
           this.snackBar.open('Processo Aceito com Sucesso', undefined, {
             duration: 3000,
           });
         });
-      this.rentService.onSelectProcessFrete(response._id);
+      this.nextProcess();
     });
+  }
+  recuseProcessFrete() {
+    this.processItemFrete.pipe(take(1)).subscribe((response) => {
+      this.rentService
+        .recuseProcessFrete(response._id)
+        .subscribe((response) => {
+          this.snackBar.open('Processo Recusado com Sucesso', undefined, {
+            duration: 3000,
+          });
+        });
+      this.router.navigate(['web', 'main', 'home']);
+      this.nextProcess();
+    });
+  }
+
+  comecarProcessFrete() {
+    this.processItemFrete.pipe(take(1)).subscribe((response) => {
+      this.rentService.initProcessFrete(response._id).subscribe((response) => {
+        this.snackBar.open('Frete Iniciado com Sucesso', undefined, {
+          duration: 3000,
+        });
+      });
+      this.nextProcess();
+    });
+  }
+
+  concluirProcessFrete() {
+    this.processItemFrete.pipe(take(1)).subscribe((response) => {
+      this.rentService
+        .finishProcessFrete(response._id)
+        .subscribe((response) => {
+          this.snackBar.open('Frete Concluido com Sucesso', undefined, {
+            duration: 3000,
+          });
+        });
+      this.nextProcess();
+    });
+  }
+
+  verificarPagamento() {
+    this.processItemFrete.pipe(take(1)).subscribe((response) => {
+      this.rentService
+        .confirmPaymentFrete(response._id)
+        .subscribe((response) => {
+          this.snackBar.open(
+            'Processo de Frete Concluido com Sucesso',
+            undefined,
+            {
+              duration: 3000,
+            }
+          );
+        });
+      this.nextProcess();
+    });
+  }
+
+  value = 0;
+  myControlDescricao = new FormControl('');
+
+  avaliarFrete() {
+    combineLatest([this.userProfile, this.processItemFrete])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([profile, processItemFrete]) => {
+        const avaliacao: Avaliacao = {
+          Nivel: this.value,
+          Comentario: this.myControlDescricao.value
+            ? this.myControlDescricao.value
+            : 'Minha Avaliação',
+        };
+        this.rentService
+          .avaliarFreteiro(
+            profile.IdUsuario,
+            processItemFrete.Envolvidos.Freteiro.idFreteiro,
+            processItemFrete._id,
+            avaliacao
+          )
+          .subscribe((response) => {
+            this.snackBar.open('Avaliação enviada com Sucesso', undefined, {
+              duration: 3000,
+            });
+          });
+        this.nextProcess();
+      });
+  }
+
+  avaliarAluguel() {
+    combineLatest([this.userProfile, this.processItem])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([profile, processItem]) => {
+        const avaliacao: Avaliacao = {
+          Nivel: this.value,
+          Comentario: this.myControlDescricao.value
+            ? this.myControlDescricao.value
+            : 'Minha Avaliação',
+        };
+        this.rentService
+          .avaliarMaquina(
+            profile.IdUsuario,
+            processItem.Maquina.idMaquina,
+            processItem._id,
+            avaliacao
+          )
+          .subscribe((response) => {
+            this.snackBar.open('Avaliação enviada com Sucesso', undefined, {
+              duration: 3000,
+            });
+          });
+        this.nextProcess();
+      });
   }
 }
