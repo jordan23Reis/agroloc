@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateProcessoDeFreteDto } from './dto/create-processo-de-frete.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { ProcessoDeFrete } from './entities/processo-de-frete.entity';
@@ -14,8 +14,11 @@ export class ProcessoDeFreteService {
   constructor(
   @InjectModel(ProcessoDeFrete.name) 
   private processoDeFreteModel: Model<ProcessoDeFrete>,
+  @Inject(forwardRef(() => UsersService))
   private usersService: UsersService,
+  @Inject(forwardRef(() => MaquinaService))
   private maquinaService: MaquinaService,
+  @Inject(forwardRef(() => ProcessoDeAluguelService))
   private processoDeAluguelService: ProcessoDeAluguelService
   ){}
 
@@ -116,8 +119,8 @@ export class ProcessoDeFreteService {
         idMaquina: maquinaSolicitante?.id,
         Nome: maquinaSolicitante?.Nome,
         ImagemPrincipal: {
-          Url: maquinaSolicitante?.Url,
-          NomeArquivo: maquinaSolicitante?.NomeArquivo
+          Url: maquinaSolicitante?.ImagemPrincipal?.Url,
+          NomeArquivo: maquinaSolicitante?.ImagemPrincipal?.NomeArquivo
         }
       },
       Envolvidos:{
@@ -151,7 +154,6 @@ export class ProcessoDeFreteService {
   if(!maquinaSolicitante.ImagemPrincipal) {
     delete ProcessoDeFrete.Maquina.ImagemPrincipal;
   }
-
 
   const createdProcessoDeFrete = await this.processoDeFreteModel.create(ProcessoDeFrete);
   return createdProcessoDeFrete;

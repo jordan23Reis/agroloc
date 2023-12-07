@@ -76,6 +76,14 @@ export class Avaliacao {
     Comentario: string;
 
     @Prop({
+        type: mongoose.Types.ObjectId, 
+        required: false, 
+        minlength: AvaliacaoSchemaDtoRestraints.tamMinIdProcesso,
+        maxlength: AvaliacaoSchemaDtoRestraints.tamMaxIdProcesso,
+    })
+    idProcesso: mongoose.Types.ObjectId;
+
+    @Prop({
         type: UsuarioAvaliador, 
         required: true
     })
