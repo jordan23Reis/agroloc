@@ -15,7 +15,7 @@
     .content {
       display: flex;
       flex-direction: column;
-      width: 80%;
+      width: 90%;
       height: auto;
       align-items: center;
       margin-top: 35px;
@@ -28,7 +28,6 @@
       height: auto;
       min-height: 450px;
       max-height: 800px;
-
       justify-content: center;
       margin-bottom: 30px;
     }
@@ -93,7 +92,7 @@
       flex-direction: column;
       width: 40%;
       height: 100%;
-      box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.4);
     }
 
     .favorito {
@@ -243,7 +242,7 @@
       flex-direction: column;
       min-height: 200px;
       min-width: 80%;
-      box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.4);
       align-items: center;
       justify-content: center;
     }

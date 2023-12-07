@@ -183,6 +183,8 @@ export class NegotiateComponent implements OnInit {
     this.searchService.changeNavTab('Processo');
 
     this.dadosLocatario$.subscribe((response) => {
+      console.log(response);
+
       this.infoLocatario = response;
       this.infoLocatarioEndereco = response.CadastroComum?.Enderecos?.[0];
       this.infoLocatarioTelefone1 = response.CadastroComum?.Telefone?.[0];
@@ -190,10 +192,12 @@ export class NegotiateComponent implements OnInit {
     });
 
     this.dadosFreteiro$.subscribe((response) => {
+      console.log(response);
       this.infoFreteiro = response;
     });
 
     this.dadosLocador$.subscribe((response) => {
+      console.log(response);
       this.infoLocador = response;
     });
 
