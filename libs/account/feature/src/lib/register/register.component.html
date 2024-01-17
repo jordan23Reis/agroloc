@@ -60,7 +60,7 @@
           <a (click)="login()">Entrar</a>
         </div>
         <div style="flex: 1 1 auto"></div>
-        <button mat-raised-button color="primary" (click)="next()">
+        <button mat-raised-button color="primary" (click)="next(1)">
           Proximo
         </button>
       </div>
@@ -133,7 +133,7 @@
         <button mat-raised-button color="accent" (click)="back()">
           Voltar
         </button>
-        <button mat-raised-button color="primary" (click)="next()">
+        <button mat-raised-button color="primary" (click)="next(2)">
           Proximo
         </button>
       </div>
@@ -235,7 +235,7 @@
         <button mat-raised-button color="accent" (click)="back()">
           Voltar
         </button>
-        <button mat-raised-button color="primary" (click)="next()">
+        <button mat-raised-button color="primary" (click)="next(3)">
           Proximo
         </button>
       </div>
@@ -343,7 +343,7 @@
         <button mat-raised-button color="accent" (click)="back()">
           Voltar
         </button>
-        <button mat-raised-button color="primary" (click)="next()">
+        <button mat-raised-button color="primary" (click)="next(4)">
           Proximo
         </button>
       </div>
@@ -393,7 +393,12 @@
         <button mat-raised-button color="accent" (click)="reset()">
           Alterar
         </button>
-        <button mat-raised-button color="primary" (click)="register()">
+        <button
+          [disabled]="isLoadingRegister"
+          mat-raised-button
+          color="primary"
+          (click)="register()"
+        >
           Finalizar
         </button>
       </div>

@@ -596,7 +596,8 @@ export class NegotiateComponent implements OnInit {
   }
 
   value = 0;
-  myControlDescricao = new FormControl('');
+  myControlDescricaoAluguel = new FormControl('Minha Avaliação');
+  myControlDescricaoFrete = new FormControl('Minha Avaliação');
 
   avaliarFrete() {
     combineLatest([this.userProfile, this.processItemFrete])
@@ -604,9 +605,7 @@ export class NegotiateComponent implements OnInit {
       .subscribe(([profile, processItemFrete]) => {
         const avaliacao: Avaliacao = {
           Nivel: this.value,
-          Comentario: this.myControlDescricao.value
-            ? this.myControlDescricao.value
-            : 'Minha Avaliação',
+          Comentario: this.myControlDescricaoFrete.value!,
         };
         this.rentService
           .avaliarFreteiro(
@@ -630,9 +629,7 @@ export class NegotiateComponent implements OnInit {
       .subscribe(([profile, processItem]) => {
         const avaliacao: Avaliacao = {
           Nivel: this.value,
-          Comentario: this.myControlDescricao.value
-            ? this.myControlDescricao.value
-            : 'Minha Avaliação',
+          Comentario: this.myControlDescricaoAluguel.value!,
         };
         this.rentService
           .avaliarMaquina(
