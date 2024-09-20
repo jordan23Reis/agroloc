@@ -1,1 +1,85 @@
-<p>home works!</p>
+<div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
+    <div class="cardInitial">
+        <p-galleria [value]="listOneMachineryCategory.length !== 0 ? listOneMachineryCategory : images "
+            [showIndicators]="true" [showThumbnails]="false" [showItemNavigators]="true" [circular]="true"
+            [autoPlay]="true" [transitionInterval]="3000" [changeItemOnIndicatorHover]="true"
+            [responsiveOptions]="responsiveOptionsInitial" [containerStyle]="{ 'max-width': '100%' }">
+            <ng-template pTemplate="item" let-item>
+                <img (click)="onSelectedCategory(item.Category)"
+                    [src]="item.Machinery === undefined ? 'https://th.bing.com/th/id/R.c95aa3a74d8b27cf0307dae454600865?rik=ccCHC0htJbJuCQ&pid=ImgRaw&r=0'  : item.Machinery"
+                    style="width: 100%;height: 350px;display: block; object-fit: cover; cursor: pointer;" />
+            </ng-template>
+            <ng-template pTemplate="caption" let-item>
+                <h1 style="margin-bottom: .5rem; color: #ffffff;margin-left: 100px;">{{ item.Category }}</h1>
+            </ng-template>
+        </p-galleria>
+    </div>
+
+    <div class="cardMessage">
+        <p-messages severity="info">
+            <ng-template pTemplate>
+                <div class="ml-2" style="margin-right: 30px; ">Bem-Vindo ao
+                    Agroloc</div>
+                <div style="flex: 1 1 auto;"></div>
+                <mat-icon style="width: 30px; height: 30px; font-size: 30px;">agriculture</mat-icon>
+                <div class="ml-2" style="margin-left: 15px;max-width: 20%; ">Alugue maquinários agricolos</div>
+                <div style="flex: 1 1 auto;"></div>
+                <mat-icon style="width: 30px; height: 30px; font-size: 30px;">paid</mat-icon>
+                <div class="ml-2" style="margin-left: 15px;max-width: 20%;">Negocie seus maquinários</div>
+                <div style="flex: 1 1 auto;"></div>
+                <mat-icon style="width: 30px; height: 30px; font-size: 30px;">local_shipping</mat-icon>
+                <div class="ml-2" style="margin-left: 15px;max-width: 15%;">Encontre fretes para realizar</div>
+                <div style="flex: 1 1 auto;"></div>
+            </ng-template>
+        </p-messages>
+    </div>
+
+
+    <div *ngFor="let item of listMachineryCategory" class="card">
+        <div style="display: flex; flex-direction: row; margin-left: 45px; margin-bottom: 30px;">
+
+            <h2 style="margin-right: 20px;">{{item.Category}}</h2>
+
+            <a (click)="onSelectedCategory(item.Category)"
+                style="display: flex;align-items: center;font-size: large; text-decoration: none; color: #3483fa; position: relative; top: 2px; cursor: pointer;">Ver
+                mais
+                <mat-icon>chevron_right</mat-icon></a>
+
+
+        </div>
+
+        <p-carousel [value]="item.Machinery" [numVisible]="3" [numScroll]="1" [responsiveOptions]="responsiveOptions">
+            <ng-template let-product pTemplate="item">
+                <div class="product-item">
+                    <div class="product-item-content" (click)="onSelectedItem(product._id)"
+                        style="display: flex;flex-direction: column;align-items: center; justify-content: center; cursor: pointer;  padding-top: 15px;">
+                        <div class="mb-3" style=" align-items: center; justify-content: center; display: flex;">
+                            <img [src]="product.ImagemPrincipal.Url" [alt]="product.name" class="product-image"
+                                style="width: 80%;" />
+                        </div>
+                        <div style="width: 80%;">
+                            <h4 class="mb-1">{{ product.Nome }}</h4>
+                            <div style="display: flex; flex-direction: row; width: 100%;">
+                                <h2>R${{ product.Preco.ValorPorTipo }}</h2>
+                                <div style="flex: 1 1 auto;"></div>
+                                <h4 class="mt-0 mb-3" style="align-self: center;">{{ product.Preco.Tipo.Nome }}</h4>
+                                <div style="flex: 1 1 auto;"></div>
+                                <h3 style="position: relative; left: 15px;">{{
+                                    calculateAverageRating(product.Avaliacoes) }}</h3>
+                                <button mat-icon-button class="example-icon"
+                                    aria-label="Example icon-button with star rate icon"
+                                    style="position: relative; top: 5px; left: 15px;">
+                                    <mat-icon class="star">star</mat-icon>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-carousel>
+    </div>
+    <button mat-fab color="primary" class="scrollTopButton" (click)="scrollToTop()" *ngIf="showButton$ | async">
+        <mat-icon>expand_less</mat-icon>
+    </button>
+</div>

@@ -35,10 +35,7 @@ export class MachineryService {
     return this.http.delete(`/api/maquina/${machineryId}`);
   }
 
-  updateMachinery(
-    machineryId: string,
-    machineryData: Machinery
-  ): Observable<any> {
+  updateMachinery(machineryId: string, machineryData: any): Observable<any> {
     return this.http.put(`/api/maquina/${machineryId}`, machineryData);
   }
 

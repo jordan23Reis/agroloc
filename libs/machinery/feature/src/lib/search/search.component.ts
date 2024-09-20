@@ -51,12 +51,8 @@ export class SearchComponent implements OnInit {
   viewportScroller = inject(ViewportScroller);
   changeDetectorRef = inject(ChangeDetectorRef);
 
-  searchData = this.searchService.searchData$.pipe(
-    debounceTime(1000),
-    map((response) => {
-      return response;
-    })
-  );
+  searchData = this.searchService.searchData$.pipe(debounceTime(1000));
+  searchQtde = this.searchService.searchQtde$.pipe(debounceTime(1000));
 
   loadingRequest = this.loader.active$;
   arrayDeItensPreview = new Array(10);
@@ -77,6 +73,7 @@ export class SearchComponent implements OnInit {
     })
   );
   elementScrollRef: CdkScrollable;
+  chipSelected: string;
 
   isLogged = this.authService.IsLogged();
   notLogged = this.authService.IsLogged().pipe(
@@ -100,7 +97,7 @@ export class SearchComponent implements OnInit {
         const currentScrollPosition =
           response.getElementRef().nativeElement.scrollTop;
 
-        if (currentScrollPosition > 600) {
+        if (currentScrollPosition > 400) {
           console.log('passei');
 
           this.showButton.next(true);
@@ -110,6 +107,12 @@ export class SearchComponent implements OnInit {
         this.lastScrollPosition = currentScrollPosition;
       }
     });
+
+    this.searchService.searchFilter$.subscribe((response) => {
+      this.chipSelected = response.Categoria;
+    });
+
+    this.searchService.changeNavTab('Pesquisa');
   }
 
   scrollToTop() {

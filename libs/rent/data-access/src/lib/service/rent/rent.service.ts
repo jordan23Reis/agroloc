@@ -10,7 +10,7 @@ import {
   take,
 } from 'rxjs';
 import { DadosTransacao } from '../../entities/negotiate.interface';
-import { AuthService } from '@agroloc/account/data-acess';
+import { AccountService, AuthService } from '@agroloc/account/data-acess';
 import { SearchService } from '@agroloc/shared/data-access';
 import { Router } from '@angular/router';
 import { AluguelProcesso } from '../../entities';
@@ -25,9 +25,11 @@ export class RentService {
   searchService = inject(SearchService);
   authService = inject(AuthService);
   router = inject(Router);
+  accountService = inject(AccountService);
 
   userProfile = this.authService.userProfile$;
   selectData = this.searchService.itemSelect$;
+  dataAccount = this.accountService.userAccount$;
 
   selectedProcess = new ReplaySubject<AluguelProcesso>(1);
   selectedProcess$ = this.selectedProcess.asObservable().pipe(
@@ -52,12 +54,9 @@ export class RentService {
     debounceTime(100),
     map((response) => {
       const idmaquina = response?.Maquina?.idMaquina;
-      console.log(idmaquina);
-
       if (idmaquina) {
         this.searchService.onSelectForProcess(idmaquina);
       }
-
       return response;
     })
   );
@@ -71,10 +70,6 @@ export class RentService {
       .pipe(
         catchError((error) => {
           console.log(error);
-
-          this.snackbar.open('Erro ao Procurar Processos', undefined, {
-            duration: 3000,
-          });
           throw new Error(error);
         })
       )
@@ -88,6 +83,7 @@ export class RentService {
       .get(`/api/processo-de-frete/${idprocessodefrete}`, {})
       .pipe(
         catchError((error) => {
+          console.log(error);
           this.snackbar.open('Erro ao Procurar Processos', undefined, {
             duration: 3000,
           });
@@ -104,9 +100,6 @@ export class RentService {
       .get(`/api/processo-de-aluguel/abertos/${idusuario}`, {})
       .pipe(
         catchError((error) => {
-          this.snackbar.open('Erro ao Procurar Lista', undefined, {
-            duration: 3000,
-          });
           throw new Error(error);
         })
       );
@@ -117,27 +110,28 @@ export class RentService {
       .get(`/api/processo-de-frete/abertos/${idusuario}`, {})
       .pipe(
         catchError((error) => {
-          this.snackbar.open('Erro ao Procurar Lista', undefined, {
-            duration: 3000,
-          });
           throw new Error(error);
         })
       );
   }
 
-  listProcessSubscribe = this.authService.userProfile$.subscribe((response) => {
-    this.findListProcess(response.IdUsuario).subscribe((response) => {
+  listProcessSubscribe = combineLatest([
+    this.dataAccount,
+    this.userProfile,
+  ]).subscribe(([account, profile]) => {
+    this.findListProcess(profile.IdUsuario).subscribe((response) => {
       this.listProcess.next(response as AluguelProcesso[]);
     });
   });
 
-  listProcessFreteSubscribe = this.authService.userProfile$.subscribe(
-    (response) => {
-      this.findListProcessFrete(response.IdUsuario).subscribe((response) => {
-        this.listProcessFrete.next(response as ProcessoDeFrete[]);
-      });
-    }
-  );
+  listProcessFreteSubscribe = combineLatest([
+    this.dataAccount,
+    this.userProfile,
+  ]).subscribe(([account, profile]) => {
+    this.findListProcessFrete(profile.IdUsuario).subscribe((response) => {
+      this.listProcessFrete.next(response as ProcessoDeFrete[]);
+    });
+  });
 
   userCreateProcess() {
     combineLatest([this.selectData, this.userProfile])
@@ -163,6 +157,7 @@ export class RentService {
             this.snackbar.open('Processo Criado', undefined, {
               duration: 3000,
             });
+            this.accountService.nextAccount(profile.IdUsuario);
             this.router.navigate(['web', 'main', 'negotiate']);
           });
       });
@@ -317,6 +312,36 @@ export class RentService {
       );
   }
 
+  userCreateProcessFrete(selectedFreteiroId: string, value: number) {
+    combineLatest([this.selectData, this.userProfile, this.selectedProcess$])
+      .pipe(take(1), debounceTime(1000))
+      .subscribe(([machinery, profile, process]) => {
+        this.createProcessFrete(
+          process._id,
+          machinery._id,
+          selectedFreteiroId,
+          profile.IdUsuario,
+          machinery.Endereco._id,
+          value
+        )
+          .pipe(
+            catchError((error) => {
+              console.log(error);
+              this.snackbar.open('Erro ao criar Processo', undefined, {
+                duration: 3000,
+              });
+              throw new Error(error);
+            })
+          )
+          .subscribe((response) => {
+            this.selectedProcess.next(response as AluguelProcesso);
+            this.snackbar.open('Processo Criado', undefined, {
+              duration: 3000,
+            });
+          });
+      });
+  }
+
   createProcessFrete(
     idprocessodealuguel: any,
     idmaquina: any,
@@ -325,24 +350,15 @@ export class RentService {
     idendereco: any,
     valorfrete: any
   ) {
-    return this.http
-      .post(
-        `/api/processo-de-frete/${idprocessodealuguel}/${idmaquina}/${idfreteiro}/${idsolicitante}/${idendereco}/${valorfrete}`,
-        {}
-      )
-      .pipe(
-        catchError((error) => {
-          this.snackbar.open('Erro ao criar processo de Frete', undefined, {
-            duration: 3000,
-          });
-          throw new Error(error);
-        })
-      );
+    return this.http.post(
+      `/api/processo-de-frete/${idprocessodealuguel}/${idmaquina}/${idfreteiro}/${idsolicitante}/${idendereco}/${valorfrete}`,
+      {}
+    );
   }
-  acceptProcessFrete(idprocessodealuguel: any, idautomovel: any) {
+  acceptProcessFrete(idprocessodefrete: any, idautomovel: any) {
     return this.http
       .patch(
-        `/api/processo-de-frete/mudarstatus/aceitar/${idprocessodealuguel}/${idautomovel}`,
+        `/api/processo-de-frete/mudarstatus/aceitar/${idprocessodefrete}/${idautomovel}`,
         {}
       )
       .pipe(
@@ -352,10 +368,10 @@ export class RentService {
         })
       );
   }
-  recuseProcessFrete(idprocessodealuguel: any) {
+  recuseProcessFrete(idprocessodefrete: any) {
     return this.http
       .patch(
-        `/api/processo-de-frete/mudarstatus/recusar/${idprocessodealuguel}`,
+        `/api/processo-de-frete/mudarstatus/recusar/${idprocessodefrete}`,
         {}
       )
       .pipe(
@@ -395,7 +411,7 @@ export class RentService {
         })
       );
   }
-  confirmPaymentFrte(idprocessodefrete: any) {
+  confirmPaymentFrete(idprocessodefrete: any) {
     return this.http
       .patch(
         `/api/processo-de-frete/mudarstatus/confirmarpagamento/${idprocessodefrete}`,
@@ -406,6 +422,84 @@ export class RentService {
           this.snackbar.open('Erro ao Confirmar Pagamento', undefined, {
             duration: 3000,
           });
+          throw new Error(error);
+        })
+      );
+  }
+
+  avaliarFreteiro(
+    idusuario: any,
+    idfreteiroavaliacao: any,
+    idprocessodefrete: any,
+    avaliacao: any
+  ) {
+    return this.http
+      .post(
+        `/api/avaliacao/freteiro/${idusuario}/${idfreteiroavaliacao}/${idprocessodefrete}`,
+        avaliacao
+      )
+      .pipe(
+        catchError((error) => {
+          console.log(error);
+
+          this.snackbar.open('Erro ao Avaliar Freteiro', undefined, {
+            duration: 3000,
+          });
+          throw new Error(error);
+        })
+      );
+  }
+
+  atualizarAvaliacaoFreteiro(idavaliacao: any, avaliacao: any) {
+    return this.http
+      .put(`/api/avaliacao/freteiro/${idavaliacao}`, avaliacao)
+      .pipe(
+        catchError((error) => {
+          this.snackbar.open(
+            'Erro ao Atualizar Avaliação de Freteiro',
+            undefined,
+            {
+              duration: 3000,
+            }
+          );
+          throw new Error(error);
+        })
+      );
+  }
+
+  avaliarMaquina(
+    idusuario: any,
+    idmaquina: any,
+    idprocessodealuguel: any,
+    avaliacao: any
+  ) {
+    return this.http
+      .post(
+        `/api/avaliacao/maquina/${idusuario}/${idmaquina}/${idprocessodealuguel}`,
+        avaliacao
+      )
+      .pipe(
+        catchError((error) => {
+          this.snackbar.open('Erro ao Avaliar Máquina', undefined, {
+            duration: 3000,
+          });
+          throw new Error(error);
+        })
+      );
+  }
+
+  atualizarAvaliacaoMaquina(idavaliacao: any, avaliacao: any) {
+    return this.http
+      .put(`/api/avaliacao/maquina/${idavaliacao}`, avaliacao)
+      .pipe(
+        catchError((error) => {
+          this.snackbar.open(
+            'Erro ao Atualizar Avaliação de Máquina',
+            undefined,
+            {
+              duration: 3000,
+            }
+          );
           throw new Error(error);
         })
       );

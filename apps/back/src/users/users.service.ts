@@ -246,7 +246,10 @@ export class UsersService {
     if (userFound.Login.Tipo !== 'Freteiro') {
       cadastroMongoose.CadastroFreteiro = undefined;
     } else {
-      userFound.CadastroFreteiro = cadastroMongoose.CadastroFreteiro;
+      userFound.CadastroFreteiro.CNH = cadastroMongoose.CadastroFreteiro.CNH;
+      userFound.CadastroFreteiro.EstaAtivo =
+        cadastroMongoose.CadastroFreteiro.EstaAtivo;
+
       if (
         cadastro.CadastroFreteiro.EstaAtivo == true &&
         cadastro.CadastroFreteiro.IdEndereco == undefined
@@ -392,7 +395,9 @@ export class UsersService {
     ) {
       return foundUser.InformacoesBancarias;
     } else {
-        throw new Error("Não há Informações bancarias registradas para este usuário")
+      throw new Error(
+        'Não há Informações bancarias registradas para este usuário'
+      );
     }
   }
 

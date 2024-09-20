@@ -1,7 +1,7 @@
 import { StepperOrientation } from '@angular/cdk/stepper';
 import { Component, inject } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
 import { Platform } from '@angular/cdk/platform';
@@ -96,8 +96,50 @@ export class AccountRegisterComponent {
   container = 1;
   isMobile = this.platform.ANDROID || this.platform.IOS;
 
-  next() {
-    this.container += 1;
+  next(step: number) {
+    switch (step) {
+      case 1:
+        if (
+          this.firstFormGroup.get('Nome')!.valid &&
+          this.firstFormGroup.get('Sobrenome')!.valid
+        ) {
+          this.container += 1;
+        }
+        break;
+      case 2:
+        if (
+          this.firstFormGroup.get('Sexo')!.valid &&
+          this.firstFormGroup.get('Nascimento')!.valid
+        ) {
+          this.container += 1;
+        }
+        break;
+      case 3:
+        if (
+          this.firstFormGroup.get('Email')!.valid &&
+          this.firstFormGroup.get('Senha')!.valid &&
+          this.firstFormGroup.get('ConfSenha')!.valid
+        ) {
+          this.container += 1;
+        }
+        break;
+      case 4:
+        if (
+          this.firstFormGroup.get('Nome')!.valid &&
+          this.firstFormGroup.get('Sobrenome')!.valid
+        ) {
+          this.container += 1;
+        }
+        break;
+      default:
+        if (
+          this.firstFormGroup.get('Nome')!.valid &&
+          this.firstFormGroup.get('Sobrenome')!.valid
+        ) {
+          this.container += 1;
+        }
+        break;
+    }
   }
 
   doubloNext() {
@@ -122,7 +164,7 @@ export class AccountRegisterComponent {
 
   isFreteiro() {
     this.freteiro();
-    this.next();
+    this.next(1);
   }
 
   isComum() {
@@ -134,11 +176,14 @@ export class AccountRegisterComponent {
     this.router.navigate(['web', 'login']);
   }
 
+  isLoadingRegister = false;
+
   register() {
     if (
       this.firstFormGroup.valid &&
       this.firstFormGroup.value.Senha === this.firstFormGroup.value.ConfSenha
     ) {
+      this.isLoadingRegister = true;
       let comumUserData;
       let driveUserData;
       if (this.firstFormGroup.value.Freteiro) {
@@ -178,16 +223,23 @@ export class AccountRegisterComponent {
         .register(
           this.firstFormGroup.value.Freteiro ? driveUserData : comumUserData
         )
+        .pipe(
+          catchError((value) => {
+            console.log(value);
+            this.isLoadingRegister = false;
+            return value;
+          })
+        )
         .subscribe((response) => {
           this.snackBar.open('Conta criada com Sucesso!!', 'Fechar', {
-            duration: 3000,
+            duration: 1500,
           });
           setTimeout(() => {
             this.login();
             this.snackBar.open('Agora efetue o Login da sua Conta', 'Fechar', {
               duration: 3000,
             });
-          }, 4000);
+          }, 2000);
 
           registerSubscribe.unsubscribe();
         });

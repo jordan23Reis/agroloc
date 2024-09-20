@@ -92,7 +92,17 @@ export class DetailsComponent {
   urlMainImage = '';
   focusUrl = '';
 
-  searchItem = this.searchService.itemSelect$;
+  searchItemAvaliacoes: any;
+  value = 5;
+
+  searchItem = this.searchService.itemSelect$.pipe(
+    map((response) => {
+      console.log(response);
+      this.searchItemAvaliacoes = response.Avaliacoes;
+
+      return response;
+    })
+  );
 
   searchItemSubscribe = this.searchService.itemSelect$.subscribe((response) => {
     this.machineryId = response._id;
@@ -148,6 +158,10 @@ export class DetailsComponent {
       updated: new Date('1/18/16'),
     },
   ];
+
+  constructor() {
+    this.searchService.changeNavTab('Detalhes');
+  }
 
   addFavorite(machineryId: string) {
     this.authService

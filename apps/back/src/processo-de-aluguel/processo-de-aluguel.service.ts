@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateProcessoDeAluguelDto } from './dto/create-processo-de-aluguel.dto';
 import { UpdateProcessoDeAluguelDto } from './dto/update-processo-de-aluguel.dto';
 import { UsersService } from '../users/users.service';
@@ -14,8 +14,12 @@ export class ProcessoDeAluguelService {
   constructor(
     @InjectModel(ProcessoDeAluguel.name)
     private processoDeAluguelModel: Model<ProcessoDeAluguel>,
+
+    @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
+    @Inject(forwardRef(() => MaquinaService))
     private maquinaService: MaquinaService,
+    @Inject(forwardRef(() => TipoPrecoService))
     private tipoPrecoService: TipoPrecoService
   ) {}
 

@@ -4,11 +4,30 @@
     <mat-divider></mat-divider>
     <div class="head">
       <span class="example-spacer"></span>
-      <h3>Lista de Processos</h3>
+
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <mat-icon style="position: relative; top: 1px">event_note</mat-icon>
+        <h2>Lista de Processos</h2>
+      </div>
 
       <span class="example-spacer"></span>
+
+      <mat-icon
+        class="messageLoading"
+        *ngIf=" ((listProcessFrete | async)?.[0] === undefined) && ((listProcess | async)?.[0] === null)  "
+        style="height: 48px; width: 48px; font-size: 48px; margin-top: 10px"
+        >search</mat-icon
+      >
       <h3
-        *ngIf="((listProcess | async)?.[0] === undefined) && ((listProcessFrete | async)?.[0] === undefined) "
+        class="messageLoading"
+        *ngIf=" ((listProcessFrete | async)?.[0] === undefined) && ((listProcess | async)?.[0] === null) "
       >
         Nenhum Processo encontrado
       </h3>
@@ -20,7 +39,11 @@
 
       <div class="dividerInfo">
         <mat-divider></mat-divider>
+
         <div class="informacoes">
+          <mat-divider [vertical]="true"></mat-divider>
+          <span class="example-spacer"></span>
+          <mat-icon style="margin-right: 15px">agriculture</mat-icon>
           <h4
             class="favoriteName"
             routerLink="details"
@@ -42,6 +65,9 @@
       <div class="dividerInfo">
         <mat-divider></mat-divider>
         <div class="informacoes">
+          <mat-divider [vertical]="true"></mat-divider>
+          <span class="example-spacer"></span>
+          <mat-icon style="margin-right: 15px">local_shipping</mat-icon>
           <h4
             class="favoriteName"
             routerLink="details"

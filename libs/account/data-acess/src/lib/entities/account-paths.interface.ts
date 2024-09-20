@@ -7,6 +7,7 @@ interface Login {
 
 // Representa os dados do usuário
 export interface Account {
+  _id?: string;
   Login: Login;
   CadastroComum?: CadastroComum;
   CadastroFreteiro?: CadastroFreteiro;

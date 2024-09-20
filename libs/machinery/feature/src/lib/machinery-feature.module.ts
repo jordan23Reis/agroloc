@@ -22,6 +22,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ImageModule } from 'primeng/image';
 import { MatDialogModule } from '@angular/material/dialog';
+import { EditMachineryComponent } from './edit-machinery/edit-machinery.component';
+import { RatingModule } from 'primeng/rating';
+import { AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   imports: [
@@ -44,8 +50,18 @@ import { MatDialogModule } from '@angular/material/dialog';
     ScrollingModule,
     ImageModule,
     MatDialogModule,
+    RatingModule,
+    AsyncPipe,
+    FormsModule,
+    MatSnackBarModule,
+    MatAutocompleteModule,
   ],
-  declarations: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
+  declarations: [
+    MachineryRegisterComponent,
+    SearchComponent,
+    DetailsComponent,
+    EditMachineryComponent,
+  ],
   exports: [MachineryRegisterComponent, SearchComponent, DetailsComponent],
 })
 export class MachineryFeatureModule {}

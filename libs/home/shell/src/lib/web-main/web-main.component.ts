@@ -9,9 +9,16 @@ import {
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Platform } from '@angular/cdk/platform';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { AccountService, AuthService } from '@agroloc/account/data-acess';
-import { Observable, map, startWith, take } from 'rxjs';
+import {
+  Observable,
+  ReplaySubject,
+  debounceTime,
+  map,
+  startWith,
+  take,
+} from 'rxjs';
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
 import {
   LoaderFacade,
@@ -22,6 +29,11 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { MachineryService } from '@agroloc/machinery/data-access';
 import { MatSelect } from '@angular/material/select';
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
+
+interface ListTabControl {
+  nome: string;
+  url: string;
+}
 
 @Component({
   selector: 'agroloc-web-main',
@@ -48,6 +60,7 @@ export class WebMainComponent {
   @ViewChild('valorMinimo') valorMinimoInput: ElementRef;
   @ViewChild('tipoPreco') tipoPrecoInput: MatSelect;
   @ViewChild('ordenadoPor') ordenadoPorInput: MatSelect;
+  @ViewChild('navTabs') navTabs: MatTabGroup;
 
   userDate = this.accountService.userAccount$;
 
@@ -180,7 +193,72 @@ export class WebMainComponent {
     this.sidenav.toggle();
   });
 
-  links = [{ nome: 'Home', url: 'search' }];
+  tabListControl = new ReplaySubject<ListTabControl[]>(1);
+  tabListControl$ = this.tabListControl.asObservable();
+
+  onLoggedLinks = [
+    { nome: 'Inicio', url: 'home' },
+    { nome: 'Pesquisa', url: 'search' },
+    { nome: 'Gerenciar Conta', url: 'management' },
+  ];
+
+  notLoggedLinks = [
+    { nome: 'Inicio', url: 'home' },
+    { nome: 'Pesquisa', url: 'search' },
+  ];
+
+  activeTab = this.searchService.navTabControl$
+    .pipe(debounceTime(500))
+    .subscribe((response) => {
+      const moveTab = response;
+      let index = 0;
+      let findTab = false;
+      this.tabListControl$.subscribe((response) => {
+        response.map((value) => {
+          if (value.nome === moveTab) {
+            findTab = true;
+            this.mudarAba(index);
+          }
+          index += 1;
+        });
+      });
+
+      if (findTab === false) {
+        index = 0;
+        if (response === 'Detalhes') {
+          this.tabListControl$
+            .pipe(
+              take(1),
+              map((response) => {
+                response.push({ nome: 'Detalhes', url: 'details' });
+                return response;
+              })
+            )
+            .subscribe();
+        }
+        if (response === 'Processo') {
+          this.tabListControl$
+            .pipe(
+              take(1),
+              map((response) => {
+                response.push({ nome: 'Processo', url: 'negotiate' });
+                return response;
+              })
+            )
+            .subscribe();
+        }
+
+        this.tabListControl$.subscribe((response) => {
+          response.map((value) => {
+            if (value.nome === moveTab) {
+              findTab = true;
+              this.mudarAba(index);
+            }
+            index += 1;
+          });
+        });
+      }
+    });
 
   constructor() {
     this.isDarkMode =
@@ -192,33 +270,24 @@ export class WebMainComponent {
       localStorage.setItem('prefers-color-scheme', 'light');
       document.body.classList.remove('darkMode');
     }
+
+    this.searchService.searchFilter$
+      .pipe(take(1), debounceTime(1000))
+      .subscribe((response) => {
+        this.valorMaximo.setValue(response.PrecoMax);
+        this.valorMinimo.setValue(response.PrecoMin);
+        this.tipoPreco.setValue(response.TipoPreco);
+        this.ordenadoPor.setValue(response.Ordem);
+      });
+
+    this.authService.IsLogged().subscribe((response) => {
+      if (response) {
+        this.tabListControl.next(this.onLoggedLinks);
+      } else {
+        this.tabListControl.next(this.notLoggedLinks);
+      }
+    });
   }
-
-  // ngAfterViewInit() {
-  //   this.scrollDispatcher.scrolled().subscribe((response) => {
-  //     if (response instanceof CdkScrollable) {
-  //       const scrollPosition = response.getElementRef().nativeElement.scrollTop;
-  //       console.log('Scroll Position:', scrollPosition);
-  //     }
-
-  //     const toolbar = document.querySelector('.toolbar');
-  //     window.addEventListener('scroll', () => {
-  //       const currentScrollPosition = window.scrollY;
-
-  //       if (currentScrollPosition > this.lastScrollPosition) {
-  //         // Rolagem para baixo
-  //         toolbar?.classList.add('toolbar-hidden');
-  //         toolbar?.classList.remove('toolbar-visible');
-  //       } else {
-  //         // Rolagem para cima
-  //         toolbar?.classList.remove('toolbar-hidden');
-  //         toolbar?.classList.add('toolbar-visible');
-  //       }
-
-  //       this.lastScrollPosition = currentScrollPosition;
-  //     });
-  //   });
-  // }
 
   remThema() {
     document.body.classList.remove('darkMode');
@@ -276,14 +345,22 @@ export class WebMainComponent {
   }
 
   moveUrl(event: MatTabChangeEvent) {
-    const link = this.links[event.index];
-    if (this.activeLink !== link.url) {
-      this.activeLink = link.url;
-      if (this.isMobile) {
-        this.router.navigateByUrl(`mob/main/${link.url}`);
-      } else {
-        this.router.navigateByUrl(`web/main/${link.url}`);
+    this.tabListControl$.pipe(take(1)).subscribe((response) => {
+      const link = response[event.index];
+      if (this.activeLink !== link.url) {
+        this.activeLink = link.url;
+        if (this.isMobile) {
+          this.router.navigateByUrl(`mob/main/${link.url}`);
+        } else {
+          this.router.navigateByUrl(`web/main/${link.url}`);
+        }
       }
+    });
+  }
+
+  mudarAba(index: number) {
+    if (this.navTabs && this.navTabs.selectedIndex !== index) {
+      this.navTabs.selectedIndex = index;
     }
   }
 

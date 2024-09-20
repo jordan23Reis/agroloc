@@ -266,7 +266,9 @@ export class MaquinaService {
       const select = {
         Endereco: 0,
       };
-      const foundMaquina = await this.maquinaModel.findById(id).select(select);
+      const foundMaquina = (
+        await this.maquinaModel.findById(id).select(select)
+      ).populate('Avaliacoes');
       return foundMaquina;
     } catch (e) {
       return e;

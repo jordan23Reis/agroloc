@@ -8,6 +8,7 @@
           <mat-chip-option
             *ngFor="let item of allCategories | async"
             (selectionChange)="onChipSelectionChange($event, item.Nome)"
+            [selected]="chipSelected === item.Nome"
             >{{ item.Nome }}</mat-chip-option
           >
         </mat-chip-listbox>
@@ -71,8 +72,11 @@
               *ngIf="(loadingRequest | async) === true || intervalLoading"
               class="card_skeleton card_section_price"
             ></div>
-            <h1 *ngIf="(loadingRequest | async) === false && !intervalLoading"  style="cursor: pointer"
-            (click)="selectItem(item._id)">
+            <h1
+              *ngIf="(loadingRequest | async) === false && !intervalLoading"
+              style="cursor: pointer"
+              (click)="selectItem(item._id)"
+            >
               R${{ item.Preco.ValorPorTipo }}
             </h1>
             <div
@@ -162,7 +166,7 @@
       <mat-icon>expand_less</mat-icon>
     </button>
     <mat-paginator
-      [length]="paginatorLength(searchData | async)"
+      [length]="searchQtde | async"
       [pageSize]="pageSize"
       [pageSizeOptions]="[5, 10, 25]"
       (page)="onPageChange($event)"

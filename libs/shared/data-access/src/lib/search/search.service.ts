@@ -44,11 +44,15 @@ export class SearchService {
   searchFilter = new ReplaySubject<SearchFilter>(1);
   searchFilter$ = this.searchFilter.asObservable();
 
+  searchQtde = new ReplaySubject<number>(1);
+  searchQtde$ = this.searchQtde.asObservable();
+
+  navTabControl = new ReplaySubject<string>(1);
+  navTabControl$ = this.navTabControl.asObservable();
+
   searchControlSubscribe = this.searchFilter$
     .pipe(debounceTime(1000))
     .subscribe((response) => {
-      console.log(response);
-
       this.searchMachineries(
         response.Quantidade,
         response.Pagina,
@@ -63,15 +67,34 @@ export class SearchService {
         .subscribe((response) => {
           this.searchData.next(response);
         });
+
+      this.searchMachineries(
+        null,
+        null,
+        response.Busca,
+        response.Categoria,
+        response.TipoPreco,
+        response.PrecoMin,
+        response.PrecoMax,
+        response.Ordem
+      )
+        .pipe(take(1))
+        .subscribe((response) => {
+          this.searchQtde.next(response.length);
+        });
     });
 
   constructor() {
     this.searchFilter.next(this.initialFilter);
   }
 
+  changeNavTab(page: string) {
+    this.navTabControl.next(page);
+  }
+
   searchMachineries(
-    quantidadePorPagina: number,
-    page: number,
+    quantidadePorPagina: number | null,
+    page: number | null,
     busca: string,
     categoria: string,
     tipoPreco: string,
@@ -80,8 +103,11 @@ export class SearchService {
     ordernarPor: string
   ): Observable<Maquina[]> {
     const params = new HttpParams()
-      .set('quantidadePorPagina', quantidadePorPagina.toString())
-      .set('page', page.toString())
+      .set(
+        'quantidadePorPagina',
+        quantidadePorPagina ? quantidadePorPagina.toString() : 999999
+      )
+      .set('page', page ? page.toString() : 0)
       .set('busca', busca)
       .set('categoria', categoria)
       .set('tipoPreco', tipoPreco)
@@ -89,6 +115,19 @@ export class SearchService {
       .set('precoMax', precoMax.toString())
       .set('ordernarPor', ordernarPor);
 
+    return this.http.get<Maquina[]>(`/api/maquina/`, { params });
+  }
+
+  searchMachineriesAll(): Observable<Maquina[]> {
+    const params = new HttpParams();
+    return this.http.get<Maquina[]>(`/api/maquina/`, { params });
+  }
+  searchMachineriesForCategory(categoria: string): Observable<Maquina[]> {
+    const params = new HttpParams().set('categoria', categoria);
+    return this.http.get<Maquina[]>(`/api/maquina/`, { params });
+  }
+  searchMachineriesForOrder(ordernarPor: string): Observable<Maquina[]> {
+    const params = new HttpParams().set('ordernarPor', ordernarPor);
     return this.http.get<Maquina[]>(`/api/maquina/`, { params });
   }
 

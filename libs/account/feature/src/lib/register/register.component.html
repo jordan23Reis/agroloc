@@ -1,219 +1,407 @@
-<form
-  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
-  [formGroup]="firstFormGroup"
-  *ngIf="container === 1"
->
-  <div class="logo">Agroloc</div>
-  <mat-form-field class="matClass">
-    <mat-label>Nome</mat-label>
-    <input matInput formControlName="Nome" placeholder="Ex: Carol" required />
-  </mat-form-field>
-  <mat-form-field class="matClass">
-    <mat-label>Sobrenome</mat-label>
-    <input
-      matInput
-      formControlName="Sobrenome"
-      placeholder="Ex: Ferreira.."
-      required
-    />
-  </mat-form-field>
-  <div class="registerOrLogin">
-    <div>
-      <p>Ja possui conta?</p>
-      <a (click)="login()">Entrar</a>
-    </div>
-    <button mat-raised-button color="primary" (click)="next()">Proximo</button>
-  </div>
-
-  <div class="line">
-    <p class="pline"></p>
-    <p>Ou</p>
-    <p class="pline"></p>
-  </div>
-  <div class="googleRegister">
-    <button class="buttonGoogle">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="xMidYMid"
-        viewBox="0 0 256 262"
-      >
-        <path
-          fill="#4285F4"
-          d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"
-        ></path>
-        <path
-          fill="#34A853"
-          d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523 0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"
-        ></path>
-        <path
-          fill="#FBBC05"
-          d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82 0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602l42.356-32.782"
-        ></path>
-        <path
-          fill="#EB4335"
-          d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0 79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"
-        ></path>
-      </svg>
-      <p>Cadastrar com Google</p>
-    </button>
-  </div>
-</form>
-
-<form
-  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
-  [formGroup]="firstFormGroup"
-  *ngIf="container === 2"
->
-  <div class="logo">Agroloc</div>
-  <h3 class="tituloContainer">Dados da Pessoais</h3>
-
-  <mat-form-field class="matClass">
-    <mat-label>Sexo</mat-label>
-    <mat-select formControlName="Sexo">
-      <mat-option value="Masculino">Masculino</mat-option>
-      <mat-option value="Feminino">Feminino</mat-option>
-      <mat-option value="Outro">Outro</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field class="matClass">
-    <mat-label>Data de Nascimento</mat-label>
-    <input
-      matInput
-      [matDatepicker]="picker"
-      formControlName="Nascimento"
-      placeholder="DD/MM/AAAA"
-      required
-    />
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-
-  <div class="registerOrLogin">
-    <button mat-raised-button color="accent" (click)="back()">Voltar</button>
-    <button mat-raised-button color="primary" (click)="next()">Proximo</button>
-  </div>
-</form>
-
-<form
-  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
-  [formGroup]="firstFormGroup"
-  *ngIf="container === 3"
->
-  <div class="logo">Agroloc</div>
-  <h3 class="tituloContainer">Dados da Conta</h3>
-
-  <mat-form-field class="matClass">
-    <mat-label>Email</mat-label>
-    <input
-      matInput
-      formControlName="Email"
-      placeholder="
-      exemplo@exemplo.com
+<div [ngClass]="isMobile === true ? 'mobForm' : 'webForm'">
+  <form
+    *ngIf="container === 1"
+    [formGroup]="firstFormGroup"
+    class="formContainer"
+  >
+    <div class="logo">Agroloc</div>
+    <mat-icon
+      style="
+        margin-right: 15px;
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        background-color: inherit;
       "
-      required
-    />
-  </mat-form-field>
-
-  <mat-form-field class="matClass">
-    <mat-label>Senha</mat-label>
-    <input
-      class="password"
-      matInput
-      formControlName="Senha"
-      [type]="firstPassword ? 'password' : 'text'"
-    />
-    <button
-      mat-icon-button
-      matSuffix
-      (click)="firstPassword = !firstPassword"
-      [attr.aria-label]="'Hide password'"
-      [attr.aria-pressed]="firstPassword"
+      >person_add</mat-icon
     >
-      <mat-icon>{{ firstPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-    </button>
-  </mat-form-field>
-
-  <mat-form-field class="matClass">
-    <mat-label>Confirmar Senha</mat-label>
-    <input
-      class="password"
-      formControlName="ConfSenha"
-      matInput
-      [type]="secondPassword ? 'password' : 'text'"
-    />
-    <button
-      mat-icon-button
-      matSuffix
-      (click)="secondPassword = !secondPassword"
-      [attr.aria-label]="'Hide password'"
-      [attr.aria-pressed]="secondPassword"
+    <h3
+      style="
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+      "
     >
-      <mat-icon>{{
-        secondPassword ? 'visibility_off' : 'visibility'
-      }}</mat-icon>
-    </button>
-  </mat-form-field>
+      Criar uma Conta
+    </h3>
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 60%;
+        align-items: center;
+      "
+    >
+      <mat-form-field class="matClass">
+        <mat-label>Nome</mat-label>
+        <input
+          matInput
+          formControlName="Nome"
+          placeholder="Ex: Carol"
+          required
+        />
+      </mat-form-field>
 
-  <div class="registerOrLogin">
-    <button mat-raised-button color="accent" (click)="back()">Voltar</button>
-    <button mat-raised-button color="primary" (click)="next()">Proximo</button>
-  </div>
-</form>
+      <mat-form-field class="matClass">
+        <mat-label>Sobrenome</mat-label>
+        <input
+          matInput
+          formControlName="Sobrenome"
+          placeholder="Ex: Ferreira.."
+          required
+        />
+      </mat-form-field>
 
-<form
-  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
-  [formGroup]="firstFormGroup"
-  *ngIf="container === 4"
->
-  <div class="logo">Agroloc</div>
-  <h3 class="tituloContainer">Tipo de Conta</h3>
-  <div class="texto">
-    <p>
-      Seu cadastro esta quase pronto, mas antes responda a sequinte pergunta,
-      Esta se cadastrando para prestar serviços de frete?
-    </p>
-  </div>
-  <div class="registerOrLogin">
-    <button mat-raised-button color="accent" (click)="isComum()">Não</button>
-    <button mat-raised-button color="primary" (click)="isFreteiro()">
-      Sim
-    </button>
-  </div>
-</form>
+      <div class="registerOrLogin">
+        <div>
+          <p>Ja possui conta?</p>
+          <a (click)="login()">Entrar</a>
+        </div>
+        <div style="flex: 1 1 auto"></div>
+        <button mat-raised-button color="primary" (click)="next(1)">
+          Proximo
+        </button>
+      </div>
+    </div>
+  </form>
 
-<form
-  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
-  [formGroup]="firstFormGroup"
-  *ngIf="container === 5"
->
-  <div class="logo">Agroloc</div>
-  <h3 class="tituloContainer">Dados do Freteiro</h3>
+  <form
+    *ngIf="container === 2"
+    [formGroup]="firstFormGroup"
+    class="formContainer"
+  >
+    <div class="logo">Agroloc</div>
+    <mat-icon
+      style="
+        margin-right: 15px;
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        background-color: inherit;
+      "
+      >person_add</mat-icon
+    >
+    <h3
+      style="
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+      "
+    >
+      Criar uma Conta
+    </h3>
 
-  <mat-form-field class="matClass">
-    <mat-label>CNH</mat-label>
-    <input matInput formControlName="CNH" required />
-  </mat-form-field>
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 60%;
+        align-items: center;
+      "
+    >
+      <p class="tituloContainer">Dados Pessoais</p>
+      <mat-form-field class="matClass">
+        <mat-label>Sexo</mat-label>
+        <mat-select formControlName="Sexo">
+          <mat-option value="Masculino">Masculino</mat-option>
+          <mat-option value="Feminino">Feminino</mat-option>
+          <mat-option value="Outro">Outro</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-  <div class="registerOrLogin">
-    <button mat-raised-button color="accent" (click)="back()">Voltar</button>
-    <button mat-raised-button color="primary" (click)="next()">Proximo</button>
-  </div>
-</form>
+      <mat-form-field class="matClass">
+        <mat-label>Data de Nascimento</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="Nascimento"
+          placeholder="DD/MM/AAAA"
+          required
+        />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
 
-<div
-  [ngClass]="isMobile === true ? 'mobForm' : 'webForm'"
-  *ngIf="container === 6"
->
-  <div class="logo">Agroloc</div>
-  <h3 class="tituloContainer">Finalizar Cadastro</h3>
-  <div class="texto">
-    <p>Seu cadastro esta quase concluido, deseja alterar alguma informação?</p>
-  </div>
-  <div class="registerOrLogin">
-    <button mat-raised-button color="accent" (click)="reset()">Alterar</button>
-    <button mat-raised-button color="primary" (click)="register()">
-      Finalizar
-    </button>
+      <div class="registerOrLogin">
+        <button mat-raised-button color="accent" (click)="back()">
+          Voltar
+        </button>
+        <button mat-raised-button color="primary" (click)="next(2)">
+          Proximo
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <form
+    *ngIf="container === 3"
+    [formGroup]="firstFormGroup"
+    class="formContainer"
+  >
+    <div class="logo">Agroloc</div>
+    <mat-icon
+      style="
+        margin-right: 15px;
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        background-color: inherit;
+      "
+      >person_add</mat-icon
+    >
+    <h3
+      style="
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+      "
+    >
+      Criar uma Conta
+    </h3>
+
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 60%;
+        align-items: center;
+      "
+    >
+      <p class="tituloContainer">Dados da Conta</p>
+      <mat-form-field class="matClass">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          formControlName="Email"
+          placeholder="
+        exemplo@exemplo.com
+        "
+          required
+        />
+      </mat-form-field>
+
+      <mat-form-field class="matClass">
+        <mat-label>Senha</mat-label>
+        <input
+          class="password"
+          matInput
+          formControlName="Senha"
+          [type]="firstPassword ? 'password' : 'text'"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="firstPassword = !firstPassword"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="firstPassword"
+        >
+          <mat-icon>{{
+            firstPassword ? 'visibility_off' : 'visibility'
+          }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field class="matClass">
+        <mat-label>Confirmar Senha</mat-label>
+        <input
+          class="password"
+          formControlName="ConfSenha"
+          matInput
+          [type]="secondPassword ? 'password' : 'text'"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="secondPassword = !secondPassword"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="secondPassword"
+        >
+          <mat-icon>{{
+            secondPassword ? 'visibility_off' : 'visibility'
+          }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <div class="registerOrLogin">
+        <button mat-raised-button color="accent" (click)="back()">
+          Voltar
+        </button>
+        <button mat-raised-button color="primary" (click)="next(3)">
+          Proximo
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <form
+    *ngIf="container === 4"
+    class="formContainer"
+    [formGroup]="firstFormGroup"
+  >
+    <div class="logo">Agroloc</div>
+    <mat-icon
+      style="
+        margin-right: 15px;
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        background-color: inherit;
+      "
+      >person_add</mat-icon
+    >
+    <h3
+      style="
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+      "
+    >
+      Criar uma Conta
+    </h3>
+
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 60%;
+        align-items: center;
+      "
+    >
+      <p class="tituloContainer">Tipo de Conta</p>
+      <div class="texto">
+        <p>
+          Seu cadastro esta quase pronto, mas antes responda a sequinte
+          pergunta, Esta se cadastrando para prestar serviços de frete?
+        </p>
+      </div>
+
+      <div class="registerOrLogin">
+        <button mat-raised-button color="accent" (click)="isComum()">
+          Não
+        </button>
+        <button mat-raised-button color="primary" (click)="isFreteiro()">
+          Sim
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <form
+    *ngIf="container === 5"
+    class="formContainer"
+    [formGroup]="firstFormGroup"
+  >
+    <div class="logo">Agroloc</div>
+    <mat-icon
+      style="
+        margin-right: 15px;
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        background-color: inherit;
+      "
+      >person_add</mat-icon
+    >
+    <h3
+      style="
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+      "
+    >
+      Criar uma Conta
+    </h3>
+
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 60%;
+        align-items: center;
+      "
+    >
+      <p class="tituloContainer">Dados do Freteiro</p>
+      <mat-form-field class="matClass">
+        <mat-label>CNH</mat-label>
+        <input matInput formControlName="CNH" required />
+      </mat-form-field>
+
+      <div class="registerOrLogin">
+        <button mat-raised-button color="accent" (click)="back()">
+          Voltar
+        </button>
+        <button mat-raised-button color="primary" (click)="next(4)">
+          Proximo
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf="container === 6" class="formContainer">
+    <div class="logo">Agroloc</div>
+    <mat-icon
+      style="
+        margin-right: 15px;
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        background-color: inherit;
+      "
+      >person_add</mat-icon
+    >
+    <h3
+      style="
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+      "
+    >
+      Criar uma Conta
+    </h3>
+
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 60%;
+        align-items: center;
+      "
+    >
+      <p class="tituloContainer">Finalizar Cadastro</p>
+      <div class="texto">
+        <p>
+          Seu cadastro esta quase concluido, deseja alterar alguma informação?
+        </p>
+      </div>
+
+      <div class="registerOrLogin">
+        <button mat-raised-button color="accent" (click)="reset()">
+          Alterar
+        </button>
+        <button
+          [disabled]="isLoadingRegister"
+          mat-raised-button
+          color="primary"
+          (click)="register()"
+        >
+          Finalizar
+        </button>
+      </div>
+    </div>
   </div>
 </div>
